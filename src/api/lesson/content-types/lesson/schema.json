@@ -1,0 +1,78 @@
+{
+  "kind": "collectionType",
+  "collectionName": "lessons",
+  "info": {
+    "singularName": "lesson",
+    "pluralName": "lessons",
+    "displayName": "Lesson"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "code": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "loop_reference": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "body": {
+      "type": "richtext",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "difficulty_specific_fields": {
+      "type": "component",
+      "repeatable": true,
+      "component": "lesson.difficulty-block"
+    },
+    "knowledge_cards": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::knowledge-card.knowledge-card",
+      "inversedBy": "lessons"
+    },
+    "resources": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::resource.resource",
+      "inversedBy": "lessons"
+    },
+    "progress_order": {
+      "type": "integer"
+    },
+    "printable_attachments": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": ["files"]
+    }
+  }
+}
