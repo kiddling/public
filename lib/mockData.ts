@@ -1,0 +1,190 @@
+import { StudentWork } from '@/types/studentWork';
+
+export const mockStudentWorks: StudentWork[] = [
+  {
+    id: 1,
+    attributes: {
+      title: '城市公共空间设计',
+      description: '这是一个关于城市公共空间的创新设计项目，关注社区互动和可持续性。',
+      studentName: '张三',
+      loop: '1',
+      discipline: '环艺',
+      grade: '大三',
+      year: 2024,
+      media: {
+        data: {
+          id: 1,
+          attributes: {
+            name: 'project1.jpg',
+            url: 'https://images.unsplash.com/photo-1487958449943-2429e8be8625',
+            width: 1200,
+            height: 800,
+            alternativeText: '城市公共空间设计',
+          },
+        },
+      },
+      allowDownload: true,
+      allowShare: true,
+      createdAt: '2024-01-15',
+      updatedAt: '2024-01-15',
+      publishedAt: '2024-01-15',
+    },
+  },
+  {
+    id: 2,
+    attributes: {
+      title: '智能家居产品设计',
+      description: '结合人工智能的智能家居控制系统设计，注重用户体验和简洁美学。',
+      studentName: '李四',
+      loop: '2',
+      discipline: '产品',
+      grade: '大二',
+      year: 2024,
+      media: {
+        data: {
+          id: 2,
+          attributes: {
+            name: 'project2.jpg',
+            url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64',
+            width: 1200,
+            height: 800,
+            alternativeText: '智能家居产品设计',
+          },
+        },
+      },
+      allowDownload: true,
+      allowShare: true,
+      createdAt: '2024-01-16',
+      updatedAt: '2024-01-16',
+      publishedAt: '2024-01-16',
+    },
+  },
+  {
+    id: 3,
+    attributes: {
+      title: '品牌视觉识别系统',
+      description: '为新兴咖啡品牌设计的完整VI系统，包括logo、色彩系统和应用规范。',
+      studentName: '王五',
+      loop: '1',
+      discipline: '视传',
+      grade: '大四',
+      year: 2024,
+      beforeImage: {
+        data: {
+          id: 3,
+          attributes: {
+            name: 'before.jpg',
+            url: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93',
+            width: 1200,
+            height: 800,
+            alternativeText: '改版前',
+          },
+        },
+      },
+      afterImage: {
+        data: {
+          id: 4,
+          attributes: {
+            name: 'after.jpg',
+            url: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085',
+            width: 1200,
+            height: 800,
+            alternativeText: '改版后',
+          },
+        },
+      },
+      allowDownload: true,
+      allowShare: true,
+      createdAt: '2024-01-17',
+      updatedAt: '2024-01-17',
+      publishedAt: '2024-01-17',
+    },
+  },
+  {
+    id: 4,
+    attributes: {
+      title: '交互式数字媒体艺术装置',
+      description: '基于动作捕捉技术的互动艺术装置，探索人与数字空间的关系。',
+      studentName: '赵六',
+      loop: '3',
+      discipline: '数媒',
+      grade: '研一',
+      year: 2024,
+      media: {
+        data: {
+          id: 5,
+          attributes: {
+            name: 'project4.jpg',
+            url: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f',
+            width: 1200,
+            height: 800,
+            alternativeText: '交互式数字媒体艺术装置',
+          },
+        },
+      },
+      allowDownload: false,
+      allowShare: true,
+      createdAt: '2024-01-18',
+      updatedAt: '2024-01-18',
+      publishedAt: '2024-01-18',
+    },
+  },
+  {
+    id: 5,
+    attributes: {
+      title: '社区壁画与公共艺术',
+      description: '为社区创作的大型壁画项目，反映当地文化和居民生活。',
+      studentName: '孙七',
+      loop: '2',
+      discipline: '公艺',
+      grade: '大三',
+      year: 2024,
+      media: {
+        data: {
+          id: 6,
+          attributes: {
+            name: 'project5.jpg',
+            url: 'https://images.unsplash.com/photo-1547826039-bfc35e0f1ea8',
+            width: 1200,
+            height: 800,
+            alternativeText: '社区壁画与公共艺术',
+          },
+        },
+      },
+      allowDownload: true,
+      allowShare: true,
+      createdAt: '2024-01-19',
+      updatedAt: '2024-01-19',
+      publishedAt: '2024-01-19',
+    },
+  },
+  {
+    id: 6,
+    attributes: {
+      title: '可持续设计家具系列',
+      description: '使用可回收材料设计的环保家具系列，兼顾美学和功能性。',
+      studentName: '周八',
+      loop: '1',
+      discipline: '产品',
+      grade: '大四',
+      year: 2024,
+      media: {
+        data: {
+          id: 7,
+          attributes: {
+            name: 'project6.jpg',
+            url: 'https://images.unsplash.com/photo-1538688525198-9b88f6f53126',
+            width: 1200,
+            height: 800,
+            alternativeText: '可持续设计家具系列',
+          },
+        },
+      },
+      allowDownload: true,
+      allowShare: true,
+      createdAt: '2024-01-20',
+      updatedAt: '2024-01-20',
+      publishedAt: '2024-01-20',
+    },
+  },
+];
