@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Chinese typography optimizations */
+  body {
+    @apply font-sans antialiased;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Better Chinese character spacing */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-medium;
+    letter-spacing: 0.02em;
+  }
+
+  /* Optimize line height for Chinese text */
+  p {
+    line-height: 1.8;
+  }
+}
+
+@layer components {
+  /* Add custom component styles here */
+}
+
+@layer utilities {
+  /* Add custom utility classes here */
+}

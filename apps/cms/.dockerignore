@@ -1,0 +1,13 @@
+.git
+.cache
+.tmp
+.strapi
+build
+node_modules
+.env
+.env.local
+*.log
+dist
+.output
+coverage
+.DS_Store

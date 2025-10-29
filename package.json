@@ -1,0 +1,30 @@
+{
+  "name": "nuxt-strapi-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Monorepo with Nuxt 3 frontend and Strapi CMS",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter \"./apps/**\" dev",
+    "dev:frontend": "pnpm --filter frontend dev",
+    "dev:cms": "pnpm --filter cms dev",
+    "build": "pnpm --filter \"./apps/**\" build",
+    "build:frontend": "pnpm --filter frontend build",
+    "build:cms": "pnpm --filter cms build",
+    "lint": "pnpm --filter \"./apps/**\" lint",
+    "lint:fix": "pnpm --filter \"./apps/**\" lint:fix",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,vue,json,css,scss,md}\"",
+    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,vue,json,css,scss,md}\"",
+    "clean": "pnpm --filter \"./apps/**\" clean && rm -rf node_modules",
+    "typecheck": "pnpm --filter \"./apps/**\" typecheck"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.12",
+    "prettier": "^3.4.2",
+    "prettier-plugin-tailwindcss": "^0.6.9"
+  },
+  "packageManager": "pnpm@10.19.0"
+}
