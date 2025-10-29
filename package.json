@@ -2,11 +2,14 @@
   "name": "nuxt-strapi-monorepo",
   "version": "0.1.0",
   "private": true,
-  "description": "Monorepo with Nuxt 3 frontend and Strapi CMS",
+  "description": "Monorepo with Nuxt 3 frontend and Strapi CMS for Chinese educational content",
+  "type": "module",
   "engines": {
-    "node": ">=18.0.0",
-    "pnpm": ">=8.0.0"
+    "node": ">=18.0.0 <=22.x.x",
+    "pnpm": ">=8.0.0",
+    "npm": ">=6.0.0"
   },
+  "packageManager": "pnpm@10.19.0",
   "scripts": {
     "dev": "pnpm --parallel --filter \"./apps/**\" dev",
     "dev:frontend": "pnpm --filter frontend dev",
@@ -14,17 +17,64 @@
     "build": "pnpm --filter \"./apps/**\" build",
     "build:frontend": "pnpm --filter frontend build",
     "build:cms": "pnpm --filter cms build",
+    "generate": "pnpm --filter frontend generate",
+    "preview": "pnpm --filter frontend preview",
+    "start": "pnpm --filter cms start",
+    "develop": "pnpm --filter cms develop",
+    "console": "pnpm --filter cms console",
+    "deploy": "pnpm --filter cms deploy",
     "lint": "pnpm --filter \"./apps/**\" lint",
     "lint:fix": "pnpm --filter \"./apps/**\" lint:fix",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,vue,json,css,scss,md}\"",
     "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,vue,json,css,scss,md}\"",
     "clean": "pnpm --filter \"./apps/**\" clean && rm -rf node_modules",
-    "typecheck": "pnpm --filter \"./apps/**\" typecheck"
+    "typecheck": "pnpm --filter \"./apps/**\" typecheck",
+    "test": "pnpm --filter \"./apps/**\" test",
+    "test:unit": "pnpm --filter \"./apps/**\" test:unit",
+    "postinstall": "pnpm --filter \"./apps/**\" postinstall || true",
+    "story:dev": "pnpm --filter frontend story:dev",
+    "story:build": "pnpm --filter frontend story:build",
+    "strapi": "pnpm --filter cms strapi",
+    "upgrade": "pnpm --filter cms exec npx @strapi/upgrade latest",
+    "upgrade:dry": "pnpm --filter cms exec npx @strapi/upgrade latest --dry"
+  },
+  "dependencies": {
+    "@nuxt/content": "^2.13.2",
+    "@nuxt/icon": "^1.8.1",
+    "@nuxtjs/i18n": "^10.1.2",
+    "@strapi/plugin-cloud": "5.29.0",
+    "@strapi/plugin-users-permissions": "5.29.0",
+    "@strapi/strapi": "^5.29.0",
+    "@vueuse/core": "^11.1.0",
+    "@vueuse/motion": "^2.2.6",
+    "better-sqlite3": "11.3.0",
+    "nuxt": "^3.14.159",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-router-dom": "^6.0.0",
+    "styled-components": "^6.0.0",
+    "vue": "^3.5.13",
+    "vue-router": "^4.4.5",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@types/node": "^20.17.12",
+    "@histoire/plugin-vue": "^0.17.17",
+    "@nuxt/test-utils": "^3.14.2",
+    "@nuxtjs/tailwindcss": "^6.12.2",
+    "@types/node": "^22.9.0",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@vue/test-utils": "^2.4.6",
+    "happy-dom": "^15.7.4",
+    "histoire": "^0.17.17",
     "prettier": "^3.4.2",
-    "prettier-plugin-tailwindcss": "^0.6.9"
+    "prettier-plugin-tailwindcss": "^0.6.9",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.1",
+    "vue-tsc": "^3.1.2"
   },
-  "packageManager": "pnpm@10.19.0"
+  "strapi": {
+    "uuid": "8029a641-3c8d-455d-aaa7-285ad5ca6f5c",
+    "installId": "8673c6bd8d5c6a6373c86ffcae67fc15c2b92beb094f40827f9dcb5d41e38fd6"
+  }
 }

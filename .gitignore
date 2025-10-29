@@ -1,67 +1,34 @@
 # Dependencies
-node_modules
+node_modules/
 .pnpm-store
 .pnpm-debug.log
-pnpm-lock.yaml
-
-# Environment variables
-.env
-.env.local
-.env.*.local
-
-# Build outputs
-dist
-.output
-.nuxt
-.cache
-build
-.strapi
-
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-# Editor directories and files
-.idea
-.vscode
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-.DS_Store
+.pnp
+.pnp.js
 
 # Testing
-coverage
+coverage/
 *.lcov
 .nyc_output
 
-# Temporary files
-*.tmp
-*.temp
-.temp
-.tmp
+# Production build files
+dist/
+.output/
+.nuxt/
+.next/
+out/
+build/
 
-# OS files
-Thumbs.db
-.DS_Store
-
-# Docker
-*.env.docker
-
-# Strapi specific
+# Strapi
+.cache/
+.tmp/
+build/
+*.db*
+.strapi-updater.json
 apps/cms/.tmp
 apps/cms/public/uploads
 apps/cms/exports
 apps/cms/.strapi-updater.json
 apps/cms/build
-apps/cms/package-lock.json
-apps/cms/yarn.lock
 
 # Nuxt specific
 apps/frontend/.nuxt
@@ -69,3 +36,64 @@ apps/frontend/.output
 apps/frontend/dist
 apps/frontend/.nitro
 apps/frontend/.cache
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+.env.production
+.env.test
+*.local
+
+# Docker
+*.env.docker
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*~
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*.swn
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# TypeScript
+*.tsbuildinfo
+
+# Histoire
+.histoire/
+storybook-static/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+.temp
+.tmp
+
+# Lock files (keep pnpm-lock.yaml if using pnpm)
+# package-lock.json
+# yarn.lock
