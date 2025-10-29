@@ -1,0 +1,21 @@
+# robots.txt for China-optimized site
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_nuxt/
+
+# Sitemap
+Sitemap: https://example.com/sitemap.xml
+
+# Baidu-specific
+User-agent: Baiduspider
+Allow: /
+Crawl-delay: 1
+
+# Other Chinese search engines
+User-agent: Sogou
+Allow: /
+
+User-agent: 360Spider
+Allow: /
