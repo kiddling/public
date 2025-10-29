@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  strapi:
+    container_name: strapi-cms
+    build: .
+    image: strapi:latest
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_CLIENT: ${DATABASE_CLIENT:-sqlite}
+      DATABASE_HOST: ${DATABASE_HOST:-postgres}
+      DATABASE_PORT: ${DATABASE_PORT:-5432}
+      DATABASE_NAME: ${DATABASE_NAME:-strapi}
+      DATABASE_USERNAME: ${DATABASE_USERNAME:-strapi}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-strapi}
+      JWT_SECRET: ${JWT_SECRET}
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET}
+      APP_KEYS: ${APP_KEYS}
+      NODE_ENV: ${NODE_ENV:-development}
+    volumes:
+      - ./config:/opt/app/config
+      - ./src:/opt/app/src
+      - ./package.json:/opt/package.json
+      - ./public/uploads:/opt/app/public/uploads
+    ports:
+      - '1337:1337'
+    networks:
+      - strapi
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: strapi-postgres
+    platform: linux/amd64
+    restart: unless-stopped
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${DATABASE_USERNAME:-strapi}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-strapi}
+      POSTGRES_DB: ${DATABASE_NAME:-strapi}
+    volumes:
+      - strapi-data:/var/lib/postgresql/data/
+    ports:
+      - '5432:5432'
+    networks:
+      - strapi
+
+volumes:
+  strapi-data:
+
+networks:
+  strapi:
+    name: strapi
+    driver: bridge

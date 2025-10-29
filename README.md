@@ -1,69 +1,28 @@
-# 教育平台 - Nuxt 3 + Strapi CMS 项目 (Educational Platform)
+# Nuxt 3 + Strapi CMS Monorepo
 
-一个为中文教育内容优化的全栈应用，使用 Nuxt 3 前端和 Strapi CMS 进行内容管理，组织为 pnpm workspace monorepo。
+A modern full-stack web application using Nuxt 3 for the frontend and Strapi CMS for content management, organized as a pnpm workspace monorepo.
 
-A modern full-stack educational application using Nuxt 3 for the frontend and Strapi CMS for content management, organized as a pnpm workspace monorepo and optimized for Chinese educational content.
-
-## ✨ 特性 (Features)
-
-- 🎨 **完整的设计系统** - 基于 Tailwind CSS，针对中文排版优化
-- 🧩 **可复用组件** - 包含按钮、卡片、标签等基础组件
-- 📱 **响应式设计** - 移动端优先，适配所有屏幕尺寸
-- ♿ **无障碍访问** - 支持键盘导航、屏幕阅读器和 ARIA 标签
-- 🌐 **国际化** - 内置 i18n 支持，初始支持简体中文
-- 📝 **Strapi CMS 集成** - 带类型安全的 API 客户端
-- 🔄 **SSR-aware 缓存** - 自动缓存失效机制
-- ⚡ **ISR 支持** - 使用 Nuxt 的 SWR (stale-while-revalidate) 策略
-- 🛡️ **类型安全** - TypeScript 接口和 Zod schemas
-- 🔌 **可复用 Composables** - 针对所有主要实体
-- 🧪 **单元测试** - 使用 Vitest
-- 🖨️ **打印友好** - 优化的打印样式
-- 🎭 **动画支持** - 集成 VueUse Motion，尊重用户减少动画偏好
-
-## 📁 项目结构 (Project Structure)
+## 📁 Project Structure
 
 ```
 .
 ├── apps/
-│   ├── frontend/          # Nuxt 3 应用 (Nuxt 3 application)
-│   │   ├── assets/        # 全局样式 (Global styles)
-│   │   ├── components/    # UI 组件 (UI components)
-│   │   │   ├── base/     # 基础组件 (Base components)
-│   │   │   └── layout/   # 布局组件 (Layout components)
-│   │   ├── composables/   # Reusable composables
-│   │   │   ├── useLessons.ts
-│   │   │   ├── useKnowledgeCards.ts
-│   │   │   ├── useStudentWorks.ts
-│   │   │   └── useResources.ts
-│   │   ├── pages/         # 应用页面 (Application pages)
-│   │   ├── schemas/       # Zod 验证 schemas
-│   │   ├── server/        # Server-side API routes
-│   │   ├── tests/         # 单元测试 (Unit tests)
-│   │   ├── types/         # TypeScript 类型定义
-│   │   └── utils/         # 工具函数 (Utilities)
-│   └── cms/               # Strapi CMS
-├── docs/
-│   └── DESIGN_SYSTEM.md   # 详细的设计系统文档
-├── package.json           # Root package with workspace scripts
-├── pnpm-workspace.yaml    # pnpm workspace configuration
+│   ├── frontend/     # Nuxt 3 application
+│   └── cms/          # Strapi CMS
+├── package.json      # Root package with workspace scripts
+├── pnpm-workspace.yaml
 └── README.md
 ```
 
-## 🛠️ 技术栈 (Tech Stack)
+## 🛠️ Tech Stack
 
 ### Frontend (`apps/frontend`)
 - **Nuxt 3** - The Intuitive Vue Framework
 - **TypeScript** - Type-safe development
-- **Tailwind CSS** - Utility-first CSS framework (中文排版优化)
+- **Tailwind CSS** - Utility-first CSS framework
 - **Pinia** - State management
 - **VueUse** - Collection of Vue Composition Utilities
-- **VueUse Motion** - Animation library
 - **Nuxt Content** - File-based CMS
-- **Nuxt Icon** - Icon system with Heroicons
-- **i18n** - Internationalization support
-- **Zod** - Schema validation
-- **Vitest** - Unit testing framework
-- **Histoire** - Component documentation
 
 ### Backend (`apps/cms`)
 - **Strapi** - Headless CMS

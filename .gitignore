@@ -1,5 +1,7 @@
 # Dependencies
 node_modules/
+.pnpm-store
+.pnpm-debug.log
 .pnp
 .pnp.js
 
@@ -22,6 +24,18 @@ build/
 build/
 *.db*
 .strapi-updater.json
+apps/cms/.tmp
+apps/cms/public/uploads
+apps/cms/exports
+apps/cms/.strapi-updater.json
+apps/cms/build
+
+# Nuxt specific
+apps/frontend/.nuxt
+apps/frontend/.output
+apps/frontend/dist
+apps/frontend/.nitro
+apps/frontend/.cache
 
 # Environment variables
 .env
@@ -30,6 +44,9 @@ build/
 .env.production
 .env.test
 *.local
+
+# Docker
+*.env.docker
 
 # Logs
 logs/
@@ -73,6 +90,9 @@ storybook-static/
 tmp/
 temp/
 *.tmp
+*.temp
+.temp
+.tmp
 
 # Lock files (keep pnpm-lock.yaml if using pnpm)
 # package-lock.json
