@@ -1,0 +1,105 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - production
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run type check
+        run: npm run typecheck
+        continue-on-error: true
+
+      - name: Build application
+        run: npm run build
+        env:
+          NUXT_PUBLIC_SITE_URL: ${{ secrets.NUXT_PUBLIC_SITE_URL }}
+          NUXT_PUBLIC_BAIDU_ANALYTICS_ID: ${{ secrets.NUXT_PUBLIC_BAIDU_ANALYTICS_ID }}
+          NUXT_PUBLIC_ICP_NUMBER: ${{ secrets.NUXT_PUBLIC_ICP_NUMBER }}
+
+      - name: Run Lighthouse CI
+        run: |
+          npm install -g @lhci/cli@0.13.x
+          lhci autorun
+        continue-on-error: true
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuxt-build
+          path: .output
+          retention-days: 7
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/production'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: nuxt-build
+          path: .output
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        run: |
+          docker build -t china-nuxt-app:${{ github.sha }} .
+          docker tag china-nuxt-app:${{ github.sha }} china-nuxt-app:latest
+
+      # Uncomment and configure for Aliyun Container Registry
+      # - name: Login to Aliyun Container Registry
+      #   run: |
+      #     docker login --username=${{ secrets.ALIYUN_USERNAME }} \
+      #       --password=${{ secrets.ALIYUN_PASSWORD }} \
+      #       registry.cn-hangzhou.aliyuncs.com
+
+      # - name: Push to Aliyun Container Registry
+      #   run: |
+      #     docker tag china-nuxt-app:latest \
+      #       registry.cn-hangzhou.aliyuncs.com/your-namespace/china-nuxt-app:latest
+      #     docker push registry.cn-hangzhou.aliyuncs.com/your-namespace/china-nuxt-app:latest
+
+      # Uncomment and configure for Tencent Cloud Container Registry
+      # - name: Login to Tencent Cloud Container Registry
+      #   run: |
+      #     docker login --username=${{ secrets.TENCENT_USERNAME }} \
+      #       --password=${{ secrets.TENCENT_PASSWORD }} \
+      #       ccr.ccs.tencentyun.com
+
+      # - name: Push to Tencent Cloud Container Registry
+      #   run: |
+      #     docker tag china-nuxt-app:latest \
+      #       ccr.ccs.tencentyun.com/your-namespace/china-nuxt-app:latest
+      #     docker push ccr.ccs.tencentyun.com/your-namespace/china-nuxt-app:latest
+
+      - name: Deploy notification
+        run: |
+          echo "Build and deployment preparation completed!"
+          echo "Docker image: china-nuxt-app:${{ github.sha }}"

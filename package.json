@@ -1,0 +1,31 @@
+{
+  "name": "china-optimized-nuxt-app",
+  "version": "1.0.0",
+  "description": "Nuxt.js application optimized for China deployment with Baidu SEO",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "analyze": "nuxt build --analyze",
+    "lighthouse": "node scripts/lighthouse-test.js",
+    "typecheck": "nuxt typecheck"
+  },
+  "dependencies": {
+    "@nuxt/image": "^1.7.0",
+    "@nuxtjs/sitemap": "^5.1.0",
+    "nuxt": "^3.12.0",
+    "vue": "^3.4.0",
+    "vue-router": "^4.3.0"
+  },
+  "devDependencies": {
+    "@nuxt/devtools": "^1.3.0",
+    "@nuxtjs/fontaine": "^0.4.0",
+    "lighthouse": "^11.0.0",
+    "typescript": "^5.4.0",
+    "vue-tsc": "^2.0.0"
+  }
+}
