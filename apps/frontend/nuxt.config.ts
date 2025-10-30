@@ -23,12 +23,28 @@ export default defineNuxtConfig({
   runtimeConfig: {
     // Private keys (server-side only)
     strapiApiToken: process.env.NUXT_STRAPI_API_TOKEN || '',
-    
+    strapi: {
+      baseUrl:
+        process.env.NUXT_STRAPI_URL ||
+        process.env.NUXT_PUBLIC_STRAPI_URL ||
+        process.env.NUXT_PUBLIC_API_BASE_URL ||
+        'http://localhost:1337',
+      apiPath: process.env.NUXT_STRAPI_API_PATH || '/api',
+      timeout: Number.parseInt(process.env.NUXT_STRAPI_TIMEOUT ?? '8000', 10),
+      retry: Number.parseInt(process.env.NUXT_STRAPI_RETRY ?? '2', 10),
+      retryDelay: Number.parseInt(process.env.NUXT_STRAPI_RETRY_DELAY ?? '600', 10),
+      cacheTtl: Number.parseInt(process.env.NUXT_STRAPI_CACHE_TTL ?? '600000', 10),
+    },
+
     // Public keys (exposed to client)
     public: {
       apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:1337',
       strapiUrl: process.env.NUXT_PUBLIC_STRAPI_URL || 'http://localhost:1337',
       cdnUrl: process.env.NUXT_PUBLIC_CDN_URL || '',
+      strapiCacheTtl: Number.parseInt(
+        process.env.NUXT_PUBLIC_STRAPI_CACHE_TTL ?? process.env.NUXT_STRAPI_CACHE_TTL ?? '600000',
+        10
+      ),
     },
   },
 

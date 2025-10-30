@@ -40,6 +40,12 @@ Configure your environment variables:
 NUXT_PUBLIC_API_BASE_URL=http://localhost:1337
 NUXT_PUBLIC_STRAPI_URL=http://localhost:1337
 NUXT_STRAPI_API_TOKEN=your-strapi-api-token-here
+NUXT_STRAPI_API_PATH=/api
+NUXT_STRAPI_TIMEOUT=8000
+NUXT_STRAPI_RETRY=2
+NUXT_STRAPI_RETRY_DELAY=600
+NUXT_STRAPI_CACHE_TTL=600000
+NUXT_PUBLIC_STRAPI_CACHE_TTL=600000
 
 # CDN Configuration
 NUXT_PUBLIC_CDN_URL=
@@ -134,20 +140,52 @@ The project is configured with Chinese typography optimization:
 
 ## 🌐 Strapi Integration
 
-The app is configured to connect to a Strapi CMS backend. API calls can be made using:
+The frontend ships with a dedicated, typed Strapi client built on `ofetch`. It automatically applies China-friendly timeouts and retry logic, works during SSR, and caches the last successful payload so components can gracefully degrade if the network is unavailable.
 
-### Runtime Config
+### Generating Strapi API tokens
 
-```typescript
-const config = useRuntimeConfig()
-const strapiUrl = config.public.strapiUrl
+1. Sign in to your Strapi admin panel.
+2. Open **Settings → API Tokens** and click **Create new API Token**.
+3. Choose a descriptive name, select the permissions you need ("Full access" is convenient for development), and confirm.
+4. Copy the generated token into `NUXT_STRAPI_API_TOKEN` in your `.env` file.
+
+### CMS composables
+
+Use the composables in `composables/` to fetch common content types with full TypeScript support and caching:
+
+```ts
+import { computed } from 'vue'
+import { useLessons } from '~/composables/useLessons'
+import { buildDeepPopulate } from '~/utils/strapi-query'
+
+const lessons = await useLessons({
+  code: 'L-001',
+  populate: buildDeepPopulate(4),
+})
+
+const lesson = computed(() => lessons.data.value?.items[0])
 ```
 
-### Example API Call
+Other helpers follow the same pattern:
 
-```typescript
-// In a composable or component
-const { data } = await useFetch(`${config.public.strapiUrl}/api/articles`)
+```ts
+const knowledgeCards = await useKnowledgeCards({ type: 'Theory', tags: ['design'] })
+const studentWorks = await useStudentWorks({ discipline: '产品', loop: 'Loop 1' })
+const resources = await useResources({ category: 'Video Tutorials' })
+```
+
+Each composable returns an `AsyncData`-style object with `data`, `pending`, `error`, `refresh`, `items`, `meta`, and an `isFallback` flag so you can detect when cached data is being used.
+
+All requests honour the timeout, retry, and cache TTL variables documented above.
+
+### Runtime config
+
+If you need lower-level access, use `useRuntimeConfig()` to read the current Strapi endpoints:
+
+```ts
+const config = useRuntimeConfig()
+const strapiUrl = config.public.strapiUrl
+const apiBase = config.public.apiBaseUrl
 ```
 
 ## 🔌 State Management with Pinia
