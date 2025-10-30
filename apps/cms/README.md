@@ -50,16 +50,21 @@ DATABASE_FILENAME=.tmp/data.db
 
 ### Generating Security Keys
 
-Use these commands to generate secure random strings:
+Use OpenSSL to generate strong random strings:
 
 ```bash
-# Generate APP_KEYS (2 keys separated by comma)
-node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
-node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+# Generate a single secret value
+openssl rand -base64 32
 
-# Generate other secrets
-node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+# Generate the four APP_KEYS values in one command
+printf "%s,%s,%s,%s\n" \
+  "$(openssl rand -base64 32)" \
+  "$(openssl rand -base64 32)" \
+  "$(openssl rand -base64 32)" \
+  "$(openssl rand -base64 32)"
 ```
+
+Run the command again for each secret you need and replace every placeholder in `.env`.
 
 ## 🏃 Development
 

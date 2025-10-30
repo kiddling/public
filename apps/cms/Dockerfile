@@ -5,13 +5,13 @@ WORKDIR /opt/
 
 # Copy package files
 COPY ./package.json ./
-COPY ./pnpm-lock.yaml ./
+# pnpm-lock.yaml is intentionally omitted because lockfiles are not committed in this repository
 
 # Install pnpm
 RUN npm install -g pnpm
 
 # Install dependencies
-RUN pnpm install
+RUN pnpm install --no-frozen-lockfile
 
 # Set app working directory
 WORKDIR /opt/app

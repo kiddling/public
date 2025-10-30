@@ -78,6 +78,24 @@ cp .env.example .env
 
 Edit `.env` with your configuration - see `apps/cms/README.md` for details.
 
+##### Generating secure keys
+
+Use `openssl` to generate cryptographically secure values for all Strapi secrets:
+
+```bash
+# Generate a single secret
+openssl rand -base64 32
+
+# Generate four APP_KEYS values in one command
+printf "%s,%s,%s,%s\n" \
+  "$(openssl rand -base64 32)" \
+  "$(openssl rand -base64 32)" \
+  "$(openssl rand -base64 32)" \
+  "$(openssl rand -base64 32)"
+```
+
+Replace each placeholder in `.env` with freshly generated values and never commit the populated `.env` file to version control.
+
 ## 📦 Package Manager & Chinese Mirrors
 
 This project uses **pnpm** for fast, efficient dependency management. For users in China, we provide mirror configuration options:
