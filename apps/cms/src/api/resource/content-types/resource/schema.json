@@ -1,0 +1,55 @@
+{
+  "kind": "collectionType",
+  "collectionName": "resources",
+  "info": {
+    "singularName": "resource",
+    "pluralName": "resources",
+    "displayName": "Resource"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "category": {
+      "type": "enumeration",
+      "enum": [
+        "Video Tutorials",
+        "Tool Links",
+        "Case Databases",
+        "Readings",
+        "PBR Libraries"
+      ]
+    },
+    "description": {
+      "type": "richtext"
+    },
+    "url": {
+      "type": "string",
+      "required": true,
+      "regex": "^https?:\\/\\/"
+    },
+    "accessibilityFlag": {
+      "type": "boolean",
+      "default": true
+    },
+    "lastChecked": {
+      "type": "datetime"
+    },
+    "qrAsset": {
+      "type": "media"
+    },
+    "file": {
+      "type": "media"
+    },
+    "lessons": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::lesson.lesson",
+      "mappedBy": "resources"
+    }
+  }
+}
