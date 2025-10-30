@@ -317,19 +317,9 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch, watchEffect } from 'vue'
 import { useLocalStorage } from '@vueuse/core'
-import type {
-  DifficultyLevel,
-  Lesson,
-  LessonAttachment,
-  LessonDifficultyBlock,
-  LessonKnowledgeCard,
-  LessonLoop,
-  LessonPrompt,
-  LessonResource,
-  StrapiCollectionItem,
-  StrapiCollectionResponse,
-  StrapiMedia,
-} from '~/types/lesson'
+import { useLessons } from '~/composables/useLessons'
+import { buildDeepPopulate } from '~/utils/strapi-query'
+import type { DifficultyLevel, Lesson, LessonDifficultyBlock, StrapiMedia } from '~/types/lesson'
 
 type LessonProgressState = {
   viewed: boolean
@@ -367,30 +357,23 @@ const progress = useLocalStorage<LessonProgressState>(
 const printMode = ref<'current' | 'all'>('current')
 const renderAllBlocks = ref(false)
 
-const { data: response, pending, error, refresh } = await useAsyncData(
-  'lesson',
-  () => fetchLessonByCode(normalizedCode.value),
-  {
-    watch: [() => normalizedCode.value],
-  }
-)
-
-const lesson = computed<Lesson | null>(() => {
-  const raw = response.value?.data?.[0]
-  if (!raw) {
-    return null
-  }
-
-  return normaliseLesson(raw, normalizedCode.value)
+const { data: lessonState, pending, error, refresh } = await useLessons({
+  code: normalizedCode,
+  pagination: computed(() => ({ page: 1, pageSize: 1 })),
+  populate: buildDeepPopulate(4),
+  key: computed(() => `lesson:${normalizedCode.value}`),
+  immediate: true,
 })
+
+const lesson = computed<Lesson | null>(() => lessonState.value?.items[0] ?? null)
 
 const availableLevels = computed(() =>
   orderedLevels.filter((level) => (lesson.value?.difficultyBlocks[level] ?? null) !== null)
 )
 
-const visibleDifficultyBlocks = computed(() => {
+const visibleDifficultyBlocks = computed<LessonDifficultyBlock[]>(() => {
   if (!lesson.value) {
-    return [] as LessonDifficultyBlock[]
+    return []
   }
 
   const blocks = orderedLevels
@@ -582,275 +565,6 @@ function formatFileSize(sizeInBytes: number | null | undefined) {
   return `${size.toFixed(unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`
 }
 
-async function fetchLessonByCode(lessonCode: string) {
-  if (!lessonCode) {
-    return { data: [] } satisfies StrapiCollectionResponse<Record<string, unknown>>
-  }
-
-  const headers: Record<string, string> = {}
-  if (config.strapiApiToken) {
-    headers.Authorization = `Bearer ${config.strapiApiToken}`
-  }
-
-  const params = {
-    'filters[code][$eq]': lessonCode,
-    populate: 'deep,4',
-  }
-
-  return $fetch<StrapiCollectionResponse<Record<string, unknown>>>(
-    `${config.public.strapiUrl}/api/lessons`,
-    {
-      params,
-      headers,
-    }
-  )
-}
-
-function normaliseLesson(
-  item: StrapiCollectionItem<Record<string, any>>,
-  fallbackCode: string
-): Lesson {
-  const attributes = item.attributes ?? {}
-
-  const difficultyBlocks: Record<DifficultyLevel, LessonDifficultyBlock | null> = {
-    base: null,
-    advance: null,
-    stretch: null,
-  }
-
-  const rawBlocks = toArray(attributes.difficultyBlocks ?? attributes.difficulty_blocks)
-  for (const rawBlock of rawBlocks) {
-    const blockAttributes = rawBlock?.attributes ?? rawBlock
-    const level = normaliseLevel(blockAttributes?.level ?? blockAttributes?.name ?? blockAttributes?.title)
-    if (!level) {
-      continue
-    }
-
-    const bodyHtml = determineBodyContent(blockAttributes)
-    const media = normaliseMediaList(blockAttributes?.media ?? blockAttributes?.images ?? blockAttributes?.videos)
-    const attachments = normaliseAttachments(blockAttributes?.attachments)
-    const prompts = normalisePrompts(blockAttributes?.prompts ?? blockAttributes?.questions ?? blockAttributes?.extendedPrompts)
-
-    difficultyBlocks[level] = {
-      level,
-      title: blockAttributes?.title ?? difficultyLabels[level],
-      summary: blockAttributes?.summary ?? blockAttributes?.description ?? null,
-      body: bodyHtml?.stringContent ?? null,
-      richBody: bodyHtml?.richContent ?? null,
-      media,
-      attachments,
-      prompts,
-    }
-  }
-
-  const knowledgeCards = normaliseKnowledgeCards(attributes?.knowledgeCards ?? attributes?.knowledge_cards)
-  const resources = normaliseResources(attributes?.resources)
-  const loop = normaliseLoop(attributes?.loop)
-
-  const lessonBody = determineBodyContent(attributes)
-
-  return {
-    id: item.id,
-    title: attributes?.title ?? 'Untitled lesson',
-    code: attributes?.code ?? fallbackCode,
-    summary: attributes?.summary ?? attributes?.description ?? null,
-    body: lessonBody?.stringContent ?? renderRichTextToHtml(lessonBody?.richContent) ?? null,
-    loop,
-    difficultyBlocks,
-    knowledgeCards,
-    resources,
-  }
-}
-
-function determineBodyContent(value: any) {
-  const body = value?.body ?? value?.content ?? value?.richBody ?? value?.rich_text ?? null
-  if (!body) {
-    return null
-  }
-
-  if (typeof body === 'string') {
-    return { stringContent: body, richContent: null }
-  }
-
-  if (Array.isArray(body) || typeof body === 'object') {
-    return { stringContent: null, richContent: body }
-  }
-
-  return null
-}
-
-function normaliseLevel(input: unknown): DifficultyLevel | null {
-  if (!input) {
-    return null
-  }
-
-  const value = String(input).trim().toLowerCase()
-  if (value.startsWith('base') || value === 'core' || value === 'b') {
-    return 'base'
-  }
-  if (value.startsWith('adv') || value === 'a') {
-    return 'advance'
-  }
-  if (value.startsWith('stretch') || value === 's' || value === 'extension') {
-    return 'stretch'
-  }
-  return null
-}
-
-function toArray<T>(input: any): T[] {
-  if (!input) {
-    return []
-  }
-
-  if (Array.isArray(input)) {
-    return input as T[]
-  }
-
-  if (Array.isArray(input?.data)) {
-    return input.data as T[]
-  }
-
-  if (input?.data) {
-    return [input.data as T]
-  }
-
-  return [input as T]
-}
-
-function normaliseMediaList(input: any): StrapiMedia[] {
-  const items = toArray<any>(input)
-  return items
-    .map((item) => {
-      const data = item?.attributes ?? item
-      const url = resolveUrl(data?.url ?? data?.src)
-      if (!url) {
-        return null
-      }
-      return {
-        id: item?.id ?? data?.id ?? url,
-        url,
-        mime: data?.mime ?? null,
-        alternativeText: data?.alternativeText ?? data?.alt ?? null,
-        caption: data?.caption ?? null,
-        width: data?.width ?? null,
-        height: data?.height ?? null,
-        size: data?.size ?? null,
-        name: data?.name ?? null,
-      } satisfies StrapiMedia
-    })
-    .filter((media): media is StrapiMedia => media !== null)
-}
-
-function normaliseAttachments(input: any): LessonAttachment[] {
-  const items = toArray<any>(input)
-  return items
-    .map((item) => {
-      const data = item?.attributes ?? item
-      const url = resolveUrl(data?.url ?? data?.href)
-      if (!url) {
-        return null
-      }
-
-      return {
-        id: item?.id ?? data?.id ?? url,
-        name: data?.name ?? data?.title ?? 'Download',
-        url,
-        mime: data?.mime ?? null,
-        size: data?.size ?? null,
-      } satisfies LessonAttachment
-    })
-    .filter((attachment): attachment is LessonAttachment => attachment !== null)
-}
-
-function normalisePrompts(input: any): LessonPrompt[] {
-  const items = toArray<any>(input)
-  return items
-    .map((item, index) => {
-      const data = item?.attributes ?? item
-      if (!data) {
-        return null
-      }
-
-      return {
-        id: item?.id ?? data?.id ?? `prompt-${index}`,
-        title: data?.title ?? data?.heading ?? null,
-        description: data?.description ?? data?.body ?? data?.content ?? null,
-      } satisfies LessonPrompt
-    })
-    .filter((prompt): prompt is LessonPrompt => prompt !== null)
-}
-
-function normaliseKnowledgeCards(input: any): LessonKnowledgeCard[] {
-  const items = toArray<any>(input)
-  return items
-    .map((item) => {
-      const data = item?.attributes ?? item
-      if (!data) {
-        return null
-      }
-
-      const image = normaliseMediaList(data?.image ?? item?.image ?? data?.cover ?? data?.media)[0] ?? null
-
-      return {
-        id: item?.id ?? data?.id ?? data?.slug ?? data?.title ?? Math.random().toString(36).slice(2),
-        title: data?.title ?? 'Knowledge Card',
-        summary: data?.summary ?? null,
-        description: data?.description ?? null,
-        slug: data?.slug ?? null,
-        url: data?.url ?? data?.link ?? null,
-        image,
-      } satisfies LessonKnowledgeCard
-    })
-    .filter((card): card is LessonKnowledgeCard => card !== null)
-}
-
-function normaliseResources(input: any): LessonResource[] {
-  const items = toArray<any>(input)
-  return items
-    .map((item, index) => {
-      const data = item?.attributes ?? item
-      const url = data?.url ?? data?.link ?? null
-      if (!url) {
-        return null
-      }
-
-      const resolvedUrl = resolveUrl(url)
-      const qrSource = data?.qrCodeUrl ?? data?.qr_code_url ?? data?.qrCode?.url ?? data?.qr_code?.url ?? null
-      const qrCodeUrl = qrSource ? resolveUrl(qrSource) : buildQrCodeUrl(resolvedUrl)
-
-      return {
-        id: item?.id ?? data?.id ?? `resource-${index}`,
-        title: data?.title ?? 'Resource',
-        description: data?.description ?? data?.summary ?? null,
-        url: resolvedUrl,
-        type: data?.type ?? data?.category ?? null,
-        qrCodeUrl,
-      } satisfies LessonResource
-    })
-    .filter((resource): resource is LessonResource => resource !== null)
-}
-
-function normaliseLoop(input: any): LessonLoop | null {
-  if (!input) {
-    return null
-  }
-
-  const data = Array.isArray(input?.data) ? input.data[0]?.attributes : input?.data?.attributes ?? input?.attributes ?? input
-  if (!data) {
-    return null
-  }
-
-  return {
-    id: input?.id ?? data?.id ?? null,
-    title: data?.title ?? data?.name ?? null,
-    summary: data?.summary ?? null,
-    description: data?.description ?? null,
-    order: data?.order ?? data?.position ?? null,
-    slug: data?.slug ?? null,
-    icon: normaliseMediaList(data?.icon)[0] ?? null,
-  }
-}
-
 function resolveUrl(url?: string | null) {
   if (!url) {
     return ''
@@ -975,14 +689,6 @@ function escapeHtml(value: string) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;')
-}
-
-function buildQrCodeUrl(url: string | null) {
-  if (!url) {
-    return null
-  }
-  const encoded = encodeURIComponent(url)
-  return `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encoded}`
 }
 </script>
 
