@@ -330,17 +330,29 @@ import type {
   StrapiCollectionResponse,
   StrapiMedia,
 } from '~/types/lesson'
-
-type LessonProgressState = {
-  viewed: boolean
-  completed: boolean
-  updatedAt: string
-}
+import type { CourseNavigationSection } from '~/types/navigation'
+import { useCourseNavigationStore } from '~/stores/courseNavigation'
+import { useCourseProgressStore } from '~/stores/courseProgress'
 
 const orderedLevels: DifficultyLevel[] = ['base', 'advance', 'stretch']
 
+const difficultyLabels: Record<DifficultyLevel, string> = {
+  base: 'Base',
+  advance: 'Advance',
+  stretch: 'Stretch',
+}
+
 const route = useRoute()
+const router = useRouter()
 const config = useRuntimeConfig()
+const navigationStore = useCourseNavigationStore()
+const progressStore = useCourseProgressStore()
+
+definePageMeta({
+  layout: 'course',
+})
+
+await navigationStore.ensureInitialized()
 
 const rawCode = computed(() => String(route.params.code ?? ''))
 const normalizedCode = computed(() => rawCode.value.toUpperCase())
@@ -351,18 +363,12 @@ const assetBase = computed(() => {
 })
 
 const difficultyKey = computed(() => `lesson:${normalizedCode.value}:difficulty`)
-const progressKey = computed(() => `lesson:${normalizedCode.value}:progress`)
 
 const difficulty = useLocalStorage<DifficultyLevel>(difficultyKey, 'base')
-const progress = useLocalStorage<LessonProgressState>(
-  progressKey,
-  {
-    viewed: false,
-    completed: false,
-    updatedAt: '',
-  },
-  { deep: true }
-)
+
+watchEffect(() => {
+  progressStore.registerLessons(navigationStore.lessonCodes.value)
+})
 
 const printMode = ref<'current' | 'all'>('current')
 const renderAllBlocks = ref(false)
@@ -387,6 +393,20 @@ const lesson = computed<Lesson | null>(() => {
 const availableLevels = computed(() =>
   orderedLevels.filter((level) => (lesson.value?.difficultyBlocks[level] ?? null) !== null)
 )
+
+const difficultySections = computed<CourseNavigationSection[]>(() => {
+  if (!lesson.value) {
+    return []
+  }
+
+  return availableLevels.value.map((level, index) => ({
+    id: `${lesson.value?.code ?? 'lesson'}-difficulty-${level}`,
+    title: `${difficultyLabels[level]} Level`,
+    slug: `difficulty-${level}`,
+    order: index,
+    level: index,
+  }))
+})
 
 const visibleDifficultyBlocks = computed(() => {
   if (!lesson.value) {
@@ -413,11 +433,17 @@ const knowledgeCards = computed(() => lesson.value?.knowledgeCards ?? [])
 const resources = computed(() => lesson.value?.resources ?? [])
 const loop = computed(() => lesson.value?.loop ?? null)
 
-const difficultyLabels: Record<DifficultyLevel, string> = {
-  base: 'Base',
-  advance: 'Advance',
-  stretch: 'Stretch',
-}
+const progress = computed(() => {
+  const record = progressStore.getRecord(normalizedCode.value)
+  return (
+    record ?? {
+      code: normalizedCode.value,
+      completed: false,
+      viewed: false,
+      updatedAt: null,
+    }
+  )
+})
 
 const progressLabel = computed(() => {
   if (progress.value.completed) {
@@ -458,26 +484,63 @@ watch(
 
 watch(
   () => normalizedCode.value,
-  () => {
+  (code) => {
+    navigationStore.setActiveLesson(code)
     printMode.value = 'current'
     renderAllBlocks.value = false
-  }
+  },
+  { immediate: true }
 )
 
 watchEffect(() => {
-  if (!process.client) {
-    return
-  }
-
   if (!lesson.value) {
     return
   }
 
-  if (!progress.value.viewed) {
-    progress.value.viewed = true
-    progress.value.updatedAt = new Date().toISOString()
-  }
+  progressStore.markViewed(lesson.value.code)
 })
+
+watch(
+  () => [lesson.value?.code, difficultySections.value] as const,
+  ([code, sections]) => {
+    if (!code) {
+      return
+    }
+
+    navigationStore.setLessonSections(code, sections)
+  },
+  { immediate: true, deep: true }
+)
+
+watch(
+  () => route.hash,
+  (hash) => {
+    navigationStore.setActiveSectionBySlug(hash)
+  },
+  { immediate: true }
+)
+
+watch(
+  () => difficulty.value,
+  (level) => {
+    const active = navigationStore.activeLesson.value
+    if (!active) {
+      navigationStore.setActiveSection(null)
+      return
+    }
+
+    const target = active.sections.find((section) => section.slug === `difficulty-${level}`)
+    navigationStore.setActiveSection(target ?? null)
+
+    if (process.client && target) {
+      const nextHash = `#${target.slug}`
+      if (route.hash !== nextHash) {
+        router.replace({ hash: nextHash }).catch(() => {})
+      }
+    }
+  },
+  { immediate: true }
+)
 
 const blockContentHtml = (block: LessonDifficultyBlock) => {
   return block.body ?? renderRichTextToHtml(block.richBody)
@@ -496,8 +559,11 @@ const badgeClassByLevel = (level: DifficultyLevel) => {
 const isVideo = (media: StrapiMedia) => Boolean(media.mime && media.mime.startsWith('video'))
 
 const toggleCompletion = () => {
-  progress.value.completed = !progress.value.completed
-  progress.value.updatedAt = new Date().toISOString()
+  if (!lesson.value) {
+    return
+  }
+
+  progressStore.toggleCompletion(lesson.value.code)
 }
 
 const handlePrint = async (mode: 'current' | 'all') => {
@@ -550,7 +616,7 @@ useHead(() => {
   }
 })
 
-function formatTimestamp(value: string) {
+function formatTimestamp(value: string | null | undefined) {
   if (!value) {
     return ''
   }
