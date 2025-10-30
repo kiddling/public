@@ -1,0 +1,56 @@
+{
+  "kind": "collectionType",
+  "collectionName": "student_works",
+  "info": {
+    "singularName": "student-work",
+    "pluralName": "student-works",
+    "displayName": "Student Work"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "studentName": {
+      "type": "string",
+      "required": true
+    },
+    "discipline": {
+      "type": "enumeration",
+      "enum": [
+        "环艺",
+        "产品",
+        "视传",
+        "数媒",
+        "公艺"
+      ]
+    },
+    "grade": {
+      "type": "string"
+    },
+    "loop": {
+      "type": "enumeration",
+      "enum": [
+        "Loop 1",
+        "Loop 2",
+        "Loop 3"
+      ]
+    },
+    "description": {
+      "type": "richtext"
+    },
+    "assets": {
+      "type": "media",
+      "multiple": true
+    },
+    "beforeAfterMedia": {
+      "type": "media",
+      "multiple": true
+    },
+    "relatedLesson": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::lesson.lesson",
+      "inversedBy": "student_works"
+    }
+  }
+}
