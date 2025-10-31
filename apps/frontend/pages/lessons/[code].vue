@@ -231,6 +231,7 @@
           </article>
 
           <aside class="space-y-8">
+            <ProgressTracker class="no-print" :current-lesson-code="lesson.code" />
             <section v-if="knowledgeCards.length" class="rounded-2xl bg-white/95 p-6 shadow-sm ring-1 ring-gray-100 dark:bg-gray-900 dark:ring-gray-800">
               <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Knowledge Cards</h2>
               <div class="mt-4 grid gap-4 sm:grid-cols-2">
@@ -319,8 +320,9 @@ definePageMeta({
   breadcrumbHomeLabel: 'Home',
 })
 
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch, watchEffect } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useLocalStorage } from '@vueuse/core'
+import ProgressTracker from '~/components/navigation/ProgressTracker.vue'
 import type {
   DifficultyLevel,
   Lesson,
@@ -334,12 +336,7 @@ import type {
   StrapiCollectionResponse,
   StrapiMedia,
 } from '~/types/lesson'
-
-type LessonProgressState = {
-  viewed: boolean
-  completed: boolean
-  updatedAt: string
-}
+import { useProgressStore } from '~/stores/progress'
 
 const orderedLevels: DifficultyLevel[] = ['base', 'advance', 'stretch']
 
@@ -355,18 +352,16 @@ const assetBase = computed(() => {
 })
 
 const difficultyKey = computed(() => `lesson:${normalizedCode.value}:difficulty`)
-const progressKey = computed(() => `lesson:${normalizedCode.value}:progress`)
 
 const difficulty = useLocalStorage<DifficultyLevel>(difficultyKey, 'base')
-const progress = useLocalStorage<LessonProgressState>(
-  progressKey,
-  {
-    viewed: false,
-    completed: false,
-    updatedAt: '',
-  },
-  { deep: true }
-)
+const progressStore = useProgressStore()
+const progress = computed(() => {
+  const entry = progressStore.getLessonProgress(normalizedCode.value)
+  return {
+    ...entry,
+    updatedAt: entry.completedAt ?? entry.viewedAt,
+  }
+})
 
 const printMode = ref<'current' | 'all'>('current')
 const renderAllBlocks = ref(false)
@@ -468,20 +463,16 @@ watch(
   }
 )
 
-watchEffect(() => {
-  if (!process.client) {
-    return
-  }
-
-  if (!lesson.value) {
-    return
-  }
-
-  if (!progress.value.viewed) {
-    progress.value.viewed = true
-    progress.value.updatedAt = new Date().toISOString()
-  }
-})
+watch(
+  () => lesson.value?.code,
+  (code) => {
+    if (!code) {
+      return
+    }
+    progressStore.markLessonViewed(code)
+  },
+  { immediate: true },
+)
 
 const blockContentHtml = (block: LessonDifficultyBlock) => {
   return block.body ?? renderRichTextToHtml(block.richBody)
@@ -500,8 +491,10 @@ const badgeClassByLevel = (level: DifficultyLevel) => {
 const isVideo = (media: StrapiMedia) => Boolean(media.mime && media.mime.startsWith('video'))
 
 const toggleCompletion = () => {
-  progress.value.completed = !progress.value.completed
-  progress.value.updatedAt = new Date().toISOString()
+  if (!normalizedCode.value) {
+    return
+  }
+  progressStore.toggleLessonCompletion(normalizedCode.value)
 }
 
 const handlePrint = async (mode: 'current' | 'all') => {

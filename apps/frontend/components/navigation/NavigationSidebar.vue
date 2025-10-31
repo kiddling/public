@@ -16,12 +16,16 @@
     </header>
 
     <div class="flex-1 overflow-y-auto pr-2">
-      <NavigationMenu @navigate="handleNavigate" />
+      <div class="space-y-5 pb-6">
+        <ProgressTracker variant="compact" />
+        <NavigationMenu @navigate="handleNavigate" />
+      </div>
     </div>
   </nav>
 </template>
 
 <script setup lang="ts">
+import ProgressTracker from './ProgressTracker.vue'
 import NavigationMenu from './NavigationMenu.vue'
 
 const emit = defineEmits<{

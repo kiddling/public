@@ -25,7 +25,10 @@
 
             <div class="flex flex-1 items-center justify-between gap-3">
               <NavigationBreadcrumb />
-              <slot name="layout-actions" />
+              <div class="flex items-center gap-2">
+                <QuickLessonSearch @navigate="handleQuickSearchNavigate" />
+                <slot name="layout-actions" />
+              </div>
             </div>
           </div>
         </header>
@@ -44,6 +47,7 @@ import { useSwipe } from '@vueuse/core'
 import NavigationBreadcrumb from '~/components/navigation/NavigationBreadcrumb.vue'
 import NavigationDrawer from '~/components/navigation/NavigationDrawer.vue'
 import NavigationSidebar from '~/components/navigation/NavigationSidebar.vue'
+import QuickLessonSearch from '~/components/navigation/QuickLessonSearch.vue'
 import { useNavigationStore } from '~/stores/navigation'
 import '~/types/route-meta'
 
@@ -122,6 +126,13 @@ const handleDrawerNavigate = () => {
 
 const handleSidebarNavigate = () => {
   drawerOpen.value = false
+}
+
+const handleQuickSearchNavigate = (code: string) => {
+  if (!code) {
+    return
+  }
+  navigationStore.setCurrentLesson(code)
 }
 
 if (import.meta.client) {
