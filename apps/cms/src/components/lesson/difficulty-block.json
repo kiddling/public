@@ -3,7 +3,7 @@
   "info": {
     "displayName": "Difficulty Block",
     "icon": "layer",
-    "description": ""
+    "description": "Content block for a specific difficulty level"
   },
   "options": {},
   "attributes": {
@@ -18,7 +18,37 @@
     },
     "content": {
       "type": "richtext",
-      "required": true
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "summary": {
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "media": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": ["images", "videos"]
+    },
+    "attachments": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": ["files"]
+    },
+    "prompts": {
+      "type": "component",
+      "repeatable": true,
+      "component": "lesson.prompt"
     }
   }
 }

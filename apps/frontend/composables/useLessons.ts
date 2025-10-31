@@ -4,10 +4,13 @@
  * Supports filtering, sorting, pagination, and full population of relations.
  */
 
+import { computed } from 'vue'
 import type { QueryParams } from '~/types/cms'
 import type { UseCmsDataOptions } from './useCmsData'
 import { useCmsData } from './useCmsData'
 import { buildStrapiQuery } from '~/utils/data-layer'
+import { normalizeLesson } from '~/utils/lesson-normalizer'
+import type { Lesson, StrapiCollectionItem } from '~/types/lesson'
 
 const LESSONS_ENDPOINT = '/api/cms/lessons'
 
@@ -20,13 +23,38 @@ export interface UseLessonsOptions extends UseCmsDataOptions {
 }
 
 /**
- * Fetch a single lesson by code
+ * Fetch a single lesson by code with normalization
  */
 export function useLesson(code: string, options: UseCmsDataOptions = {}) {
+  const config = useRuntimeConfig()
   const endpoint = `${LESSONS_ENDPOINT}/${code}`
   const key = options.key ?? `lesson-${code}`
 
-  return useCmsData(endpoint, {}, { ...options, key })
+  const assetBase = computed(() => {
+    const base = config.public.cdnUrl || config.public.strapiUrl || ''
+    return base.endsWith('/') ? base.slice(0, -1) : base
+  })
+
+  const { data: rawData, pending, error, refresh } = useCmsData<{ data: StrapiCollectionItem<Record<string, any>>, meta?: any }>(
+    endpoint, 
+    {}, 
+    { ...options, key }
+  )
+
+  const lesson = computed<Lesson | null>(() => {
+    if (!rawData.value?.data) {
+      return null
+    }
+    return normalizeLesson(rawData.value.data, code, assetBase.value)
+  })
+
+  return {
+    data: rawData,
+    lesson,
+    pending,
+    error,
+    refresh,
+  }
 }
 
 /**

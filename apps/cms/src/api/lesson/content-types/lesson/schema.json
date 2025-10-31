@@ -32,6 +32,12 @@
     "loop_reference": {
       "type": "string"
     },
+    "loop": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::loop.loop",
+      "inversedBy": "lessons"
+    },
     "summary": {
       "type": "text",
       "pluginOptions": {
