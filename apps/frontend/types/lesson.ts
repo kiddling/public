@@ -1,16 +1,14 @@
-export type DifficultyLevel = 'base' | 'advance' | 'stretch'
+import type {
+  StrapiMedia,
+  StrapiSingleType,
+  StrapiCollectionItem,
+  StrapiCollectionResponse,
+} from '~/types/cms'
 
-export interface StrapiMedia {
-  id?: number | string
-  url: string
-  mime?: string
-  alternativeText?: string | null
-  caption?: string | null
-  width?: number | null
-  height?: number | null
-  size?: number | null
-  name?: string | null
-}
+// Re-export common Strapi types for backward compatibility
+export type { StrapiMedia, StrapiSingleType, StrapiCollectionItem, StrapiCollectionResponse }
+
+export type DifficultyLevel = 'base' | 'advance' | 'stretch'
 
 export interface LessonAttachment {
   id: number | string
@@ -76,19 +74,4 @@ export interface Lesson {
   difficultyBlocks: Record<DifficultyLevel, LessonDifficultyBlock | null>
   knowledgeCards: LessonKnowledgeCard[]
   resources: LessonResource[]
-}
-
-export interface StrapiSingleType<T> {
-  data: T | null
-  meta?: Record<string, unknown>
-}
-
-export interface StrapiCollectionItem<T> {
-  id: number
-  attributes: T
-}
-
-export interface StrapiCollectionResponse<T> {
-  data: Array<StrapiCollectionItem<T>>
-  meta?: Record<string, unknown>
 }
