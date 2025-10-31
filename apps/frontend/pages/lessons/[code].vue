@@ -315,6 +315,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  breadcrumbHomeLabel: 'Home',
+})
+
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch, watchEffect } from 'vue'
 import { useLocalStorage } from '@vueuse/core'
 import type {

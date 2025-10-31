@@ -42,6 +42,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  breadcrumbHomeLabel: 'Home',
+})
+
 const exampleStore = useExampleStore()
 const colorMode = useColorMode()
 

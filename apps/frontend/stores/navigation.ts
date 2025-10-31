@@ -46,8 +46,27 @@ export const useNavigationStore = defineStore('navigation', () => {
   const hasStructure = computed(() => courseStructure.value !== null)
   const lessonCount = computed(() => courseStructure.value?.lessons.length ?? 0)
 
+  function normalizeLessonCode(code: string): string {
+    return code.trim().toUpperCase()
+  }
+
+  function resolveLesson(code: string | null | undefined): NavigationLesson | undefined {
+    if (!code) {
+      return undefined
+    }
+
+    const map = lookupMaps.value.byCode
+    const direct = map[code]
+    if (direct) {
+      return direct
+    }
+
+    const normalized = normalizeLessonCode(code)
+    return map[normalized]
+  }
+
   function getLessonByCode(code: string): NavigationLesson | undefined {
-    return lookupMaps.value.byCode[code]
+    return resolveLesson(code)
   }
 
   function getLessonsByPart(part: NavigationPartType): NavigationLesson[] {
@@ -55,17 +74,17 @@ export const useNavigationStore = defineStore('navigation', () => {
   }
 
   function getLessonNeighbors(code: string): NavigationNeighbors {
-    const lesson = lookupMaps.value.byCode[code]
+    const lesson = resolveLesson(code)
 
     if (!lesson) {
       return { previous: null, next: null }
     }
 
     const previous = lesson.navigation.previousCode
-      ? lookupMaps.value.byCode[lesson.navigation.previousCode] ?? null
+      ? resolveLesson(lesson.navigation.previousCode) ?? null
       : null
     const next = lesson.navigation.nextCode
-      ? lookupMaps.value.byCode[lesson.navigation.nextCode] ?? null
+      ? resolveLesson(lesson.navigation.nextCode) ?? null
       : null
 
     return { previous, next }
@@ -85,8 +104,8 @@ export const useNavigationStore = defineStore('navigation', () => {
       lookupMaps.value = cloneLookupMaps(maps)
 
       if (currentLesson.value) {
-        const refreshed = lookupMaps.value.byCode[currentLesson.value.code] ?? null
-        currentLesson.value = refreshed
+        const refreshed = resolveLesson(currentLesson.value.code) ?? null
+        currentLesson.value = refreshed ?? null
         activePart.value = refreshed?.part ?? null
       }
 
@@ -98,10 +117,21 @@ export const useNavigationStore = defineStore('navigation', () => {
     }
   }
 
-  function setCurrentLesson(code: string): NavigationLesson | null {
-    const lesson = lookupMaps.value.byCode[code]
+  function clearCurrentLesson(): void {
+    currentLesson.value = null
+    activePart.value = null
+  }
+
+  function setCurrentLesson(code: string | null | undefined): NavigationLesson | null {
+    if (!code || !code.trim()) {
+      clearCurrentLesson()
+      return null
+    }
+
+    const lesson = resolveLesson(code)
 
     if (!lesson) {
+      clearCurrentLesson()
       return null
     }
 
@@ -131,6 +161,7 @@ export const useNavigationStore = defineStore('navigation', () => {
     getLessonsByPart,
     getLessonNeighbors,
     loadStructure,
+    clearCurrentLesson,
     setCurrentLesson,
     navigateToLesson,
   }

@@ -40,6 +40,16 @@ describe('useNavigationStore', () => {
     expect(store.activePart).toBe('core-blocks')
   })
 
+  it('normalizes lesson codes when setting the current lesson', async () => {
+    const store = useNavigationStore()
+    await store.loadStructure({ data: mockNavigationResponse })
+
+    const lesson = store.setCurrentLesson('pa-01')
+
+    expect(lesson?.code).toBe('PA-01')
+    expect(store.currentLesson?.code).toBe('PA-01')
+  })
+
   it('navigateToLesson fetches structure when needed', async () => {
     const store = useNavigationStore()
 
@@ -66,11 +76,29 @@ describe('useNavigationStore', () => {
     const store = useNavigationStore()
     await store.loadStructure({ data: mockNavigationResponse })
 
+    store.setCurrentLesson('P-00')
+    expect(store.currentLesson).not.toBeNull()
+
     expect(store.setCurrentLesson('UNKNOWN')).toBeNull()
+    expect(store.currentLesson).toBeNull()
+    expect(store.activePart).toBeNull()
 
     const neighbors = store.getLessonNeighbors('UNKNOWN')
     expect(neighbors.previous).toBeNull()
     expect(neighbors.next).toBeNull()
+  })
+
+  it('clears current lesson state when requested', async () => {
+    const store = useNavigationStore()
+    await store.loadStructure({ data: mockNavigationResponse })
+
+    store.setCurrentLesson('PA-01')
+    expect(store.currentLesson).not.toBeNull()
+
+    store.clearCurrentLesson()
+
+    expect(store.currentLesson).toBeNull()
+    expect(store.activePart).toBeNull()
   })
 
   it('avoids refetching structure when already loaded unless forced', async () => {
