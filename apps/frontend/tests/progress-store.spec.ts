@@ -68,4 +68,66 @@ describe('useProgressStore', () => {
     // ensure navigation store reference updated correctly
     expect(restoredProgress.totalLessons).toBe(navigationStore.lessonCount)
   })
+
+  it('toggles lesson completion between complete and incomplete', async () => {
+    await prepareNavigationStore()
+    const progressStore = useProgressStore()
+
+    expect(progressStore.isLessonComplete('P-00')).toBe(false)
+
+    progressStore.toggleLessonCompletion('P-00')
+    await nextTick()
+    expect(progressStore.isLessonComplete('P-00')).toBe(true)
+
+    progressStore.toggleLessonCompletion('P-00')
+    await nextTick()
+    expect(progressStore.isLessonComplete('P-00')).toBe(false)
+  })
+
+  it('marks lesson as viewed when marking as complete', async () => {
+    await prepareNavigationStore()
+    const progressStore = useProgressStore()
+
+    progressStore.markLessonComplete('P-01')
+    await nextTick()
+
+    const progress = progressStore.getLessonProgress('P-01')
+    expect(progress.viewed).toBe(true)
+    expect(progress.completed).toBe(true)
+    expect(progress.viewedAt).toBeTruthy()
+    expect(progress.completedAt).toBeTruthy()
+  })
+
+  it('allows marking incomplete without losing viewed status', async () => {
+    await prepareNavigationStore()
+    const progressStore = useProgressStore()
+
+    progressStore.markLessonViewed('P-02')
+    await nextTick()
+    progressStore.markLessonComplete('P-02')
+    await nextTick()
+
+    const viewedAt = progressStore.getLessonProgress('P-02').viewedAt
+
+    progressStore.markLessonIncomplete('P-02')
+    await nextTick()
+
+    const progress = progressStore.getLessonProgress('P-02')
+    expect(progress.viewed).toBe(true)
+    expect(progress.completed).toBe(false)
+    expect(progress.viewedAt).toBe(viewedAt)
+    expect(progress.completedAt).toBeNull()
+  })
+
+  it('tracks recent lessons in order', async () => {
+    await prepareNavigationStore()
+    const progressStore = useProgressStore()
+
+    progressStore.markLessonViewed('P-00')
+    progressStore.markLessonViewed('P-01')
+    progressStore.markLessonViewed('P-02')
+    await nextTick()
+
+    expect(progressStore.recentLessonCodes).toEqual(['P-02', 'P-01', 'P-00'])
+  })
 })

@@ -49,22 +49,22 @@ const options: Option[] = [
     value: 'base',
     label: 'Base',
     shortLabel: 'B',
-    subtitle: 'Core lesson',
-    description: 'Essential activities focused on the core learning loop.',
+    subtitle: '核心课程 Core lesson',
+    description: '专注于核心学习环节的基本活动。Essential activities focused on the core learning loop.',
   },
   {
     value: 'advance',
     label: 'Advance',
     shortLabel: 'A',
-    subtitle: 'Dig deeper',
-    description: 'Extended tasks that add challenge and depth to the lesson.',
+    subtitle: '深入学习 Dig deeper',
+    description: '增加挑战和深度的扩展任务。Extended tasks that add challenge and depth to the lesson.',
   },
   {
     value: 'stretch',
     label: 'Stretch',
     shortLabel: 'S',
-    subtitle: 'Push further',
-    description: 'Optional explorations designed for enrichment and mastery.',
+    subtitle: '拓展探索 Push further',
+    description: '为丰富和精通而设计的可选探索。Optional explorations designed for enrichment and mastery.',
   },
 ]
 
