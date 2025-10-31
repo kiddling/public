@@ -13,6 +13,7 @@ const STUDENT_WORKS_ENDPOINT = '/api/cms/student-works'
 
 export interface UseStudentWorksOptions extends UseCmsDataOptions {
   studentName?: string
+  projectTitle?: string
   discipline?: StudentWorkDiscipline
   loop?: StudentWorkLoop
   grade?: string
@@ -20,6 +21,68 @@ export interface UseStudentWorksOptions extends UseCmsDataOptions {
   filters?: QueryParams['filters']
   sort?: string | string[]
   pagination?: QueryParams['pagination']
+}
+
+export interface StudentWorksFilterParams {
+  discipline?: StudentWorkDiscipline
+  loop?: StudentWorkLoop
+  grade?: string
+  search?: string
+}
+
+/**
+ * Build filter payload from filter parameters
+ */
+export function buildFilterPayload(params: StudentWorksFilterParams): QueryParams['filters'] {
+  const filters: QueryParams['filters'] = {}
+
+  if (params.discipline) {
+    filters.discipline = { $eq: params.discipline }
+  }
+
+  if (params.loop) {
+    filters.loop = { $eq: params.loop }
+  }
+
+  if (params.grade) {
+    filters.grade = { $eq: params.grade }
+  }
+
+  if (params.search) {
+    filters.$or = [
+      { studentName: { $containsi: params.search } },
+      { projectTitle: { $containsi: params.search } },
+      { description: { $containsi: params.search } },
+    ]
+  }
+
+  return filters
+}
+
+/**
+ * Convert URL query params to filter params
+ */
+export function parseFilterParams(query: Record<string, any>): StudentWorksFilterParams {
+  return {
+    discipline: query.discipline as StudentWorkDiscipline | undefined,
+    loop: query.loop as StudentWorkLoop | undefined,
+    grade: query.grade as string | undefined,
+    search: query.search as string | undefined,
+  }
+}
+
+/**
+ * Convert filter params to URL query params
+ */
+export function buildQueryParams(filters: StudentWorksFilterParams): Record<string, string> {
+  const params: Record<string, string> = {}
+
+  if (filters.discipline) params.discipline = filters.discipline
+  if (filters.loop) params.loop = filters.loop
+  if (filters.grade) params.grade = filters.grade
+  if (filters.search) params.search = filters.search
+
+  return params
 }
 
 /**
@@ -38,12 +101,13 @@ export function useStudentWork(id: string | number, options: UseCmsDataOptions =
 export function useStudentWorks(options: UseStudentWorksOptions = {}) {
   const {
     studentName,
+    projectTitle,
     discipline,
     loop,
     grade,
     populate = true,
     filters,
-    sort = ['createdAt:desc'],
+    sort = ['displayOrder:asc', 'createdAt:desc'],
     pagination,
     ...restOptions
   } = options
@@ -61,6 +125,14 @@ export function useStudentWorks(options: UseStudentWorksOptions = {}) {
     queryParams.filters = {
       ...queryParams.filters,
       studentName: { $containsi: studentName },
+    }
+  }
+
+  // Filter by project title if provided
+  if (projectTitle) {
+    queryParams.filters = {
+      ...queryParams.filters,
+      projectTitle: { $containsi: projectTitle },
     }
   }
 
@@ -101,7 +173,13 @@ export function useStudentWorks(options: UseStudentWorksOptions = {}) {
   // Add population
   if (populate) {
     if (populate === true) {
-      queryParams.populate = ['assets', 'beforeAfterMedia', 'relatedLesson']
+      queryParams.populate = {
+        assets: '*',
+        beforeAfterMedia: {
+          populate: ['beforeMedia', 'afterMedia']
+        },
+        relatedLesson: '*'
+      }
     } else if (Array.isArray(populate)) {
       queryParams.populate = populate
     }
