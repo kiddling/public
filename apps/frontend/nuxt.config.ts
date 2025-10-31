@@ -14,6 +14,7 @@ export default defineNuxtConfig({
     '@nuxt/content',
     '@nuxtjs/color-mode',
     '@nuxt/eslint',
+    '@nuxt/icon',
   ],
 
   // SSR configuration for China hosting
@@ -28,6 +29,7 @@ export default defineNuxtConfig({
     public: {
       apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:1337',
       strapiUrl: process.env.NUXT_PUBLIC_STRAPI_URL || 'http://localhost:1337',
+      cmsUrl: process.env.NUXT_PUBLIC_STRAPI_URL || 'http://localhost:1337',
       cdnUrl: process.env.NUXT_PUBLIC_CDN_URL || '',
     },
   },
@@ -47,7 +49,6 @@ export default defineNuxtConfig({
 
   // Content module configuration
   content: {
-    documentDriven: false,
     highlight: {
       theme: {
         default: 'github-light',

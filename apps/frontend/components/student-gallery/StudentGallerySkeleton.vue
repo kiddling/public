@@ -1,0 +1,60 @@
+<template>
+  <div>
+    <!-- Filters Skeleton -->
+    <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 space-y-4 mb-8 animate-pulse">
+      <div class="h-12 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+        <div class="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+        <div class="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+      </div>
+    </div>
+
+    <!-- Gallery Grid Skeleton -->
+    <div class="masonry-grid">
+      <div
+        v-for="i in 12"
+        :key="i"
+        class="animate-pulse"
+      >
+        <div class="bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
+          <div
+            class="w-full bg-gray-300 dark:bg-gray-600"
+            :style="{ height: `${getRandomHeight()}px` }"
+          ></div>
+          <div class="p-4 space-y-2">
+            <div class="h-5 bg-gray-300 dark:bg-gray-600 rounded w-3/4"></div>
+            <div class="h-4 bg-gray-300 dark:bg-gray-600 rounded w-1/2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+function getRandomHeight(): number {
+  const heights = [200, 250, 300, 350, 400]
+  return heights[Math.floor(Math.random() * heights.length)]
+}
+</script>
+
+<style scoped>
+.masonry-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .masonry-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .masonry-grid {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  }
+}
+</style>
