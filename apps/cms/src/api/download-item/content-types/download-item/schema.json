@@ -1,0 +1,84 @@
+{
+  "kind": "collectionType",
+  "collectionName": "download_items",
+  "info": {
+    "singularName": "download-item",
+    "pluralName": "download-items",
+    "displayName": "Download Item",
+    "description": "Downloadable files with integrity checks and metadata"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "category": {
+      "type": "enumeration",
+      "enum": ["Template", "Worksheet", "Case", "Other"],
+      "default": "Other",
+      "required": true
+    },
+    "description": {
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "file": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": ["images", "files", "videos", "audios"]
+    },
+    "version": {
+      "type": "string"
+    },
+    "tag": {
+      "type": "string"
+    },
+    "checksum": {
+      "type": "string",
+      "private": false
+    },
+    "fileSize": {
+      "type": "biginteger",
+      "private": false
+    },
+    "mimeType": {
+      "type": "string",
+      "private": false
+    },
+    "relatedLessons": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::lesson.lesson",
+      "inversedBy": "downloadItems"
+    },
+    "relatedResources": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::resource.resource",
+      "inversedBy": "downloadItems"
+    }
+  }
+}

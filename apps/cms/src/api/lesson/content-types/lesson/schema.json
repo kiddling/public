@@ -86,6 +86,12 @@
       "allowedTypes": [
         "files"
       ]
+    },
+    "downloadItems": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::download-item.download-item",
+      "mappedBy": "relatedLessons"
     }
   }
 }

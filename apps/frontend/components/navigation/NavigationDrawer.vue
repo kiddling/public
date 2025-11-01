@@ -31,6 +31,16 @@
           </header>
 
           <div class="flex-1 overflow-y-auto px-4 pb-6 pt-4">
+            <div class="mb-4 rounded-lg border border-gray-200 bg-gray-50/50 p-3 dark:border-gray-700 dark:bg-gray-800/50">
+              <NuxtLink
+                to="/downloads"
+                class="flex items-center gap-2 text-sm font-medium text-gray-700 transition hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400"
+                @click="close"
+              >
+                <Icon name="i-heroicons-arrow-down-tray" class="h-4 w-4" />
+                <span>Download Center</span>
+              </NuxtLink>
+            </div>
             <NavigationMenu @navigate="handleNavigate" />
           </div>
         </section>

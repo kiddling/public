@@ -65,6 +65,12 @@
       "relation": "manyToMany",
       "target": "api::lesson.lesson",
       "mappedBy": "resources"
+    },
+    "downloadItems": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::download-item.download-item",
+      "mappedBy": "relatedResources"
     }
   }
 }
