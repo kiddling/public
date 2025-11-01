@@ -48,6 +48,11 @@
                 知识卡片 (Knowledge Cards)
               </NuxtLink>
             </li>
+            <li>
+              <NuxtLink to="/design-logs" class="text-primary-500 hover:text-primary-600 dark:text-primary-400 dark:hover:text-primary-300">
+                教学设计日志 (Design Logs)
+              </NuxtLink>
+            </li>
           </ul>
         </div>
       </div>
