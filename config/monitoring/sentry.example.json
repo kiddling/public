@@ -1,0 +1,62 @@
+{
+  "_comment": "Sentry Configuration Template - Copy and customize for your deployment",
+  "frontend": {
+    "dsn": "https://examplePublicKey@o0.ingest.sentry.io/0",
+    "environment": "production",
+    "release": "frontend@1.0.0",
+    "tracesSampleRate": 1.0,
+    "replaysSessionSampleRate": 0.1,
+    "replaysOnErrorSampleRate": 1.0,
+    "integrations": [
+      "BrowserTracing",
+      "Replay"
+    ],
+    "ignoreErrors": [
+      "ResizeObserver loop limit exceeded",
+      "Non-Error promise rejection captured",
+      "Network Error",
+      "NetworkError"
+    ],
+    "denyUrls": [
+      "/localhost/",
+      "/127.0.0.1/",
+      "/\\d+\\.\\d+\\.\\d+\\.\\d+/"
+    ]
+  },
+  "cms": {
+    "dsn": "https://examplePublicKey@o0.ingest.sentry.io/0",
+    "environment": "production",
+    "release": "cms@1.0.0",
+    "tracesSampleRate": 0.5,
+    "attachStacktrace": true,
+    "normalizeDepth": 6,
+    "maxBreadcrumbs": 50,
+    "beforeSend": {
+      "_comment": "Add custom logic to filter sensitive data",
+      "enabled": true
+    },
+    "integrations": [
+      "Http",
+      "OnUncaughtException",
+      "OnUnhandledRejection"
+    ]
+  },
+  "alerts": {
+    "performance": {
+      "enabled": true,
+      "thresholds": {
+        "responseTime": 3000,
+        "errorRate": 0.05
+      }
+    },
+    "errors": {
+      "enabled": true,
+      "minimumOccurrences": 10,
+      "timeWindow": 3600
+    },
+    "notifications": {
+      "email": "team@yourdomain.com",
+      "slack": "https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK"
+    }
+  }
+}

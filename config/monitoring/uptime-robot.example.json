@@ -1,0 +1,112 @@
+{
+  "_comment": "Uptime Robot Configuration Template - Import via API or use as reference",
+  "monitors": [
+    {
+      "friendly_name": "Frontend - Home Page",
+      "url": "https://your-domain.com",
+      "type": 1,
+      "interval": 300,
+      "timeout": 30,
+      "http_method": 1,
+      "http_username": "",
+      "http_password": "",
+      "alert_contacts": "email@example.com",
+      "ignore_ssl_errors": false,
+      "expected_status_codes": [
+        200,
+        301,
+        302
+      ],
+      "keyword_type": 2,
+      "keyword_value": "",
+      "custom_http_headers": {
+        "User-Agent": "UptimeRobot/2.0"
+      }
+    },
+    {
+      "friendly_name": "Frontend - Health Check",
+      "url": "https://your-domain.com/api/health",
+      "type": 1,
+      "interval": 300,
+      "timeout": 30,
+      "http_method": 1,
+      "expected_status_codes": [
+        200
+      ],
+      "keyword_type": 2,
+      "keyword_value": "\"status\":\"ok\""
+    },
+    {
+      "friendly_name": "CMS - Health Check",
+      "url": "https://api.your-domain.com/_health",
+      "type": 1,
+      "interval": 300,
+      "timeout": 30,
+      "http_method": 1,
+      "expected_status_codes": [
+        200
+      ],
+      "keyword_type": 2,
+      "keyword_value": "\"status\":\"ok\""
+    },
+    {
+      "friendly_name": "CMS - Admin Panel",
+      "url": "https://api.your-domain.com/admin",
+      "type": 1,
+      "interval": 600,
+      "timeout": 30,
+      "http_method": 1,
+      "expected_status_codes": [
+        200,
+        301,
+        302
+      ]
+    },
+    {
+      "friendly_name": "Database - Connection",
+      "url": "https://api.your-domain.com/api/health",
+      "type": 1,
+      "interval": 300,
+      "timeout": 30,
+      "http_method": 1,
+      "expected_status_codes": [
+        200
+      ],
+      "keyword_type": 2,
+      "keyword_value": "\"database\":\"connected\""
+    }
+  ],
+  "alert_contacts": [
+    {
+      "friendly_name": "Team Email",
+      "type": 2,
+      "value": "team@yourdomain.com"
+    },
+    {
+      "friendly_name": "Slack Notifications",
+      "type": 11,
+      "value": "https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK"
+    },
+    {
+      "friendly_name": "On-Call Phone",
+      "type": 1,
+      "value": "+1234567890"
+    }
+  ],
+  "notification_settings": {
+    "notify_when": "down_up",
+    "notify_after_retries": 2,
+    "notify_cooldown_minutes": 60
+  },
+  "status_page": {
+    "enabled": true,
+    "custom_domain": "status.your-domain.com",
+    "logo_url": "https://your-domain.com/logo.png",
+    "custom_css": "",
+    "monitors_to_show": [
+      "Frontend - Home Page",
+      "CMS - Admin Panel",
+      "Database - Connection"
+    ]
+  }
+}

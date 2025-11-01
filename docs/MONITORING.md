@@ -62,13 +62,23 @@ Web Vitals 已集成到 `apps/frontend/plugins/web-vitals.client.ts`。
 - 最佳实践得分 ≥ 90%
 - SEO 得分 ≥ 90%
 
+#### 审计页面
+
+Lighthouse CI 现在审计以下关键页面（桌面和移动端）：
+
+- 首页 (`/`)
+- 课程详情页 (`/lessons/1`)
+- 资源中心 (`/resources`)
+- 学生仪表盘 (`/students`)
+- 设计日志 (`/design-log`)
+
 #### 运行 Lighthouse
 
 ```bash
 # 构建应用
 pnpm build:frontend
 
-# 运行 Lighthouse CI
+# 运行 Lighthouse CI（桌面和移动端）
 npm install -g @lhci/cli
 lhci autorun
 
@@ -82,6 +92,40 @@ GitHub Actions 自动运行 Lighthouse CI:
 - 每次 PR 自动检查
 - 性能回归检测
 - 生成详细报告
+- 桌面和移动端性能评估
+
+#### 解读 Lighthouse 预算
+
+Lighthouse CI 设置了以下性能预算：
+
+**桌面端目标**:
+- First Contentful Paint (FCP): < 2000ms
+- Largest Contentful Paint (LCP): < 2500ms
+- Cumulative Layout Shift (CLS): < 0.1
+- Total Blocking Time (TBT): < 300ms
+- Speed Index: < 3000ms
+- Time to Interactive (TTI): < 3500ms
+
+**移动端调整**:
+- 移动端使用 4G 网络模拟（RTT: 150ms, 吞吐量: 1.6Mbps）
+- CPU 减速 4x 倍
+- 较宽松的性能预算（+30%）
+
+**查看 CI 报告**:
+1. 在 GitHub Actions 中找到 "Lighthouse CI" 作业
+2. 下载 "lighthouse-results" 构件
+3. 解压并在浏览器中打开 HTML 报告
+4. 检查性能回归和优化建议
+
+#### WebPageTest 集成
+
+对于中国地区性能测试，参见 [WebPageTest 文档](./performance/WEBPAGETEST.md)。
+
+WebPageTest 提供：
+- 真实中国节点测试
+- 跨境网络延迟评估
+- CDN 性能验证
+- 详细瀑布图分析
 
 ### 3. 健康检查端点
 
@@ -441,6 +485,17 @@ pnpm add --filter frontend @sentry/nuxt
 pnpm add --filter cms @sentry/node
 ```
 
+#### 配置模板
+
+参考配置模板: `config/monitoring/sentry.example.json`
+
+该模板包含：
+- Frontend 和 CMS DSN 配置
+- 环境和发布版本设置
+- 采样率配置
+- 错误过滤规则
+- 告警阈值设置
+
 #### Frontend 配置
 
 ```typescript
@@ -448,10 +503,34 @@ pnpm add --filter cms @sentry/node
 import * as Sentry from '@sentry/nuxt';
 
 export default defineNuxtPlugin(() => {
+  const config = useRuntimeConfig();
+  
   Sentry.init({
-    dsn: process.env.NUXT_PUBLIC_SENTRY_DSN,
-    environment: process.env.NODE_ENV,
+    dsn: config.public.sentryDsn,
+    environment: config.public.environment || 'production',
+    release: `frontend@${config.public.version || '1.0.0'}`,
+    
+    // Performance Monitoring
     tracesSampleRate: 1.0,
+    
+    // Session Replay
+    replaysSessionSampleRate: 0.1,
+    replaysOnErrorSampleRate: 1.0,
+    
+    // Filter errors
+    ignoreErrors: [
+      'ResizeObserver loop limit exceeded',
+      'Non-Error promise rejection captured',
+      'Network Error',
+    ],
+    
+    integrations: [
+      new Sentry.BrowserTracing(),
+      new Sentry.Replay({
+        maskAllText: true,
+        blockAllMedia: true,
+      }),
+    ],
   });
 });
 ```
@@ -462,13 +541,218 @@ export default defineNuxtPlugin(() => {
 // apps/cms/config/plugins.js
 module.exports = {
   sentry: {
-    enabled: true,
+    enabled: process.env.NODE_ENV === 'production',
     config: {
       dsn: process.env.SENTRY_DSN,
       environment: process.env.NODE_ENV,
+      release: `cms@${process.env.npm_package_version || '1.0.0'}`,
+      tracesSampleRate: 0.5,
+      
+      // Enhanced error context
+      attachStacktrace: true,
+      normalizeDepth: 6,
+      maxBreadcrumbs: 50,
+      
+      // Filter sensitive data
+      beforeSend(event, hint) {
+        // Remove sensitive headers
+        if (event.request) {
+          delete event.request.headers?.authorization;
+          delete event.request.headers?.cookie;
+        }
+        return event;
+      },
     },
   },
 };
+```
+
+#### 启用步骤
+
+1. **获取 Sentry DSN**:
+   - 在 [sentry.io](https://sentry.io) 创建项目
+   - 复制 DSN（Data Source Name）
+
+2. **设置环境变量**:
+   ```bash
+   # Frontend
+   NUXT_PUBLIC_SENTRY_DSN=https://examplePublicKey@o0.ingest.sentry.io/0
+   
+   # CMS
+   SENTRY_DSN=https://examplePublicKey@o0.ingest.sentry.io/0
+   ```
+
+3. **配置告警规则**:
+   - 访问 Sentry 项目设置
+   - 配置告警条件（错误率、性能阈值）
+   - 设置通知渠道（邮件、Slack）
+
+4. **验证集成**:
+   ```bash
+   # 手动触发测试错误
+   curl https://your-domain.com/api/test-error
+   
+   # 检查 Sentry 控制台是否收到错误
+   ```
+
+### Uptime 监控
+
+#### Uptime Robot 配置
+
+参考配置模板: `config/monitoring/uptime-robot.example.json`
+
+该模板包含：
+- 前端和 API 健康检查
+- 数据库连接监控
+- 告警联系人配置
+- 状态页面设置
+
+#### 监控端点
+
+应配置以下端点进行监控：
+
+1. **Frontend 健康检查**: `https://your-domain.com/api/health`
+2. **CMS 健康检查**: `https://api.your-domain.com/_health`
+3. **CMS 管理面板**: `https://api.your-domain.com/admin`
+4. **数据库连接**: 通过健康检查端点验证
+
+#### 启用步骤
+
+1. **注册 Uptime Robot**:
+   - 访问 [uptimerobot.com](https://uptimerobot.com)
+   - 创建免费账号（最多 50 个监控器）
+
+2. **添加监控**:
+   - 使用配置模板中的设置
+   - 设置检查间隔（推荐 5 分钟）
+   - 配置告警阈值（连续失败 2 次）
+
+3. **设置告警**:
+   - 添加邮件联系人
+   - 集成 Slack webhook
+   - 配置短信通知（可选）
+
+4. **创建状态页**:
+   - 创建公开状态页面
+   - 自定义域名: `status.your-domain.com`
+   - 选择要显示的监控器
+
+### APM (Application Performance Monitoring)
+
+#### 选项 1: Sentry Performance
+
+已包含在 Sentry 集成中：
+- 自动事务追踪
+- 慢查询检测
+- API 端点性能
+- 前端性能监控
+
+配置采样率:
+```javascript
+tracesSampleRate: 1.0  // 生产环境建议 0.1-0.3
+```
+
+#### 选项 2: New Relic
+
+```bash
+# 安装
+pnpm add newrelic
+
+# 配置 newrelic.js
+cp node_modules/newrelic/newrelic.js .
+```
+
+#### 选项 3: Datadog
+
+```bash
+# 安装 Datadog Agent
+DD_API_KEY=<YOUR_KEY> bash -c "$(curl -L https://s3.amazonaws.com/dd-agent/scripts/install_script.sh)"
+```
+
+### 日志聚合 (Log Aggregation)
+
+#### Fluent Bit 配置
+
+参考配置: `config/monitoring/fluent-bit.conf`
+
+Fluent Bit 收集以下日志：
+- Docker 容器日志
+- Frontend (Nuxt) 应用日志
+- CMS (Strapi) 应用日志
+- Nginx 访问和错误日志
+
+#### 在 Docker Compose 中启用
+
+添加到 `docker-compose.yml`:
+
+```yaml
+fluent-bit:
+  image: fluent/fluent-bit:latest
+  container_name: fluent-bit
+  volumes:
+    - ./config/monitoring/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
+    - /var/log:/var/log:ro
+    - /var/lib/docker/containers:/var/lib/docker/containers:ro
+  ports:
+    - "2020:2020"  # HTTP monitoring
+    - "24224:24224"  # Forward protocol
+  networks:
+    - app-network
+  depends_on:
+    - frontend
+    - cms
+```
+
+#### 日志输出选项
+
+Fluent Bit 可以将日志转发到：
+
+1. **Elasticsearch + Kibana** (推荐):
+   ```bash
+   # 在 fluent-bit.conf 中取消注释 Elasticsearch 输出
+   # 启动 ELK 栈
+   docker-compose -f docker-compose.monitoring.yml up -d
+   ```
+
+2. **Grafana Loki**:
+   - 轻量级日志聚合
+   - 与 Grafana 完美集成
+   - 低资源消耗
+
+3. **CloudWatch Logs** (AWS):
+   - 适合 AWS 部署
+   - 与其他 AWS 服务集成
+
+4. **本地文件**:
+   - 临时开发使用
+   - 位置: `/var/log/fluentbit/`
+
+#### 查看聚合日志
+
+使用 Kibana:
+```
+http://localhost:5601
+```
+
+使用 Grafana Loki:
+```
+http://localhost:3001
+```
+
+#### 日志查询示例
+
+```
+# 查询错误日志
+level: error
+
+# 查询特定服务
+service: frontend
+
+# 查询特定时间范围
+@timestamp: [now-1h TO now]
+
+# 组合查询
+level: error AND service: cms AND @timestamp: [now-24h TO now]
 ```
 
 ## 🛠️ 运维工具

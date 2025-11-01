@@ -38,6 +38,10 @@
     "upgrade": "pnpm --filter cms exec npx @strapi/upgrade latest",
     "upgrade:dry": "pnpm --filter cms exec npx @strapi/upgrade latest --dry",
     "lighthouse": "lhci autorun",
+    "check:env": "tsx scripts/check-env.ts",
+    "predeploy": "pnpm lint && pnpm typecheck && pnpm test:unit && pnpm check:env && pnpm lighthouse",
+    "backup": "bash scripts/backup/strapi-backup.sh",
+    "backup:restore": "bash scripts/backup/restore.sh",
     "docker:build": "docker-compose build",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
@@ -76,6 +80,7 @@
     "histoire": "^0.17.17",
     "prettier": "^3.4.2",
     "prettier-plugin-tailwindcss": "^0.6.9",
+    "tsx": "^4.20.6",
     "typescript": "^5.6.3",
     "vitest": "^2.1.1",
     "vue-tsc": "^3.1.2"

@@ -363,11 +363,26 @@ pnpm test:unit
 
 ## 📚 Documentation
 
+### Core Documentation
 - [Frontend Documentation](./apps/frontend/README.md)
 - [CMS Documentation](./apps/cms/README.md)
+- [Quick Start Guide](./QUICK_START.md)
 - [Design System Documentation](./docs/DESIGN_SYSTEM.md)
 - [Component Documentation](http://localhost:3000/components) - Available when running dev server
 - [Histoire Documentation](./apps/frontend/README.md#component-documentation) - Interactive component documentation
+
+### Deployment & Production
+- **[Production Readiness Checklist](./docs/PRODUCTION_READINESS_CHECKLIST.md)** - 生产环境就绪检查清单
+- [Deployment Guide](./docs/DEPLOYMENT.md) - 部署指南
+- [Docker Guide](./docs/DOCKER.md) - Docker 容器化
+
+### Monitoring & Performance
+- [Monitoring Guide](./docs/MONITORING.md) - 监控和运维指南
+- [WebPageTest Guide](./docs/performance/WEBPAGETEST.md) - 中国节点性能测试
+- [Optimization Summary](./docs/OPTIMIZATION_SUMMARY.md) - 性能优化总结
+
+### Feature Documentation
+- [Design Log System](./docs/DESIGN_LOG_SYSTEM.md) - 设计日志系统
 
 ### 组件文档 (Component Documentation)
 
