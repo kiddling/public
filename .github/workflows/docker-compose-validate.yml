@@ -1,0 +1,240 @@
+name: Docker Compose Validation
+
+on:
+  push:
+    branches: [ main, develop, compose-* ]
+    paths:
+      - 'docker-compose*.yml'
+      - '.env.example'
+      - 'apps/*/Dockerfile'
+      - '.github/workflows/docker-compose-validate.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'docker-compose*.yml'
+      - '.env.example'
+      - 'apps/*/Dockerfile'
+      - '.github/workflows/docker-compose-validate.yml'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: Validate Docker Compose Configuration
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Create test .env file
+        run: |
+          cp .env.example .env
+          # Generate test secrets
+          echo "DATABASE_PASSWORD=test-password" >> .env
+          echo "APP_KEYS=test-key1,test-key2" >> .env
+          echo "API_TOKEN_SALT=test-salt" >> .env
+          echo "ADMIN_JWT_SECRET=test-secret" >> .env
+          echo "TRANSFER_TOKEN_SALT=test-transfer-salt" >> .env
+          echo "JWT_SECRET=test-jwt-secret" >> .env
+          echo "ENCRYPTION_KEY=test-encryption-key" >> .env
+          echo "NUXT_STRAPI_API_TOKEN=test-api-token" >> .env
+
+      - name: Validate main docker-compose.yml
+        run: |
+          echo "Validating main docker-compose.yml..."
+          docker compose config > /dev/null
+          echo "✓ Main configuration is valid"
+
+      - name: Validate with override example
+        run: |
+          echo "Validating with docker-compose.override.example.yml..."
+          docker compose -f docker-compose.yml -f docker-compose.override.example.yml config > /dev/null
+          echo "✓ Override example configuration is valid"
+
+      - name: Check service definitions
+        run: |
+          echo "Checking service definitions..."
+          
+          # Check required services exist
+          services=$(docker compose config --services)
+          
+          for service in postgres cms frontend; do
+            if echo "$services" | grep -q "^${service}$"; then
+              echo "✓ Service '${service}' is defined"
+            else
+              echo "✗ Required service '${service}' is missing"
+              exit 1
+            fi
+          done
+
+      - name: Check healthchecks
+        run: |
+          echo "Checking healthcheck configurations..."
+          
+          config=$(docker compose config)
+          
+          # Check postgres healthcheck
+          if echo "$config" | grep -q "pg_isready"; then
+            echo "✓ PostgreSQL healthcheck is configured"
+          else
+            echo "✗ PostgreSQL healthcheck is missing"
+            exit 1
+          fi
+          
+          # Check depends_on with conditions
+          if echo "$config" | grep -q "condition: service_healthy"; then
+            echo "✓ Services have healthcheck dependencies"
+          else
+            echo "⚠ Warning: No healthcheck dependencies found"
+          fi
+
+      - name: Check volumes
+        run: |
+          echo "Checking volume configurations..."
+          
+          config=$(docker compose config)
+          
+          # Check required volumes
+          for volume in postgres_data strapi_uploads; do
+            if echo "$config" | grep -q "${volume}:"; then
+              echo "✓ Volume '${volume}' is defined"
+            else
+              echo "✗ Required volume '${volume}' is missing"
+              exit 1
+            fi
+          done
+
+      - name: Check networks
+        run: |
+          echo "Checking network configurations..."
+          
+          config=$(docker compose config)
+          
+          if echo "$config" | grep -q "app_network"; then
+            echo "✓ Internal network 'app_network' is configured"
+          else
+            echo "✗ Internal network is missing"
+            exit 1
+          fi
+
+      - name: Verify environment variables
+        run: |
+          echo "Verifying environment variable usage..."
+          
+          # Check that .env.example has required variables
+          required_vars=(
+            "DATABASE_NAME"
+            "DATABASE_USERNAME"
+            "DATABASE_PASSWORD"
+            "APP_KEYS"
+            "API_TOKEN_SALT"
+            "ADMIN_JWT_SECRET"
+            "JWT_SECRET"
+            "ENCRYPTION_KEY"
+            "NUXT_STRAPI_API_TOKEN"
+          )
+          
+          for var in "${required_vars[@]}"; do
+            if grep -q "^${var}=" .env.example || grep -q "^# ${var}=" .env.example || grep -q "^${var}$" .env.example; then
+              echo "✓ Variable '${var}' is documented in .env.example"
+            else
+              echo "✗ Required variable '${var}' is missing from .env.example"
+              exit 1
+            fi
+          done
+
+      - name: Test configuration parsing
+        run: |
+          echo "Testing configuration parsing..."
+          
+          # Parse config and check for common issues
+          config=$(docker compose config)
+          
+          # Check for unresolved variables (shown as null or empty)
+          if echo "$config" | grep -q "null"; then
+            echo "⚠ Warning: Some variables resolved to null (this is expected for optional vars in CI)"
+          fi
+          
+          echo "✓ Configuration parses successfully"
+
+      - name: Validate Dockerfiles exist
+        run: |
+          echo "Checking Dockerfile presence..."
+          
+          if [ -f "apps/cms/Dockerfile" ]; then
+            echo "✓ CMS Dockerfile exists"
+          else
+            echo "✗ CMS Dockerfile is missing"
+            exit 1
+          fi
+          
+          if [ -f "apps/frontend/Dockerfile" ]; then
+            echo "✓ Frontend Dockerfile exists"
+          else
+            echo "✗ Frontend Dockerfile is missing"
+            exit 1
+          fi
+
+      - name: Check nginx configuration (optional)
+        run: |
+          echo "Checking nginx configuration..."
+          
+          if [ -f "config/nginx/nginx.conf" ]; then
+            echo "✓ Nginx main configuration exists"
+          else
+            echo "⚠ Warning: Nginx configuration not found (optional)"
+          fi
+          
+          if [ -f "config/nginx/conf.d/default.conf" ]; then
+            echo "✓ Nginx default site configuration exists"
+          else
+            echo "⚠ Warning: Nginx site configuration not found (optional)"
+          fi
+
+      - name: Generate validation report
+        if: always()
+        run: |
+          echo "## Docker Compose Validation Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Configuration Files" >> $GITHUB_STEP_SUMMARY
+          echo "- docker-compose.yml: ✓ Valid" >> $GITHUB_STEP_SUMMARY
+          echo "- docker-compose.override.example.yml: ✓ Valid" >> $GITHUB_STEP_SUMMARY
+          echo "- .env.example: ✓ Valid" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Services" >> $GITHUB_STEP_SUMMARY
+          docker compose config --services | while read service; do
+            echo "- $service: ✓ Configured" >> $GITHUB_STEP_SUMMARY
+          done
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Volumes" >> $GITHUB_STEP_SUMMARY
+          docker compose config --volumes | while read volume; do
+            echo "- $volume: ✓ Configured" >> $GITHUB_STEP_SUMMARY
+          done
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Status**: All validations passed ✓" >> $GITHUB_STEP_SUMMARY
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: validate
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'config'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'

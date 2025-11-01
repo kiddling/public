@@ -348,6 +348,52 @@ cd apps/frontend
 npm run story:dev
 ```
 
+## 🐳 Docker Compose Deployment
+
+Deploy the entire stack (Frontend + CMS + Database) with Docker Compose:
+
+```bash
+# Copy and configure environment variables
+cp .env.example .env
+# Edit .env with your configuration
+
+# Start all services
+docker compose up -d
+
+# Check status
+docker compose ps
+
+# View logs
+docker compose logs -f
+```
+
+**Services:**
+- Frontend (Nuxt): http://localhost:3000
+- CMS (Strapi): http://localhost:1337
+- Database (PostgreSQL): localhost:5432
+
+**Detailed Documentation:**
+- [Docker Compose Deployment Guide](./docs/deployment/docker-compose.md) - Complete guide for development, staging, and production
+- [China Deployment Guide](./docs/deployment/docker-compose.md#china-deployment) - Registry mirrors and optimizations for China
+
+**Quick Commands:**
+```bash
+# Stop all services
+docker compose down
+
+# View logs for a specific service
+docker compose logs -f frontend
+
+# Rebuild after code changes
+docker compose up -d --build
+
+# Enable optional nginx reverse proxy
+docker compose --profile nginx up -d
+
+# Enable optional cms-worker for cron jobs
+docker compose --profile worker up -d
+```
+
 ## 🌐 Deployment Considerations for China
 
 ### Frontend (Nuxt 3)
@@ -361,6 +407,20 @@ npm run story:dev
 - Database can be configured for Chinese cloud providers
 - Docker images can be pulled from domestic registries
 - See `apps/cms/README.md` for Docker registry configuration
+
+### Docker Registry Mirrors (China)
+```bash
+# Configure Docker daemon for faster pulls in China
+sudo nano /etc/docker/daemon.json
+```
+```json
+{
+  "registry-mirrors": [
+    "https://registry.docker-cn.com",
+    "https://docker.mirrors.ustc.edu.cn"
+  ]
+}
+```
 
 ## ⚙️ Strapi Deployment
 
