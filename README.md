@@ -376,6 +376,44 @@ If ports 3000 or 1337 are in use:
 - 使用 Tailwind 工具类优先
 - 遵循 Vue 3 和 Nuxt 3 最佳实践
 
+## 📥 Download Center
+
+The Download Center provides a centralized location for managing downloadable resources:
+
+### Features
+
+- **Category-based Organization**: Templates, Worksheets, Cases, and more
+- **Search & Filter**: Find downloads by title, category, or related lessons
+- **Integrity Checks**: SHA-256 checksum validation for all downloads
+- **Download History**: Track your downloads with validation status
+- **Batch Downloads**: Select multiple files and download as ZIP
+- **Offline Guidance**: Files cached in browser for offline access
+
+### Managing Downloads in Strapi
+
+1. Navigate to **Content Manager** → **Download Items**
+2. Click **Create new entry**
+3. Fill in the required fields:
+   - Title and description
+   - Category (Template, Worksheet, Case, Other)
+   - Upload file (checksum auto-generated)
+   - Optional: version, tag, related lessons/resources
+4. Publish the entry
+
+The system automatically:
+- Calculates SHA-256 checksum on file upload
+- Stores file metadata (size, MIME type)
+- Updates checksums when files are replaced
+
+### Using the Download Center
+
+Visit `/downloads` to:
+- Browse all available downloads
+- Filter by category or search by keyword
+- Download individual files with checksum verification
+- Select multiple files for batch download (ZIP)
+- View your download history
+
 ## 📚 Learn more about Strapi
 
 - [Resource center](https://strapi.io/resource-center) - Strapi resource center.
