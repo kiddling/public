@@ -109,6 +109,180 @@ Results are cached for 60 seconds. To clear cache:
 POST /api/global-search/clear-cache
 ```
 
+### Design Log Templates API
+
+The Design Log Templates API provides structured templates for student design documentation across courses P-04 through P-06. Templates are automatically seeded on first application startup.
+
+#### Endpoints
+
+**Get All Templates:**
+```
+GET /api/design-log-templates
+GET /api/design-log-templates?courseCode=P-04
+```
+
+**Query Parameters:**
+- `courseCode` (optional): Filter templates by course code (e.g., P-04, P-05, P-06)
+
+**Get Single Template:**
+```
+GET /api/design-log-templates/:slugOrId
+```
+
+**Response Structure:**
+Each template includes:
+- `slug`: Unique identifier (e.g., "p-04-design-log")
+- `title`: Display name
+- `description`: Template purpose and overview
+- `courseCode`: Associated course (P-04, P-05, or P-06)
+- `sections`: Array of form sections with fields
+- `defaultTimelineMilestones`: Suggested project timeline
+- `exampleDecisions`: Sample design decisions with rationale
+- `helpTips`: Rich text guidance and best practices
+- `order`: Sort order for display
+- `version`: Template version for tracking changes
+
+#### Managing Templates
+
+**Via Strapi Admin Panel:**
+
+1. Navigate to `http://localhost:1337/admin`
+2. Go to Content Manager → Design Log Templates
+3. Create, edit, or delete templates
+4. Use the "Publish" button to make templates public
+
+**Template Structure:**
+
+Each template contains these key components:
+
+**Sections** (JSON field):
+```json
+[
+  {
+    "id": "section-id",
+    "title": "Section Title",
+    "description": "What this section is for",
+    "fields": [
+      {
+        "name": "field-name",
+        "label": "Display Label",
+        "type": "text|richtext|list|number",
+        "placeholder": "Helpful placeholder text"
+      }
+    ]
+  }
+]
+```
+
+**Timeline Milestones** (JSON field):
+```json
+[
+  {
+    "id": "milestone-id",
+    "title": "Milestone Title",
+    "description": "What to accomplish",
+    "estimatedDuration": "2 days"
+  }
+]
+```
+
+**Example Decisions** (JSON field):
+```json
+[
+  {
+    "title": "Decision Title",
+    "description": "What was decided",
+    "rationale": "Why this decision was made",
+    "outcome": "What resulted from the decision"
+  }
+]
+```
+
+#### Seeding New Templates
+
+Templates are automatically seeded on application startup via the bootstrap hook. To add new templates:
+
+1. Edit `src/api/design-log-template/seed.ts`
+2. Add your template to the `templates` array
+3. Restart the application - new templates will be seeded automatically
+4. Existing templates are preserved (identified by slug)
+
+**Example: Adding a P-07 Template**
+
+```typescript
+{
+  slug: 'p-07-design-log',
+  title: 'P-07 Design Log Template',
+  description: 'Template description',
+  courseCode: 'P-07',
+  order: 4,
+  version: '1.0.0',
+  sections: [
+    // Your sections
+  ],
+  defaultTimelineMilestones: [
+    // Your milestones
+  ],
+  exampleDecisions: [
+    // Your examples
+  ],
+  helpTips: `
+    <h3>Getting Started</h3>
+    <p>Your guidance content here</p>
+  `,
+}
+```
+
+#### Content Editor Guidelines
+
+**Best Practices for Template Content:**
+
+1. **Sections**: Keep to 3-5 main sections per template
+2. **Field Types**:
+   - `text`: Short single-line input
+   - `richtext`: Formatted multi-line content
+   - `list`: Bullet-point lists
+   - `number`: Numeric values
+3. **Help Tips**: Use rich HTML formatting for readability
+4. **Timeline**: Be realistic - base estimates on actual student work time
+5. **Examples**: Use real, diverse examples that show decision-making process
+
+**Updating Existing Templates:**
+
+⚠️ **Important**: Changes to seeded templates in code won't automatically update existing entries. To update:
+
+**Option 1 - Via Admin Panel (Recommended):**
+- Manually edit templates in the Content Manager
+- Changes take effect immediately
+
+**Option 2 - Force Re-seed:**
+- Delete the template in admin panel
+- Restart the application
+- Template will be re-seeded with latest code
+
+**Localization:**
+
+Templates support i18n (internationalization):
+1. In admin panel, switch locale using the locale dropdown
+2. Edit content for each supported language
+3. API returns content in requested locale via `locale` parameter:
+   ```
+   GET /api/design-log-templates?locale=zh
+   ```
+
+#### Testing Templates
+
+Run template tests:
+```bash
+pnpm test src/api/design-log-template
+```
+
+Tests verify:
+- Template schema structure
+- Seed functionality
+- API service methods
+- Content validation
+
 ### Using Docker Compose
 
 Start with PostgreSQL database:
