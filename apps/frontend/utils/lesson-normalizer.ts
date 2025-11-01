@@ -14,8 +14,10 @@ import type {
   LessonResource,
   StrapiCollectionItem,
   StrapiMedia,
+  VideoEmbed,
 } from '~/types/lesson'
 import { useMarkdown } from '~/composables/useMarkdown'
+import type { VideoProvider } from '~/utils/video-providers'
 
 const orderedLevels: DifficultyLevel[] = ['base', 'advance', 'stretch']
 
@@ -53,6 +55,7 @@ export function normalizeLesson(
     const media = normalizeMediaList(blockAttributes?.media ?? blockAttributes?.images ?? blockAttributes?.videos, assetBase)
     const attachments = normalizeAttachments(blockAttributes?.attachments, assetBase)
     const prompts = normalizePrompts(blockAttributes?.prompts ?? blockAttributes?.questions ?? blockAttributes?.extendedPrompts)
+    const videoEmbeds = normalizeVideoEmbeds(blockAttributes?.videoEmbeds, assetBase)
 
     difficultyBlocks[level] = {
       level,
@@ -63,6 +66,7 @@ export function normalizeLesson(
       media,
       attachments,
       prompts,
+      videoEmbeds,
     }
   }
 
@@ -403,4 +407,42 @@ function escapeHtml(value: string): string {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;')
+}
+
+function normalizeVideoEmbeds(input: any, assetBase: string): VideoEmbed[] {
+  const items = toArray<any>(input)
+  return items
+    .map((item, index) => {
+      const data = item?.attributes ?? item
+      if (!data) {
+        return null
+      }
+
+      const provider = data?.provider as VideoProvider
+      const videoId = data?.videoId ?? data?.video_id ?? null
+
+      if (!provider || !videoId) {
+        return null
+      }
+
+      const coverImage = normalizeMediaList(data?.coverImage ?? data?.cover_image ?? data?.cover, assetBase)[0]
+
+      return {
+        id: item?.id ?? data?.id ?? `video-${index}`,
+        provider,
+        videoId,
+        videoUrl: data?.videoUrl ?? data?.video_url ?? data?.url ?? null,
+        title: data?.title ?? null,
+        description: data?.description ?? null,
+        coverImage: coverImage
+          ? {
+              url: coverImage.url,
+              alt: coverImage.alternativeText ?? null,
+            }
+          : null,
+        startTime: data?.startTime ?? data?.start_time ?? 0,
+        fallbackNotes: data?.fallbackNotes ?? data?.fallback_notes ?? null,
+      } satisfies VideoEmbed
+    })
+    .filter((embed): embed is VideoEmbed => embed !== null)
 }

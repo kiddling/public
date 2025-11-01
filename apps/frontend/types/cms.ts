@@ -2,6 +2,8 @@
  * Shared CMS types for Strapi content
  */
 
+import type { VideoEmbed } from '~/utils/video-providers'
+
 export interface StrapiMedia {
   id?: number | string
   url: string
@@ -137,6 +139,7 @@ export interface Resource {
   qrAsset?: StrapiMedia | null
   file?: StrapiMedia | null
   lessons?: any[]
+  videoEmbeds?: VideoEmbed[]
   createdAt?: string
   updatedAt?: string
   publishedAt?: string

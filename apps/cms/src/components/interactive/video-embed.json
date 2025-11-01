@@ -1,0 +1,68 @@
+{
+  "collectionName": "components_interactive_video_embeds",
+  "info": {
+    "displayName": "Video Embed",
+    "icon": "play-circle",
+    "description": "Embedded video from Bilibili, Tencent Video, or Youku with lazy loading and privacy controls"
+  },
+  "options": {},
+  "attributes": {
+    "provider": {
+      "type": "enumeration",
+      "enum": [
+        "bilibili",
+        "tencent",
+        "youku"
+      ],
+      "required": true,
+      "default": "bilibili"
+    },
+    "videoId": {
+      "type": "string",
+      "required": true,
+      "regex": "^[a-zA-Z0-9_-]+$"
+    },
+    "videoUrl": {
+      "type": "string",
+      "required": false
+    },
+    "title": {
+      "type": "string",
+      "required": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "description": {
+      "type": "text",
+      "required": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "coverImage": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "startTime": {
+      "type": "integer",
+      "min": 0,
+      "default": 0
+    },
+    "fallbackNotes": {
+      "type": "text",
+      "required": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    }
+  }
+}

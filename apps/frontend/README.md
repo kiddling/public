@@ -250,6 +250,129 @@ Change the port in `.env`:
 PORT=3001
 ```
 
+## 🎥 Video Embed Component
+
+The application includes a privacy-first video embed component supporting Chinese video platforms (Bilibili, Tencent Video, and Youku).
+
+### Supported Providers
+
+- **Bilibili** - China's leading video sharing platform
+- **Tencent Video** - Tencent's video streaming service
+- **Youku** - Alibaba's video platform
+
+### Features
+
+- **Privacy-First Loading**: Videos are not loaded until user explicitly clicks to play
+- **Lazy Loading**: Uses intersection observer to defer loading until visible
+- **Responsive Design**: Maintains 16:9 aspect ratio on all screen sizes
+- **Progress Tracking**: Automatically saves and resumes playback position (minimum 10 seconds)
+- **Offline Fallback**: Shows helpful error message with direct link when provider is unavailable
+- **Cover Images**: Optional custom thumbnail before activation
+- **Accessibility**: Proper ARIA labels and keyboard navigation support
+
+### Usage in Components
+
+```vue
+<template>
+  <MediaVideoEmbed
+    :embed="videoEmbed"
+    :privacy-mode="true"
+    :lazy-load="true"
+  />
+</template>
+
+<script setup lang="ts">
+import type { VideoEmbed } from '~/utils/video-providers'
+
+const videoEmbed: VideoEmbed = {
+  id: 'video-1',
+  provider: 'bilibili',
+  videoId: 'BV1GJ411x7h7',
+  title: 'Introduction to Design',
+  description: 'A comprehensive guide to design principles',
+  coverImage: {
+    url: '/images/cover.jpg',
+    alt: 'Video cover'
+  },
+  startTime: 0,
+  fallbackNotes: 'This video may not be available in your region'
+}
+</script>
+```
+
+### Video Provider Utilities
+
+The `utils/video-providers.ts` module provides helper functions:
+
+```typescript
+import {
+  parseVideoUrl,
+  generateEmbedUrl,
+  generateDirectUrl,
+  normalizeVideoId,
+  getProviderName
+} from '~/utils/video-providers'
+
+// Parse video URL to extract provider and ID
+const parsed = parseVideoUrl('https://www.bilibili.com/video/BV1GJ411x7h7')
+// { provider: 'bilibili', videoId: 'BV1GJ411x7h7', startTime: undefined }
+
+// Generate embed iframe URL
+const embedUrl = generateEmbedUrl('bilibili', 'BV1GJ411x7h7', 30)
+// https://player.bilibili.com/player.html?bvid=BV1GJ411x7h7&high_quality=1&autoplay=0&t=30
+
+// Generate direct link to video page
+const directUrl = generateDirectUrl('bilibili', 'BV1GJ411x7h7')
+// https://www.bilibili.com/video/BV1GJ411x7h7
+
+// Get friendly provider name
+const name = getProviderName('bilibili')
+// 'Bilibili'
+```
+
+### Progress Persistence
+
+Video playback progress is automatically saved to `localStorage` with the key format:
+```
+video-progress:{provider}:{videoId}
+```
+
+Progress is only saved if:
+- The video has been watched for at least 10 seconds
+- The user hasn't finished watching (to allow rewatching)
+
+### Integration with Strapi
+
+Video embeds are configured in Strapi as a shared component (`interactive.video-embed`) and can be added to:
+- **Lesson difficulty blocks**: Multiple videos per difficulty level
+- **Resources**: Embedded videos in resource detail modal
+
+The normalizers in `utils/lesson-normalizer.ts` and `utils/resource-normalizer.ts` automatically parse video embed data from Strapi.
+
+### Privacy Behavior
+
+By default, `privacyMode` is enabled, which means:
+1. No external requests are made until user action
+2. A placeholder with cover image (or default gradient) is shown
+3. User must click "Load video" button to activate iframe
+4. Once activated, the video provider's iframe is embedded and may set cookies
+
+This approach complies with privacy regulations and reduces bandwidth usage.
+
+### Testing
+
+Unit tests cover:
+- Video URL parsing for all providers
+- Embed URL generation with timestamps
+- Component privacy mode behavior
+- Progress persistence in localStorage
+- Fallback error handling
+
+Run tests:
+```bash
+pnpm test
+```
+
 ## 📚 Resources
 
 - [Nuxt 3 Documentation](https://nuxt.com)

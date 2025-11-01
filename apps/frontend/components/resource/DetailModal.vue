@@ -164,6 +164,19 @@ onUnmounted(() => {
               <div class="prose dark:prose-invert max-w-none" v-html="resource.description" />
             </div>
 
+            <div v-if="resource.videoEmbeds && resource.videoEmbeds.length" class="space-y-4">
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">视频资源</h3>
+              <div class="grid gap-6 md:grid-cols-1">
+                <MediaVideoEmbed
+                  v-for="videoEmbed in resource.videoEmbeds"
+                  :key="videoEmbed.id"
+                  :embed="videoEmbed"
+                  :privacy-mode="true"
+                  :lazy-load="false"
+                />
+              </div>
+            </div>
+
             <div>
               <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">链接</h3>
               <a

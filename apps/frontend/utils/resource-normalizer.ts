@@ -9,6 +9,7 @@ import type {
   StrapiResourceResponse,
   StrapiMedia,
 } from '~/types/cms'
+import type { VideoEmbed, VideoProvider } from '~/utils/video-providers'
 
 /**
  * Normalize Strapi media data
@@ -106,6 +107,7 @@ export function normalizeResource(
     qrAsset: normalizeMedia(attrs.qrAsset),
     file: normalizeMedia(attrs.file),
     lessons: attrs.lessons?.data || [],
+    videoEmbeds: normalizeVideoEmbeds(attrs as any),
     createdAt: attrs.createdAt,
     updatedAt: attrs.updatedAt,
     publishedAt: attrs.publishedAt,
@@ -271,4 +273,49 @@ export function calculateResourceStats(resources: Resource[]) {
     byMediaType: Object.fromEntries(byMediaType),
     byDiscipline: Object.fromEntries(byDiscipline),
   }
+}
+
+function normalizeVideoEmbeds(attrs: any): VideoEmbed[] {
+  const videoEmbeds = attrs?.videoEmbeds
+  if (!videoEmbeds) {
+    return []
+  }
+
+  const items = Array.isArray(videoEmbeds) ? videoEmbeds : [videoEmbeds]
+
+  return items
+    .map((item, index) => {
+      const data = item?.attributes ?? item
+      if (!data) {
+        return null
+      }
+
+      const provider = data?.provider as VideoProvider
+      const videoId = data?.videoId ?? data?.video_id ?? null
+
+      if (!provider || !videoId) {
+        return null
+      }
+
+      const coverImageData = data?.coverImage?.data?.attributes ?? data?.coverImage?.attributes ?? data?.coverImage
+      const coverImage = coverImageData?.url
+        ? {
+            url: coverImageData.url,
+            alt: coverImageData.alternativeText ?? null,
+          }
+        : null
+
+      return {
+        id: item?.id ?? data?.id ?? `video-${index}`,
+        provider,
+        videoId,
+        videoUrl: data?.videoUrl ?? data?.video_url ?? data?.url ?? null,
+        title: data?.title ?? null,
+        description: data?.description ?? null,
+        coverImage,
+        startTime: data?.startTime ?? data?.start_time ?? 0,
+        fallbackNotes: data?.fallbackNotes ?? data?.fallback_notes ?? null,
+      } satisfies VideoEmbed
+    })
+    .filter((embed): embed is VideoEmbed => embed !== null)
 }

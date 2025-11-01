@@ -69,6 +69,19 @@
       </ul>
     </div>
 
+    <div v-if="block.videoEmbeds && block.videoEmbeds.length" class="space-y-6">
+      <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100">视频资源 Video Resources</h3>
+      <div class="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
+        <MediaVideoEmbed
+          v-for="videoEmbed in block.videoEmbeds"
+          :key="videoEmbed.id"
+          :embed="videoEmbed"
+          :privacy-mode="true"
+          :lazy-load="true"
+        />
+      </div>
+    </div>
+
     <div v-if="block.prompts.length" class="rounded-xl border border-dashed border-primary-200 bg-primary-50 p-4 dark:border-primary-400/60 dark:bg-primary-500/10">
       <h3 class="text-sm font-semibold text-primary-700 dark:text-primary-200">
         拓展思考 Extended Thinking
