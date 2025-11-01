@@ -419,6 +419,277 @@ docker build --build-arg NPM_REGISTRY=https://registry.npmmirror.com .
 
 ## 🚀 Deployment
 
+### Docker Deployment (Recommended)
+
+The CMS is optimized for Docker deployment with a hardened, production-ready image.
+
+#### Quick Start
+
+Build the Docker image:
+
+```bash
+cd apps/cms
+docker build -t strapi-cms:latest .
+```
+
+Run the container:
+
+```bash
+docker run -d \
+  --name strapi-cms \
+  -p 1337:1337 \
+  -e DATABASE_CLIENT=sqlite \
+  -e APP_KEYS="your-key-1,your-key-2" \
+  -e API_TOKEN_SALT=your-salt \
+  -e ADMIN_JWT_SECRET=your-secret \
+  -e JWT_SECRET=your-jwt-secret \
+  -e TRANSFER_TOKEN_SALT=your-transfer-salt \
+  strapi-cms:latest
+```
+
+#### Image Features
+
+✅ **Multi-stage build** - Optimized image size (<450MB)  
+✅ **Alpine Linux** - Minimal attack surface  
+✅ **Non-root user** - Enhanced security (runs as `strapi` user with UID 1001)  
+✅ **Health check** - Built-in health monitoring at `/health`  
+✅ **China-optimized** - Timezone set to Asia/Shanghai, supports registry mirrors  
+✅ **Production-ready** - Includes proper signal handling and graceful shutdown
+
+#### Build Options
+
+**Use Chinese registry mirror for faster builds:**
+
+```bash
+docker build \
+  --build-arg NPM_REGISTRY=https://registry.npmmirror.com \
+  -t strapi-cms:latest .
+```
+
+**Multi-platform build:**
+
+```bash
+docker buildx build \
+  --platform linux/amd64,linux/arm64 \
+  -t strapi-cms:latest .
+```
+
+#### Environment Variables
+
+**Required variables:**
+
+- `APP_KEYS` - Comma-separated app keys (generate with `crypto.randomBytes(32).toString('base64')`)
+- `API_TOKEN_SALT` - Salt for API tokens
+- `ADMIN_JWT_SECRET` - JWT secret for admin authentication
+- `JWT_SECRET` - JWT secret for user authentication
+- `TRANSFER_TOKEN_SALT` - Salt for transfer tokens
+
+**Optional variables:**
+
+- `HOST` - Bind address (default: `0.0.0.0`)
+- `PORT` - Port number (default: `1337`)
+- `NODE_ENV` - Environment (default: `production`)
+- `NODE_OPTIONS` - Node.js options (default: `--max-old-space-size=2048`)
+- `TZ` - Timezone (default: `Asia/Shanghai`)
+- `DATABASE_CLIENT` - Database type (`sqlite`, `postgres`, `mysql`)
+- `DATABASE_HOST` - Database host (for postgres/mysql)
+- `DATABASE_PORT` - Database port
+- `DATABASE_NAME` - Database name
+- `DATABASE_USERNAME` - Database username
+- `DATABASE_PASSWORD` - Database password
+
+#### Database Configuration
+
+**SQLite (Development/Testing):**
+
+```bash
+docker run -d \
+  --name strapi-cms \
+  -p 1337:1337 \
+  -v $(pwd)/data:/app/.tmp \
+  -e DATABASE_CLIENT=sqlite \
+  -e APP_KEYS="..." \
+  strapi-cms:latest
+```
+
+**PostgreSQL (Production):**
+
+```bash
+docker run -d \
+  --name strapi-cms \
+  -p 1337:1337 \
+  -e DATABASE_CLIENT=postgres \
+  -e DATABASE_HOST=postgres \
+  -e DATABASE_PORT=5432 \
+  -e DATABASE_NAME=strapi \
+  -e DATABASE_USERNAME=strapi \
+  -e DATABASE_PASSWORD=secure-password \
+  -e APP_KEYS="..." \
+  strapi-cms:latest
+```
+
+#### Docker Compose
+
+See `docker-compose.yml` for a complete setup with PostgreSQL.
+
+```bash
+# Start all services
+docker-compose up -d
+
+# View logs
+docker-compose logs -f cms
+
+# Stop services
+docker-compose down
+
+# Rebuild after changes
+docker-compose up -d --build
+```
+
+#### Health Check
+
+The container includes a built-in health check that monitors Strapi's availability:
+
+```bash
+# Check container health status
+docker inspect --format='{{.State.Health.Status}}' strapi-cms
+
+# Test health endpoint directly
+curl http://localhost:1337/health
+```
+
+Expected response:
+```json
+{
+  "status": "ok",
+  "timestamp": "2024-01-01T00:00:00.000Z",
+  "uptime": 123.456,
+  "environment": "production"
+}
+```
+
+#### Registry Mirrors (China)
+
+For faster Docker image pulls in China, configure Docker daemon:
+
+**Edit `/etc/docker/daemon.json`:**
+
+```json
+{
+  "registry-mirrors": [
+    "https://docker.mirrors.ustc.edu.cn",
+    "https://registry.docker-cn.com",
+    "https://mirror.ccs.tencentyun.com"
+  ]
+}
+```
+
+**Restart Docker:**
+
+```bash
+sudo systemctl restart docker
+```
+
+**Alternative: Use Aliyun Container Registry**
+
+```bash
+# Login to Aliyun
+docker login --username=your-account registry.cn-hangzhou.aliyuncs.com
+
+# Tag and push your image
+docker tag strapi-cms:latest registry.cn-hangzhou.aliyuncs.com/your-namespace/strapi-cms:latest
+docker push registry.cn-hangzhou.aliyuncs.com/your-namespace/strapi-cms:latest
+```
+
+#### Production Deployment Best Practices
+
+1. **Use external database** - Don't use SQLite in production
+2. **Mount volumes** for persistent data:
+   ```bash
+   -v /path/to/uploads:/app/public/uploads
+   ```
+3. **Use secrets management** - Don't hardcode sensitive values
+4. **Enable SSL/TLS** - Use reverse proxy (nginx, Traefik, Caddy)
+5. **Set resource limits**:
+   ```bash
+   docker run --memory=2g --cpus=2 ...
+   ```
+6. **Monitor health** - Use orchestration health checks
+7. **Regular backups** - Backup database and uploads regularly
+
+#### Kubernetes Deployment
+
+Example deployment manifest:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: strapi-cms
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: strapi-cms
+  template:
+    metadata:
+      labels:
+        app: strapi-cms
+    spec:
+      containers:
+      - name: strapi
+        image: strapi-cms:latest
+        ports:
+        - containerPort: 1337
+        env:
+        - name: DATABASE_CLIENT
+          value: postgres
+        - name: DATABASE_HOST
+          value: postgres-service
+        envFrom:
+        - secretRef:
+            name: strapi-secrets
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 1337
+          initialDelaySeconds: 60
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 1337
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+```
+
+#### Troubleshooting
+
+**Container won't start:**
+- Check logs: `docker logs strapi-cms`
+- Verify environment variables are set correctly
+- Ensure database is accessible
+
+**Permission denied errors:**
+- Check volume permissions match UID 1001 (strapi user)
+- Fix with: `chown -R 1001:1001 /path/to/volume`
+
+**Health check failing:**
+- Increase `start-period` if Strapi takes longer to start
+- Check if `/health` endpoint is accessible inside container
+
+**Image size too large:**
+- Verify multi-stage build is working
+- Check for unnecessary files in final image
+- Expected size: ~400-450MB
+
 ### Manual Deployment
 
 1. Set `NODE_ENV=production` in `.env`
@@ -427,17 +698,10 @@ docker build --build-arg NPM_REGISTRY=https://registry.npmmirror.com .
 4. Build: `pnpm build`
 5. Start: `pnpm start`
 
-### Docker Deployment
-
-```bash
-docker build -t strapi-cms .
-docker run -p 1337:1337 --env-file .env strapi-cms
-```
-
 ### Cloud Platforms
 
 Strapi works well with:
-- Alibaba Cloud (China)
+- Alibaba Cloud (China) - Recommended for China deployments
 - Tencent Cloud (China)
 - Huawei Cloud (China)
 - AWS (Global)

@@ -3,12 +3,16 @@ version: '3.8'
 services:
   strapi:
     container_name: strapi-cms
-    build: .
-    image: strapi:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NPM_REGISTRY: ${NPM_REGISTRY:-https://registry.npmjs.org}
+    image: strapi-cms:latest
     restart: unless-stopped
     env_file: .env
     environment:
-      DATABASE_CLIENT: ${DATABASE_CLIENT:-sqlite}
+      DATABASE_CLIENT: ${DATABASE_CLIENT:-postgres}
       DATABASE_HOST: ${DATABASE_HOST:-postgres}
       DATABASE_PORT: ${DATABASE_PORT:-5432}
       DATABASE_NAME: ${DATABASE_NAME:-strapi}
@@ -17,18 +21,27 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET}
       APP_KEYS: ${APP_KEYS}
-      NODE_ENV: ${NODE_ENV:-development}
+      API_TOKEN_SALT: ${API_TOKEN_SALT}
+      TRANSFER_TOKEN_SALT: ${TRANSFER_TOKEN_SALT}
+      NODE_ENV: ${NODE_ENV:-production}
+      TZ: ${TZ:-Asia/Shanghai}
     volumes:
-      - ./config:/opt/app/config
-      - ./src:/opt/app/src
-      - ./package.json:/opt/package.json
-      - ./public/uploads:/opt/app/public/uploads
+      # Only mount uploads and database for persistence in production
+      - strapi-uploads:/app/public/uploads
+      - strapi-tmp:/app/.tmp
     ports:
       - '1337:1337'
     networks:
       - strapi
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:1337/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
 
   postgres:
     container_name: strapi-postgres
@@ -45,9 +58,16 @@ services:
       - '5432:5432'
     networks:
       - strapi
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USERNAME:-strapi}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   strapi-data:
+  strapi-uploads:
+  strapi-tmp:
 
 networks:
   strapi:
