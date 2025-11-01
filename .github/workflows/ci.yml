@@ -42,6 +42,29 @@ jobs:
       - name: Type check
         run: pnpm typecheck
 
+      - name: Environment validation
+        run: pnpm check:env
+        env:
+          # Mock environment variables for CI validation
+          ENV_MODE: staging
+          NODE_ENV: staging
+          NUXT_PUBLIC_API_BASE_URL: https://api.staging.example.com
+          NUXT_PUBLIC_STRAPI_URL: https://api.staging.example.com
+          NUXT_STRAPI_API_TOKEN: mock-token-for-ci-validation-12345
+          DATABASE_CLIENT: postgres
+          DATABASE_HOST: localhost
+          DATABASE_PORT: 5432
+          DATABASE_NAME: strapi_test
+          DATABASE_USERNAME: strapi
+          DATABASE_PASSWORD: mock-password-for-ci
+          APP_KEYS: mock-key-1,mock-key-2
+          API_TOKEN_SALT: mock-api-token-salt-for-ci-validation-min-32-chars
+          ADMIN_JWT_SECRET: mock-admin-jwt-secret-for-ci-validation-min-32
+          TRANSFER_TOKEN_SALT: mock-transfer-token-salt-for-ci-min-32-chars
+          JWT_SECRET: mock-jwt-secret-for-ci-validation-minimum-32-chars
+          ENCRYPTION_KEY: mock-encryption-key-for-ci-validation-min-32
+          CLIENT_URL: https://staging.example.com
+
   # Unit Tests
   test:
     name: Unit Tests

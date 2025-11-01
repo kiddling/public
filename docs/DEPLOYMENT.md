@@ -2,6 +2,18 @@
 
 本文档提供 Nuxt 3 + Strapi CMS 单体仓库的完整部署指南。
 
+## ⚠️ 生产部署前必读
+
+**在部署到生产环境之前，请务必完成 [生产环境就绪检查清单](./PRODUCTION_READINESS_CHECKLIST.md)**
+
+该检查清单涵盖：
+- ✅ 环境配置验证
+- ✅ 安全加固（头部、CORS、速率限制）
+- ✅ 性能验证（Lighthouse、WebPageTest）
+- ✅ 数据保护和备份策略
+- ✅ 监控和告警配置
+- ✅ 文档和合规要求
+
 ## 📋 目录
 
 - [系统要求](#系统要求)
@@ -95,6 +107,24 @@ pnpm dev:cms       # http://localhost:1337
 ```
 
 ## 生产环境部署
+
+### 部署前检查
+
+在开始生产部署之前，运行以下预部署检查：
+
+```bash
+# 运行完整的预部署检查
+pnpm predeploy
+
+# 该命令会依次执行：
+# - pnpm lint          (代码风格检查)
+# - pnpm typecheck     (TypeScript 类型检查)
+# - pnpm test:unit     (单元测试)
+# - pnpm check:env     (环境变量验证)
+# - pnpm lighthouse    (性能审计)
+```
+
+确保所有检查都通过后再继续部署。如有问题，请参考 [生产环境就绪检查清单](./PRODUCTION_READINESS_CHECKLIST.md)。
 
 ### 方式 1: 传统部署 (PM2)
 
