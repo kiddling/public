@@ -4,9 +4,11 @@ import type {
   StrapiCollectionItem,
   StrapiCollectionResponse,
 } from '~/types/cms'
+import type { VideoEmbed } from '~/utils/video-providers'
 
 // Re-export common Strapi types for backward compatibility
 export type { StrapiMedia, StrapiSingleType, StrapiCollectionItem, StrapiCollectionResponse }
+export type { VideoEmbed }
 
 export type DifficultyLevel = 'base' | 'advance' | 'stretch'
 
@@ -33,6 +35,7 @@ export interface LessonDifficultyBlock {
   media: StrapiMedia[]
   attachments: LessonAttachment[]
   prompts: LessonPrompt[]
+  videoEmbeds: VideoEmbed[]
 }
 
 export interface LessonKnowledgeCard {

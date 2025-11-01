@@ -65,6 +65,11 @@
       "relation": "manyToMany",
       "target": "api::lesson.lesson",
       "mappedBy": "resources"
+    },
+    "videoEmbeds": {
+      "type": "component",
+      "repeatable": true,
+      "component": "interactive.video-embed"
     }
   }
 }
