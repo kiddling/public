@@ -35,6 +35,20 @@
             <li>✅ 深色模式</li>
             <li>✅ Strapi CMS 集成</li>
           </ul>
+          
+          <h2>页面</h2>
+          <ul class="text-left">
+            <li>
+              <NuxtLink to="/resources" class="text-primary-500 hover:text-primary-600 dark:text-primary-400 dark:hover:text-primary-300">
+                资源库 (Resources Hub)
+              </NuxtLink>
+            </li>
+            <li>
+              <NuxtLink to="/knowledge-cards" class="text-primary-500 hover:text-primary-600 dark:text-primary-400 dark:hover:text-primary-300">
+                知识卡片 (Knowledge Cards)
+              </NuxtLink>
+            </li>
+          </ul>
         </div>
       </div>
     </div>

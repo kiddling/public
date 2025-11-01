@@ -1,10 +1,10 @@
 /**
  * Composable for fetching resources from the CMS
  * 
- * Supports filtering by category, accessibility, and searching.
+ * Supports filtering by category, accessibility, discipline, mediaType, and searching.
  */
 
-import type { QueryParams, ResourceCategory } from '~/types/cms'
+import type { QueryParams, ResourceCategory, ResourceDiscipline, ResourceMediaType } from '~/types/cms'
 import type { UseCmsDataOptions } from './useCmsData'
 import { useCmsData } from './useCmsData'
 import { buildStrapiQuery } from '~/utils/data-layer'
@@ -13,6 +13,8 @@ const RESOURCES_ENDPOINT = '/api/cms/resources'
 
 export interface UseResourcesOptions extends UseCmsDataOptions {
   category?: ResourceCategory
+  discipline?: ResourceDiscipline | ResourceDiscipline[]
+  mediaType?: ResourceMediaType | ResourceMediaType[]
   accessibleOnly?: boolean
   populate?: boolean | string[]
   filters?: QueryParams['filters']
@@ -36,6 +38,8 @@ export function useResource(id: string | number, options: UseCmsDataOptions = {}
 export function useResources(options: UseResourcesOptions = {}) {
   const {
     category,
+    discipline,
+    mediaType,
     accessibleOnly,
     populate = true,
     filters,
@@ -57,6 +61,36 @@ export function useResources(options: UseResourcesOptions = {}) {
     queryParams.filters = {
       ...queryParams.filters,
       category: { $eq: category },
+    }
+  }
+
+  // Filter by discipline if provided
+  if (discipline) {
+    if (Array.isArray(discipline)) {
+      queryParams.filters = {
+        ...queryParams.filters,
+        disciplines: { $in: discipline },
+      }
+    } else {
+      queryParams.filters = {
+        ...queryParams.filters,
+        disciplines: { $contains: discipline },
+      }
+    }
+  }
+
+  // Filter by media type if provided
+  if (mediaType) {
+    if (Array.isArray(mediaType)) {
+      queryParams.filters = {
+        ...queryParams.filters,
+        mediaType: { $in: mediaType },
+      }
+    } else {
+      queryParams.filters = {
+        ...queryParams.filters,
+        mediaType: { $eq: mediaType },
+      }
     }
   }
 
