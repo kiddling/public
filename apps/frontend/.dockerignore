@@ -1,0 +1,59 @@
+# Git and version control
+.git
+.gitignore
+
+# Dependencies - will be installed fresh in Docker
+node_modules
+
+# Nuxt build outputs
+.nuxt
+.output
+dist
+.nitro
+.cache
+.data
+
+# Test artifacts
+coverage
+.nyc_output
+tests
+*.test.ts
+*.spec.ts
+vitest.config.ts
+
+# Development files
+.env
+.env.local
+.env.*
+!.env.example
+
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Editor and system files
+.DS_Store
+.vscode
+.idea
+.fleet
+*.swp
+*.swo
+*~
+
+# Documentation (keep README if needed in container)
+docs
+
+# Misc
+README.md
+.editorconfig
+.prettierrc
+.prettierignore
+eslint.config.mjs
+
+# China Registry Mirror Notes:
+# For faster builds in China, consider using domestic registries:
+# - Taobao NPM Mirror: https://registry.npmmirror.com
+# - Huawei Cloud: https://mirrors.huaweicloud.com/repository/npm/
+# Add to .npmrc in your build: registry=https://registry.npmmirror.com
