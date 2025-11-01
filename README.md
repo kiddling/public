@@ -1,5 +1,8 @@
 # Nuxt 3 + Strapi CMS Monorepo
 
+[![CI](https://github.com/YOUR_USERNAME/YOUR_REPO/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/YOUR_REPO/actions/workflows/ci.yml)
+[![Build and Push](https://github.com/YOUR_USERNAME/YOUR_REPO/actions/workflows/build-and-push.yml/badge.svg)](https://github.com/YOUR_USERNAME/YOUR_REPO/actions/workflows/build-and-push.yml)
+
 A modern full-stack web application using Nuxt 3 for the frontend and Strapi CMS for content management, organized as a pnpm workspace monorepo.
 
 ## 📁 Project Structure
@@ -103,6 +106,106 @@ Cross-application search that spans all content types:
   - Pagination support
 
 **Usage**: Simply press `Cmd/Ctrl + K` anywhere in the app to start searching!
+
+## 🔄 CI/CD Pipelines
+
+This project includes automated CI/CD pipelines using GitHub Actions to ensure code quality and streamline deployments.
+
+### 📋 Pipeline Stages
+
+#### CI Workflow (Pull Requests & Pushes)
+
+Runs on every pull request and push to `main`/`develop` branches:
+
+1. **Code Quality Checks**
+   - Format checking with Prettier
+   - Linting with ESLint
+   - Type checking with TypeScript
+
+2. **Testing**
+   - Unit tests for both Frontend and CMS applications
+   - Test result artifacts uploaded for review
+
+3. **Performance Checks**
+   - Lighthouse CI for frontend (when configured)
+   - Performance budget enforcement
+
+4. **Optimizations**
+   - pnpm store caching for faster installations
+   - Support for China mirrors (Taobao registry) via `USE_CHINA_MIRROR` variable
+
+#### Build & Push Workflow (Main Branch & Tags)
+
+Runs on merges to `main` and version tags (`v*.*.*`):
+
+1. **Stack Validation**
+   - Validates `docker-compose.yml` configuration
+   - Ensures deployment stack integrity
+
+2. **Image Building**
+   - Builds Docker images for Frontend and CMS
+   - Tags with git SHA and semantic versions
+   - Multi-platform support with Docker Buildx
+
+3. **Security Scanning**
+   - Trivy vulnerability scanning
+   - Results uploaded to GitHub Security tab
+   - Critical/High severity alerts
+
+4. **Container Publishing**
+   - Pushes to GitHub Container Registry (GHCR)
+   - Support for domestic mirrors (configurable)
+   - Graceful handling of missing credentials
+
+### 🔐 Required Secrets & Variables
+
+Configure these in **Settings** → **Secrets and variables** → **Actions**:
+
+#### Secrets
+- `GITHUB_TOKEN` - Automatically provided, ensure package write permissions are enabled
+- `LHCI_GITHUB_APP_TOKEN` - (Optional) For Lighthouse CI GitHub App integration
+
+#### Variables
+- `USE_CHINA_MIRROR` - Set to `true` to use Taobao npm registry for faster builds in China
+- `CHINA_REGISTRY_URL` - (Optional) Domestic container registry URL for image publishing
+
+### 🚀 Deployment
+
+Once images are built and pushed, deploy using:
+
+```bash
+# Pull latest images from GHCR
+docker pull ghcr.io/YOUR_USERNAME/YOUR_REPO/frontend:latest
+docker pull ghcr.io/YOUR_USERNAME/YOUR_REPO/cms:latest
+
+# Deploy with docker-compose
+docker compose up -d
+
+# Check status
+docker compose ps
+```
+
+For production deployments, use semantic version tags:
+
+```bash
+docker pull ghcr.io/YOUR_USERNAME/YOUR_REPO/frontend:v1.0.0
+docker pull ghcr.io/YOUR_USERNAME/YOUR_REPO/cms:v1.0.0
+```
+
+### 📊 Monitoring Pipeline Status
+
+- View workflow runs in the **Actions** tab of your repository
+- CI badges at the top of this README show current status
+- Failed builds will block merges when branch protection is enabled
+
+### 🇨🇳 China-Specific Optimizations
+
+The pipelines include special support for users and CI runners in China:
+
+- **Fast Package Downloads**: Automatically uses Taobao mirror when `USE_CHINA_MIRROR=true`
+- **Registry Flexibility**: Configure custom registry URLs for container images
+- **Timeout Handling**: Extended timeouts for slower networks
+- **Fail-Fast**: Quick detection of misconfigured secrets to save CI minutes
 
 ## 📦 Package Manager & Chinese Mirrors
 

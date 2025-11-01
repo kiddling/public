@@ -1,0 +1,78 @@
+services:
+  frontend:
+    container_name: nuxt-frontend
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile
+    image: nuxt-frontend:latest
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    environment:
+      - NUXT_PUBLIC_API_BASE_URL=${NUXT_PUBLIC_API_BASE_URL:-http://cms:1337}
+      - NUXT_PUBLIC_STRAPI_URL=${NUXT_PUBLIC_STRAPI_URL:-http://cms:1337}
+      - NUXT_STRAPI_API_TOKEN=${NUXT_STRAPI_API_TOKEN}
+      - NUXT_STRAPI_URL=${NUXT_STRAPI_URL:-http://cms:1337}
+      - NODE_ENV=production
+    networks:
+      - app-network
+    depends_on:
+      - cms
+
+  cms:
+    container_name: strapi-cms
+    build:
+      context: ./apps/cms
+      dockerfile: Dockerfile
+    image: strapi-cms:latest
+    restart: unless-stopped
+    environment:
+      - DATABASE_CLIENT=${DATABASE_CLIENT:-sqlite}
+      - DATABASE_HOST=${DATABASE_HOST:-postgres}
+      - DATABASE_PORT=${DATABASE_PORT:-5432}
+      - DATABASE_NAME=${DATABASE_NAME:-strapi}
+      - DATABASE_USERNAME=${DATABASE_USERNAME:-strapi}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD:-strapi}
+      - JWT_SECRET=${JWT_SECRET}
+      - ADMIN_JWT_SECRET=${ADMIN_JWT_SECRET}
+      - APP_KEYS=${APP_KEYS}
+      - NODE_ENV=${NODE_ENV:-production}
+    volumes:
+      - strapi-uploads:/opt/app/public/uploads
+      - strapi-data:/opt/app/.tmp
+    ports:
+      - '1337:1337'
+    networks:
+      - app-network
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: strapi-postgres
+    platform: linux/amd64
+    restart: unless-stopped
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=${DATABASE_USERNAME:-strapi}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD:-strapi}
+      - POSTGRES_DB=${DATABASE_NAME:-strapi}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    networks:
+      - app-network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DATABASE_USERNAME:-strapi}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres-data:
+  strapi-uploads:
+  strapi-data:
+
+networks:
+  app-network:
+    driver: bridge

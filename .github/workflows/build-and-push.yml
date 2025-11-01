@@ -1,0 +1,289 @@
+name: Build and Push Docker Images
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_FRONTEND: ${{ github.repository }}/frontend
+  IMAGE_CMS: ${{ github.repository }}/cms
+
+jobs:
+  validate-stack:
+    name: Validate Docker Compose Stack
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate docker-compose configuration
+        run: |
+          docker compose config > /dev/null
+          echo "✅ Docker Compose configuration is valid"
+
+  build-and-push-frontend:
+    name: Build and Push Frontend Image
+    runs-on: ubuntu-latest
+    needs: validate-stack
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Check registry configuration
+        id: check_registry
+        run: |
+          if [ -z "${{ secrets.GITHUB_TOKEN }}" ]; then
+            echo "configured=false" >> $GITHUB_OUTPUT
+            echo "⚠️ GITHUB_TOKEN not configured - images will be built but not pushed"
+          else
+            echo "configured=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Log in to GitHub Container Registry
+        if: steps.check_registry.outputs.configured == 'true'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure China mirror registry
+        if: vars.USE_CHINA_MIRROR == 'true' && vars.CHINA_REGISTRY_URL != ''
+        run: |
+          echo "Using China mirror registry: ${{ vars.CHINA_REGISTRY_URL }}"
+          echo "REGISTRY=${{ vars.CHINA_REGISTRY_URL }}" >> $GITHUB_ENV
+
+      - name: Extract metadata for Frontend
+        id: meta_frontend
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_FRONTEND }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build Frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./apps/frontend/Dockerfile
+          push: false
+          load: true
+          tags: ${{ steps.meta_frontend.outputs.tags }}
+          labels: ${{ steps.meta_frontend.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            NODE_ENV=production
+
+      - name: Run Trivy vulnerability scanner on Frontend
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ fromJSON(steps.meta_frontend.outputs.json).tags[0] }}
+          format: 'sarif'
+          output: 'trivy-frontend-results.sarif'
+          severity: 'CRITICAL,HIGH'
+        continue-on-error: true
+
+      - name: Upload Trivy results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-frontend-results.sarif'
+          category: 'frontend-image'
+        continue-on-error: true
+
+      - name: Push Frontend image
+        if: steps.check_registry.outputs.configured == 'true'
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./apps/frontend/Dockerfile
+          push: true
+          tags: ${{ steps.meta_frontend.outputs.tags }}
+          labels: ${{ steps.meta_frontend.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            NODE_ENV=production
+
+      - name: Image build instructions
+        if: steps.check_registry.outputs.configured == 'false'
+        run: |
+          echo "📦 Frontend image built successfully!"
+          echo ""
+          echo "🔐 To push images, configure the following:"
+          echo "   - Ensure GITHUB_TOKEN has package write permissions"
+          echo ""
+          echo "🏷️ Generated tags:"
+          echo "${{ steps.meta_frontend.outputs.tags }}"
+
+  build-and-push-cms:
+    name: Build and Push CMS Image
+    runs-on: ubuntu-latest
+    needs: validate-stack
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Check registry configuration
+        id: check_registry
+        run: |
+          if [ -z "${{ secrets.GITHUB_TOKEN }}" ]; then
+            echo "configured=false" >> $GITHUB_OUTPUT
+            echo "⚠️ GITHUB_TOKEN not configured - images will be built but not pushed"
+          else
+            echo "configured=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Log in to GitHub Container Registry
+        if: steps.check_registry.outputs.configured == 'true'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure China mirror registry
+        if: vars.USE_CHINA_MIRROR == 'true' && vars.CHINA_REGISTRY_URL != ''
+        run: |
+          echo "Using China mirror registry: ${{ vars.CHINA_REGISTRY_URL }}"
+          echo "REGISTRY=${{ vars.CHINA_REGISTRY_URL }}" >> $GITHUB_ENV
+
+      - name: Extract metadata for CMS
+        id: meta_cms
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_CMS }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build CMS image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./apps/cms
+          file: ./apps/cms/Dockerfile
+          push: false
+          load: true
+          tags: ${{ steps.meta_cms.outputs.tags }}
+          labels: ${{ steps.meta_cms.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            NODE_ENV=production
+
+      - name: Run Trivy vulnerability scanner on CMS
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ fromJSON(steps.meta_cms.outputs.json).tags[0] }}
+          format: 'sarif'
+          output: 'trivy-cms-results.sarif'
+          severity: 'CRITICAL,HIGH'
+        continue-on-error: true
+
+      - name: Upload Trivy results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-cms-results.sarif'
+          category: 'cms-image'
+        continue-on-error: true
+
+      - name: Push CMS image
+        if: steps.check_registry.outputs.configured == 'true'
+        uses: docker/build-push-action@v5
+        with:
+          context: ./apps/cms
+          file: ./apps/cms/Dockerfile
+          push: true
+          tags: ${{ steps.meta_cms.outputs.tags }}
+          labels: ${{ steps.meta_cms.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            NODE_ENV=production
+
+      - name: Image build instructions
+        if: steps.check_registry.outputs.configured == 'false'
+        run: |
+          echo "📦 CMS image built successfully!"
+          echo ""
+          echo "🔐 To push images, configure the following:"
+          echo "   - Ensure GITHUB_TOKEN has package write permissions"
+          echo ""
+          echo "🏷️ Generated tags:"
+          echo "${{ steps.meta_cms.outputs.tags }}"
+
+  deployment-summary:
+    name: Deployment Summary
+    runs-on: ubuntu-latest
+    needs: [build-and-push-frontend, build-and-push-cms]
+    if: always()
+
+    steps:
+      - name: Generate deployment summary
+        run: |
+          echo "## 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Images Built" >> $GITHUB_STEP_SUMMARY
+          echo "- Frontend: \`${{ env.REGISTRY }}/${{ env.IMAGE_FRONTEND }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- CMS: \`${{ env.REGISTRY }}/${{ env.IMAGE_CMS }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Required Secrets for Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "Configure these in repository settings → Secrets and variables → Actions:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "#### Registry Authentication" >> $GITHUB_STEP_SUMMARY
+          echo "- \`GITHUB_TOKEN\`: Automatically provided (ensure package write permissions)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "#### Optional: Lighthouse CI" >> $GITHUB_STEP_SUMMARY
+          echo "- \`LHCI_GITHUB_APP_TOKEN\`: For Lighthouse CI GitHub app integration" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "#### Optional: China Mirror Support" >> $GITHUB_STEP_SUMMARY
+          echo "Configure these as variables (not secrets):" >> $GITHUB_STEP_SUMMARY
+          echo "- \`USE_CHINA_MIRROR\`: Set to 'true' to enable" >> $GITHUB_STEP_SUMMARY
+          echo "- \`CHINA_REGISTRY_URL\`: Domestic container registry URL" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📝 Deployment Instructions" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+          echo "# Pull the latest images" >> $GITHUB_STEP_SUMMARY
+          echo "docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_FRONTEND }}:latest" >> $GITHUB_STEP_SUMMARY
+          echo "docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_CMS }}:latest" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "# Deploy using docker-compose" >> $GITHUB_STEP_SUMMARY
+          echo "docker compose up -d" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
