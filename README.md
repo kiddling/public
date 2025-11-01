@@ -333,6 +333,15 @@ pnpm test:unit
 - [Component Documentation](http://localhost:3000/components) - Available when running dev server
 - [Histoire Documentation](./apps/frontend/README.md#component-documentation) - Interactive component documentation
 
+### 部署文档 (Deployment Documentation)
+
+- [中国云部署指南 (China Cloud Deployment)](./docs/deployment/china-cloud.md) - 阿里云/腾讯云部署、服务器规格、安全组配置、ICP 备案流程
+- [Nginx 配置指南 (Nginx Configuration)](./docs/deployment/nginx-config.md) - 反向代理、HTTPS、Gzip/Brotli 压缩、缓存策略
+- [CDN 策略 (CDN Strategy)](./docs/deployment/cdn-strategy.md) - 国内 CDN 选择、配置、成本优化
+- [监控和日志 (Monitoring & Logging)](./docs/deployment/monitoring-logging.md) - UptimeRobot、PM2 监控、日志收集、告警配置
+- [ICP 合规检查清单 (ICP Compliance)](./docs/deployment/icp-compliance-checklist.md) - ICP 备案、公安备案、内容合规
+- [备份策略 (Backup Strategy)](./docs/deployment/backup-strategy.md) - PostgreSQL 备份、Strapi 文件备份、灾难恢复
+
 ### 组件文档 (Component Documentation)
 
 #### 方式一：Nuxt 页面
@@ -361,6 +370,96 @@ npm run story:dev
 - Database can be configured for Chinese cloud providers
 - Docker images can be pulled from domestic registries
 - See `apps/cms/README.md` for Docker registry configuration
+
+### 使用 PM2 部署 (Deployment with PM2)
+
+本项目提供了完整的 PM2 配置文件，支持多环境部署和进程管理。
+
+```bash
+# 构建应用
+pnpm build
+
+# 生产环境启动
+pm2 start pm2.config.cjs --env prod
+
+# 查看状态
+pm2 status
+
+# 查看日志
+pm2 logs
+
+# 重启应用
+pm2 restart pm2.config.cjs
+
+# 停止应用
+pm2 stop pm2.config.cjs
+
+# 监控面板
+pm2 monit
+```
+
+**支持的环境**：
+- `dev`: 开发环境
+- `staging`: 预发布环境
+- `prod`: 生产环境
+
+详细配置请查看 [pm2.config.cjs](./pm2.config.cjs)。
+
+### 健康检查端点 (Health Check Endpoints)
+
+应用提供了健康检查端点，用于监控服务状态：
+
+**Nuxt 前端**：
+```bash
+# 基础健康检查
+curl https://example.com/api/health
+
+# 完整健康检查（包含 CMS 连接测试）
+curl https://example.com/api/health?full=true
+```
+
+响应示例：
+```json
+{
+  "status": "ok",
+  "timestamp": "2024-01-01T00:00:00.000Z",
+  "service": "nuxt-frontend",
+  "version": "1.0.0",
+  "uptime": 123456,
+  "environment": "production"
+}
+```
+
+**Strapi CMS**：
+```bash
+curl https://cms.example.com/cms/health
+```
+
+响应示例：
+```json
+{
+  "status": "ok",
+  "timestamp": "2024-01-01T00:00:00.000Z",
+  "service": "strapi-cms",
+  "version": "5.29.0",
+  "uptime": 123456,
+  "environment": "production",
+  "database": {
+    "status": "connected",
+    "responseTime": 5
+  },
+  "storage": {
+    "status": "ok",
+    "provider": "ali-oss"
+  }
+}
+```
+
+这些端点可用于：
+- UptimeRobot 或国内监控服务（监控宝、阿里云监控等）
+- 负载均衡器健康检查
+- 自动化部署流程验证
+- Kubernetes liveness/readiness probes
 
 ## ⚙️ Strapi Deployment
 
