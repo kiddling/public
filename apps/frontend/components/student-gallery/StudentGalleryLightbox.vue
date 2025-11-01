@@ -87,11 +87,13 @@
           />
           
           <!-- Regular Image -->
-          <img
+          <NuxtImg
             v-else-if="currentAsset"
             :src="getImageUrl(currentAsset.url)"
-            :alt="currentWork.studentName"
+            :alt="`Student work by ${currentWork.studentName}`"
             class="max-w-full max-h-[calc(100vh-200px)] object-contain"
+            preset="hero"
+            sizes="sm:640px md:1024px lg:1536px xl:1920px"
           />
         </div>
 

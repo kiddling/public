@@ -10,12 +10,14 @@
           :key="card.id"
           class="flex flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm transition hover:border-primary-200 dark:border-gray-800 dark:bg-gray-900/70 dark:hover:border-primary-400/50"
         >
-          <img
+          <NuxtImg
             v-if="card.image?.url"
             :src="card.image.url"
             :alt="card.image.alternativeText ?? card.title ?? '知识卡片图片 Knowledge card image'"
             class="h-32 w-full object-cover"
             loading="lazy"
+            preset="thumbnail"
+            sizes="sm:200px md:200px"
           />
           <div class="flex flex-1 flex-col gap-2 p-4">
             <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100">{{ card.title }}</h3>
@@ -48,12 +50,14 @@
           :key="resource.id"
           class="flex items-start gap-4 rounded-xl border border-gray-100 p-4 transition hover:border-primary-200 dark:border-gray-800 dark:hover:border-primary-400/50"
         >
-          <img
+          <NuxtImg
             v-if="resource.qrCodeUrl"
             :src="resource.qrCodeUrl"
             alt="二维码 QR code"
             class="mt-1 h-16 w-16 rounded-lg border border-gray-200 object-contain dark:border-gray-700"
             loading="lazy"
+            width="64"
+            height="64"
           />
           <div class="flex-1">
             <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">{{ resource.title }}</p>

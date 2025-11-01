@@ -1,0 +1,44 @@
+/**
+ * Font Declarations
+ * 
+ * Self-hosted fonts optimized for China deployment
+ * Using system fonts by default to avoid CDN blocking
+ * 
+ * For self-hosted fonts, add font files to public/fonts/ and uncomment below:
+ */
+
+/*
+@font-face {
+  font-family: 'Source Han Sans CN';
+  src: url('/fonts/source-han-sans-cn-regular.woff2') format('woff2'),
+       url('/fonts/source-han-sans-cn-regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Source Han Sans CN';
+  src: url('/fonts/source-han-sans-cn-medium.woff2') format('woff2'),
+       url('/fonts/source-han-sans-cn-medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Source Han Sans CN';
+  src: url('/fonts/source-han-sans-cn-bold.woff2') format('woff2'),
+       url('/fonts/source-han-sans-cn-bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+*/
+
+/**
+ * Font Display Strategy:
+ * - font-display: swap ensures text remains visible during webfont load
+ * - System fonts are used as fallbacks with similar metrics
+ * - Preload critical font variants in nuxt.config.ts for faster rendering
+ */

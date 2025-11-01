@@ -12,13 +12,15 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        // Chinese typography support
-        // Using system fonts by default, can be extended with web fonts
+        // Chinese typography support with font-display: swap strategy
+        // Using system fonts by default to avoid CDN blocking in China
+        // For self-hosted fonts, uncomment Source Han Sans CN in assets/css/fonts.css
         sans: [
-          'PingFang SC',
-          'Hiragino Sans GB',
-          'Microsoft YaHei',
-          'WenQuanYi Micro Hei',
+          // 'Source Han Sans CN', // Self-hosted font (when configured)
+          'PingFang SC',           // macOS & iOS
+          'Hiragino Sans GB',      // Older macOS
+          'Microsoft YaHei',       // Windows
+          'WenQuanYi Micro Hei',   // Linux
           'sans-serif',
         ],
       },
