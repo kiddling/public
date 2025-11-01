@@ -189,6 +189,69 @@ jobs:
           path: .lighthouseci
           retention-days: 7
 
+  # E2E Tests
+  e2e:
+    name: E2E Tests - ${{ matrix.project }}
+    runs-on: ubuntu-latest
+    needs: [quality, test]
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [chromium, firefox, webkit, mobile-chrome]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps ${{ matrix.project }}
+        working-directory: apps/frontend
+
+      - name: Run E2E tests
+        run: pnpm test:e2e --project=${{ matrix.project }}
+        env:
+          CI: true
+          E2E_BASE_URL: http://localhost:3456
+          E2E_STRAPI_URL: http://localhost:3457
+          E2E_STRAPI_PORT: 3457
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-results-${{ matrix.project }}
+          path: apps/frontend/test-results
+          retention-days: 7
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-${{ matrix.project }}
+          path: apps/frontend/playwright-report
+          retention-days: 7
+
+      - name: Upload traces
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-traces-${{ matrix.project }}
+          path: apps/frontend/test-results/**/*trace.zip
+          retention-days: 7
+
   # Docker Build
   docker:
     name: Docker Build

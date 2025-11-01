@@ -90,6 +90,52 @@ pnpm lint:fix
 pnpm typecheck
 ```
 
+## 🧪 Testing
+
+### Unit Tests
+
+Run unit tests with Vitest:
+
+```bash
+# Run tests once
+pnpm test
+
+# Run in watch mode
+pnpm test:unit
+
+# Run with coverage
+pnpm test:unit -- --coverage
+```
+
+### E2E Tests
+
+Run end-to-end tests with Playwright:
+
+```bash
+# Run all E2E tests
+pnpm test:e2e
+
+# Run in specific browser
+pnpm test:e2e --project=chromium
+pnpm test:e2e --project=firefox
+pnpm test:e2e --project=webkit
+
+# Interactive UI mode
+pnpm test:e2e:ui
+
+# Debug mode
+pnpm test:e2e:debug
+```
+
+**Prerequisites for E2E tests:**
+
+```bash
+# Install Playwright browsers (first time only)
+npx playwright install --with-deps
+```
+
+E2E tests run against a mock Strapi server on port 3457. See [docs/TESTING.md](/docs/TESTING.md) for comprehensive testing documentation.
+
 ## 📁 Project Structure
 
 ```
@@ -107,10 +153,19 @@ apps/frontend/
 ├── public/               # Static files served at root
 ├── server/               # Server API routes and middleware
 ├── stores/               # Pinia stores
+├── tests/                # Test files
+│   ├── e2e/              # Playwright E2E tests
+│   │   ├── fixtures/     # Mock API data
+│   │   ├── helpers/      # Test utilities
+│   │   ├── mocks/        # Mock server
+│   │   └── specs/        # Test specifications
+│   └── *.spec.ts         # Vitest unit tests
 ├── types/                # TypeScript type definitions
 ├── nuxt.config.ts        # Nuxt configuration
+├── playwright.config.ts  # Playwright E2E configuration
 ├── tailwind.config.ts    # Tailwind CSS configuration
-└── tsconfig.json         # TypeScript configuration
+├── tsconfig.json         # TypeScript configuration
+└── vitest.config.ts      # Vitest unit test configuration
 ```
 
 ## 🎨 Tailwind CSS & Chinese Typography
