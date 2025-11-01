@@ -297,24 +297,193 @@ jobs:
           cache-from: type=registry,ref=${{ secrets.CONTAINER_REGISTRY }}/${{ github.repository }}/${{ matrix.service }}:buildcache
           cache-to: type=registry,ref=${{ secrets.CONTAINER_REGISTRY }}/${{ github.repository }}/${{ matrix.service }}:buildcache,mode=max
 
-  # Deployment (Placeholder - customize for your deployment target)
+  # Blue/Green Deployment with Automated Rollback
   deploy:
     name: Deploy to Production
     runs-on: ubuntu-latest
-    needs: [docker]
+    needs: [docker, lighthouse]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     environment:
       name: production
       url: https://your-domain.com
+    outputs:
+      deployment-color: ${{ steps.deploy.outputs.color }}
+      deployment-status: ${{ steps.deploy.outputs.status }}
+      deployment-version: ${{ steps.deploy.outputs.version }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Deploy to production
+      - name: Setup deployment environment
         run: |
-          echo "Deploy to your production environment"
-          # Add your deployment commands here
-          # Examples:
-          # - SSH and docker-compose pull/up
-          # - Kubernetes kubectl apply
-          # - Cloud provider CLI commands
+          chmod +x scripts/deploy/*.sh
+          mkdir -p logs backups
+
+      - name: Configure SSH (if using remote deployment)
+        if: vars.DEPLOY_HOST != ''
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Run preflight checks
+        id: preflight
+        run: |
+          echo "Running preflight deployment checks..."
+          bash scripts/deploy/preflight.sh || exit 1
+          echo "status=passed" >> $GITHUB_OUTPUT
+
+      - name: Wait for manual approval
+        uses: trstringer/manual-approval@v1
+        if: vars.REQUIRE_MANUAL_APPROVAL == 'true'
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: ${{ vars.DEPLOYMENT_APPROVERS }}
+          minimum-approvals: 1
+          issue-title: "Deploy ${{ github.sha }} to production"
+          issue-body: |
+            Please review and approve deployment to production
+            
+            **Version:** ${{ github.sha }}
+            **Branch:** ${{ github.ref_name }}
+            **Triggered by:** ${{ github.actor }}
+            
+            **Changes:** See commit history
+            
+            **Preflight Status:** ✅ Passed
+            
+            Review the deployment plan in [DEPLOYMENT_STRATEGY.md](../blob/main/docs/DEPLOYMENT_STRATEGY.md)
+
+      - name: Execute blue/green deployment
+        id: deploy
+        env:
+          VERSION: ${{ github.sha }}
+          DEPLOYMENT_ENV: production
+          DATABASE_BACKUP: 'true'
+          # These would come from secrets in actual deployment
+          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+          DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+          APP_KEYS: ${{ secrets.APP_KEYS }}
+          API_TOKEN_SALT: ${{ secrets.API_TOKEN_SALT }}
+          ADMIN_JWT_SECRET: ${{ secrets.ADMIN_JWT_SECRET }}
+          TRANSFER_TOKEN_SALT: ${{ secrets.TRANSFER_TOKEN_SALT }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          NUXT_STRAPI_API_TOKEN: ${{ secrets.NUXT_STRAPI_API_TOKEN }}
+        run: |
+          echo "Starting blue/green deployment..."
+          
+          # For remote deployment, would SSH and run commands
+          # For local/CI testing, run directly
+          if bash scripts/deploy/blue-green-deploy.sh --version "$VERSION"; then
+            echo "status=success" >> $GITHUB_OUTPUT
+            
+            # Determine which color was deployed
+            DEPLOYED_COLOR=$(cat /tmp/active-deployment-color 2>/dev/null || echo "unknown")
+            echo "color=$DEPLOYED_COLOR" >> $GITHUB_OUTPUT
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+            
+            echo "✅ Deployment successful to $DEPLOYED_COLOR stack"
+          else
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "❌ Deployment failed"
+            exit 1
+          fi
+
+      - name: Run post-deployment smoke tests
+        id: smoke-tests
+        if: steps.deploy.outputs.status == 'success'
+        run: |
+          echo "Running post-deployment smoke tests..."
+          
+          # Get the deployed color and ports
+          DEPLOYED_COLOR="${{ steps.deploy.outputs.color }}"
+          
+          if [ "$DEPLOYED_COLOR" = "blue" ]; then
+            FRONTEND_PORT=3000
+            CMS_PORT=1337
+          else
+            FRONTEND_PORT=3001
+            CMS_PORT=1338
+          fi
+          
+          # Run verification
+          if bash scripts/deploy/post-deploy-verify.sh \
+            --target-color "$DEPLOYED_COLOR" \
+            --frontend-port "$FRONTEND_PORT" \
+            --cms-port "$CMS_PORT"; then
+            echo "status=passed" >> $GITHUB_OUTPUT
+            echo "✅ Smoke tests passed"
+          else
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "❌ Smoke tests failed"
+            exit 1
+          fi
+
+      - name: Upload deployment logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-logs
+          path: |
+            logs/deployment_*.log
+            logs/verification_*.log
+            logs/verification_*.json
+          retention-days: 30
+
+      - name: Automatic rollback on failure
+        if: failure() && steps.deploy.outputs.status == 'success'
+        run: |
+          echo "⚠️ Deployment or smoke tests failed - initiating automatic rollback"
+          
+          # Rollback to previous color
+          bash scripts/deploy/rollback.sh --force --skip-db
+          
+          echo "🔄 Rollback completed"
+          
+          # Notify about rollback
+          echo "::error::Deployment failed and was automatically rolled back"
+
+      - name: Upload rollback logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rollback-logs
+          path: logs/rollback_*.log
+          retention-days: 30
+
+      - name: Post deployment summary
+        if: always()
+        run: |
+          echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ${{ steps.deploy.outputs.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Version:** ${{ steps.deploy.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Deployment Color:** ${{ steps.deploy.outputs.color }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Smoke Tests:** ${{ steps.smoke-tests.outputs.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ steps.deploy.outputs.status }}" = "success" ] && [ "${{ steps.smoke-tests.outputs.status }}" = "passed" ]; then
+            echo "✅ **Deployment completed successfully**" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **Deployment failed and was rolled back**" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "- Monitor application metrics" >> $GITHUB_STEP_SUMMARY
+          echo "- Review deployment logs" >> $GITHUB_STEP_SUMMARY
+          echo "- Verify production functionality" >> $GITHUB_STEP_SUMMARY
+
+      - name: Notify deployment status
+        if: always()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: |
+            Deployment ${{ job.status }}
+            Version: ${{ github.sha }}
+            Color: ${{ steps.deploy.outputs.color }}
+            Smoke Tests: ${{ steps.smoke-tests.outputs.status }}
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}

@@ -2,6 +2,8 @@
 
 本文档提供 Nuxt 3 + Strapi CMS 单体仓库的完整部署指南。
 
+> **📘 Production Deployment:** For zero-downtime production deployments using blue/green strategy, see [DEPLOYMENT_STRATEGY.md](./DEPLOYMENT_STRATEGY.md)
+
 ## 📋 目录
 
 - [系统要求](#系统要求)
@@ -12,6 +14,7 @@
 - [监控和日志](#监控和日志)
 - [故障排除](#故障排除)
 - [备份和恢复](#备份和恢复)
+- [相关文档](#相关文档)
 
 ## 系统要求
 
@@ -568,11 +571,27 @@ docker-compose up -d redis
 </template>
 ```
 
+## 相关文档
+
+### Production Deployment
+- **[DEPLOYMENT_STRATEGY.md](./DEPLOYMENT_STRATEGY.md)** - Blue/green deployment strategy with zero-downtime
+- **[DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md)** - Pre/post-deployment checklist
+- **[scripts/deploy/README.md](../scripts/deploy/README.md)** - Deployment scripts documentation
+
+### Testing and Monitoring
+- **[tests/smoke/README.md](../tests/smoke/README.md)** - Smoke tests for deployment verification
+- **[MONITORING.md](./MONITORING.md)** - Monitoring and observability setup
+
+### Infrastructure
+- **[DOCKER.md](./DOCKER.md)** - Docker configuration and best practices
+- **[.github/workflows/ci.yml](../.github/workflows/ci.yml)** - CI/CD pipeline configuration
+
 ## 支持
 
 遇到问题？
 
 - 查看 [故障排除](#故障排除)
+- 查阅 [DEPLOYMENT_STRATEGY.md](./DEPLOYMENT_STRATEGY.md) for production deployments
 - 提交 [Issue](https://github.com/your-repo/issues)
 - 查阅 [文档](./README.md)
 

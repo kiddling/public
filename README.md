@@ -476,6 +476,26 @@ Visit `/downloads` to:
 - Select multiple files for batch download (ZIP)
 - View your download history
 
+## 📚 Documentation
+
+### Deployment
+- **[DEPLOYMENT_STRATEGY.md](./docs/DEPLOYMENT_STRATEGY.md)** - Blue/green deployment with zero-downtime
+- **[DEPLOYMENT_CHECKLIST.md](./docs/DEPLOYMENT_CHECKLIST.md)** - Deployment checklist
+- **[DEPLOYMENT_QUICK_REFERENCE.md](./docs/DEPLOYMENT_QUICK_REFERENCE.md)** - Quick command reference
+- **[DEPLOYMENT.md](./docs/DEPLOYMENT.md)** - General deployment guide (Chinese)
+
+### Scripts
+- **[scripts/deploy/README.md](./scripts/deploy/README.md)** - Deployment scripts documentation
+- **[tests/smoke/README.md](./tests/smoke/README.md)** - Smoke tests guide
+
+### Infrastructure & Monitoring
+- **[DOCKER.md](./docs/DOCKER.md)** - Docker configuration
+- **[MONITORING.md](./docs/MONITORING.md)** - Monitoring and observability
+
+### Features
+- **[DESIGN_LOG_SYSTEM.md](./docs/DESIGN_LOG_SYSTEM.md)** - Design log system
+- **[OPTIMIZATION_SUMMARY.md](./docs/OPTIMIZATION_SUMMARY.md)** - Performance optimizations
+
 ## 📚 Learn more about Strapi
 
 - [Resource center](https://strapi.io/resource-center) - Strapi resource center.
