@@ -151,8 +151,18 @@ export type StudentWorkDiscipline = '环艺' | '产品' | '视传' | '数媒' | 
 
 export type StudentWorkLoop = 'Loop 1' | 'Loop 2' | 'Loop 3'
 
+export interface BeforeAfterPair {
+  id?: number
+  beforeMedia: StrapiMedia
+  afterMedia: StrapiMedia
+  beforeLabel?: string
+  afterLabel?: string
+}
+
 export interface StudentWorkAttributes {
   studentName: string
+  projectTitle?: string | null
+  slug?: string | null
   discipline?: StudentWorkDiscipline | null
   grade?: string | null
   loop?: StudentWorkLoop | null
@@ -160,9 +170,10 @@ export interface StudentWorkAttributes {
   assets?: {
     data: Array<StrapiCollectionItem<StrapiMedia>> | null
   } | null
-  beforeAfterMedia?: {
-    data: Array<StrapiCollectionItem<StrapiMedia>> | null
-  } | null
+  beforeAfterMedia?: Array<BeforeAfterPair> | null
+  downloadUrl?: string | null
+  shareEnabled?: boolean | null
+  displayOrder?: number | null
   createdAt?: string
   updatedAt?: string
   publishedAt?: string
@@ -171,12 +182,17 @@ export interface StudentWorkAttributes {
 export interface StudentWork {
   id: number | string
   studentName: string
+  projectTitle?: string | null
+  slug?: string | null
   discipline?: StudentWorkDiscipline | null
   grade?: string | null
   loop?: StudentWorkLoop | null
   description?: string | null
   assets: StrapiMedia[]
-  beforeAfterMedia: StrapiMedia[]
+  beforeAfterMedia: BeforeAfterPair[]
+  downloadUrl?: string | null
+  shareEnabled: boolean
+  displayOrder: number
   createdAt?: string
   updatedAt?: string
   publishedAt?: string

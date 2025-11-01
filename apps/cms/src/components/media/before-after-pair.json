@@ -1,0 +1,31 @@
+{
+  "collectionName": "components_media_before_after_pairs",
+  "info": {
+    "displayName": "Before After Pair",
+    "icon": "images",
+    "description": "A pair of before and after media with labels"
+  },
+  "options": {},
+  "attributes": {
+    "beforeMedia": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": ["images", "videos"]
+    },
+    "afterMedia": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": ["images", "videos"]
+    },
+    "beforeLabel": {
+      "type": "string",
+      "default": "Before"
+    },
+    "afterLabel": {
+      "type": "string",
+      "default": "After"
+    }
+  }
+}
