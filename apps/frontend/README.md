@@ -72,6 +72,59 @@ Preview the production build:
 pnpm preview
 ```
 
+### Bundle Analysis
+
+Analyze the production bundle to identify optimization opportunities:
+
+```bash
+pnpm analyze
+```
+
+This will:
+- Build the application with bundle analysis enabled
+- Generate a visual treemap of your bundle composition
+- Open an interactive visualization server at `http://localhost:8888`
+- Show vendor chunk splitting (Vue, Pinia, UI libraries, misc)
+
+The analyzer helps you:
+- Identify large dependencies that could be optimized
+- Verify that manual chunk splitting is working correctly
+- Find opportunities to reduce bundle size
+- Understand what's included in each chunk
+
+### Prerendering
+
+The application automatically pre-renders static and dynamic routes during the build process:
+
+**Static Routes:**
+- Homepage (`/`)
+- Lessons index (`/lessons`)
+- Knowledge cards index (`/knowledge-cards`)
+- Resources index (`/resources`)
+- Downloads index (`/downloads`)
+- Students page (`/students`)
+- Tools pages
+
+**Dynamic CMS Routes:**
+During build, the application connects to Strapi (if available) to enumerate:
+- Individual lesson pages (`/lessons/[code]`)
+- Individual knowledge card pages (`/knowledge-cards/[slug]`)
+
+This provides:
+- **Faster initial page loads** - Pre-rendered HTML served immediately
+- **Better SEO** - Search engines can crawl all content
+- **Improved performance** - No server-side rendering needed for pre-rendered pages
+- **Graceful fallback** - If Strapi is unavailable during build, static routes are still pre-rendered
+
+**Build-time Configuration:**
+Set these environment variables before building to enable CMS route enumeration:
+```bash
+NUXT_PUBLIC_STRAPI_URL=https://your-cms-url.com
+NUXT_STRAPI_API_TOKEN=your-api-token
+```
+
+If Strapi is unreachable during build, you'll see warnings but the build will continue with static routes only.
+
 ## 🧹 Code Quality
 
 ### Linting
@@ -207,6 +260,28 @@ const toggleDark = () => {
 
 ## 🇨🇳 China Deployment Notes
 
+This application is optimized for hosting in China with several key considerations:
+
+### China-Compatible Configuration
+
+✅ **No Google CDN Dependencies**
+- All fonts use system fonts (no Google Fonts)
+- No external CDN dependencies by default
+- When external resources are needed, domestic CDN alternatives are configured
+
+✅ **Optimized for Chinese Networks**
+- SSR enabled for fast initial loads
+- Aggressive caching strategy for static assets
+- CDN-friendly cache headers configured
+- ISR (Incremental Static Regeneration) for dynamic content
+
+✅ **Performance Optimizations**
+- Link prefetching enabled (configured in `app.config.ts`)
+- Manual chunk splitting for optimal loading
+- Payload extraction for smaller initial bundles
+- Long-lived cache for static assets (1 year)
+- Short cache with stale-while-revalidate for CMS content
+
 ### Font Loading
 
 The project uses system fonts by default to avoid blocked CDNs. If you need web fonts, use domestic CDNs:
@@ -222,6 +297,24 @@ For faster package installation in China, edit `.npmrc` in the project root:
 ```ini
 registry=https://registry.npmmirror.com
 ```
+
+### Caching Strategy
+
+The application uses a tiered caching approach:
+
+| Route Type | Cache Duration | Strategy |
+|------------|----------------|----------|
+| Static assets (`/_nuxt/**`) | 1 year | Immutable |
+| Homepage (`/`) | 1 hour | SWR with 24h stale |
+| CMS list pages | 10 minutes | SWR with 1h stale |
+| CMS detail pages | 30 minutes | SWR with 1h stale |
+| API routes | No cache | Always fresh |
+
+**SWR (Stale-While-Revalidate)** means:
+- Serve cached content immediately
+- Fetch fresh content in the background
+- Update cache for next request
+- Provides fast response times while keeping content fresh
 
 ## 🔍 Troubleshooting
 

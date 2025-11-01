@@ -13,7 +13,8 @@
     "typecheck": "nuxt typecheck",
     "test": "vitest run",
     "test:unit": "vitest",
-    "clean": "rm -rf .nuxt .output dist node_modules"
+    "clean": "rm -rf .nuxt .output dist node_modules",
+    "analyze": "ANALYZE=true nuxt build"
   },
   "dependencies": {
     "@types/archiver": "^7.0.0",
@@ -43,6 +44,7 @@
     "eslint": "^9.38.0",
     "happy-dom": "^15.7.4",
     "typescript": "^5.9.3",
+    "vite-bundle-analyzer": "^1.2.3",
     "vitest": "^2.1.1",
     "vue-tsc": "^3.1.2"
   }
