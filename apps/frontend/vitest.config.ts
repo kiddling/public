@@ -7,7 +7,7 @@ const rootDir = dirname(fileURLToPath(new URL('./package.json', import.meta.url)
 export default defineConfig({
   test: {
     globals: true,
-    environment: 'jsdom',
+    environment: 'happy-dom',
     coverage: {
       enabled: false,
     },
