@@ -14,6 +14,7 @@ export default defineNuxtConfig({
     '@nuxt/content',
     '@nuxtjs/color-mode',
     '@nuxt/eslint',
+    '@nuxt/icon',
   ],
 
   // SSR configuration for China hosting
