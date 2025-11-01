@@ -47,6 +47,11 @@ apps/frontend/.cache
 
 # Docker
 *.env.docker
+docker-compose.override.yml
+docker-compose.*.yml
+!docker-compose.override.example.yml
+data/
+ssl/
 
 # Logs
 logs/

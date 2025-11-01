@@ -1,0 +1,259 @@
+# =============================================================================
+# DOCKER COMPOSE OVERRIDE EXAMPLES
+# =============================================================================
+# This file demonstrates how to customize docker-compose.yml for different
+# environments (development, staging, production).
+#
+# Usage:
+#   1. Copy sections you need to docker-compose.override.yml
+#   2. Adjust values for your environment
+#   3. Run: docker compose up
+#
+# Docker Compose automatically merges docker-compose.override.yml with
+# docker-compose.yml when running commands.
+#
+# =============================================================================
+
+# =============================================================================
+# DEVELOPMENT ENVIRONMENT EXAMPLE
+# =============================================================================
+# For local development with hot-reload and bind mounts
+
+services:
+  postgres:
+    # Expose ports for local database clients
+    ports:
+      - "5432:5432"
+    # Use local volume for easy inspection
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+
+  cms:
+    # Use bind mounts for hot-reload during development
+    volumes:
+      - ./apps/cms:/opt/app
+      - /opt/app/node_modules
+      - strapi_uploads:/opt/app/public/uploads
+    # Override command for development mode
+    command: ["pnpm", "develop"]
+    environment:
+      NODE_ENV: development
+    # Expose port for direct access
+    ports:
+      - "1337:1337"
+
+  frontend:
+    # Use bind mounts for hot-reload
+    volumes:
+      - ./apps/frontend:/app
+      - /app/node_modules
+      - /app/.nuxt
+    # Override command for development mode
+    command: ["pnpm", "dev"]
+    environment:
+      NODE_ENV: development
+      # Use localhost URLs for development
+      NUXT_PUBLIC_API_BASE_URL: http://localhost:1337
+      NUXT_PUBLIC_STRAPI_URL: http://localhost:1337
+    ports:
+      - "3000:3000"
+      - "24678:24678"  # Nuxt DevTools
+
+# =============================================================================
+# PRODUCTION ENVIRONMENT EXAMPLE
+# =============================================================================
+# For production deployment with CDN and optimizations
+#
+# Uncomment and modify as needed:
+
+# services:
+#   cms:
+#     # Use pre-built image from registry
+#     image: your-registry.com/cms:latest
+#     environment:
+#       NODE_ENV: production
+#       # Production database (managed service)
+#       DATABASE_HOST: your-db-host.com
+#       DATABASE_SSL: "true"
+#     # Don't expose ports directly, use nginx
+#     ports: []
+#     # Increase resources
+#     deploy:
+#       resources:
+#         limits:
+#           cpus: '2'
+#           memory: 2G
+#         reservations:
+#           cpus: '1'
+#           memory: 1G
+#
+#   frontend:
+#     image: your-registry.com/frontend:latest
+#     environment:
+#       NODE_ENV: production
+#       # Use CDN for assets
+#       NUXT_PUBLIC_CDN_URL: https://cdn.example.com
+#       # Use public CMS URL
+#       NUXT_PUBLIC_API_BASE_URL: https://api.example.com
+#       NUXT_PUBLIC_STRAPI_URL: https://api.example.com
+#     ports: []
+#     deploy:
+#       resources:
+#         limits:
+#           cpus: '1'
+#           memory: 1G
+#         reservations:
+#           cpus: '0.5'
+#           memory: 512M
+#
+#   nginx:
+#     profiles: []  # Enable nginx by removing from profile
+#     volumes:
+#       - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+#       - ./config/nginx/conf.d:/etc/nginx/conf.d:ro
+#       - ./ssl:/etc/nginx/ssl:ro  # SSL certificates
+#     ports:
+#       - "80:80"
+#       - "443:443"
+
+# =============================================================================
+# CHINA DEPLOYMENT EXAMPLE
+# =============================================================================
+# Special configuration for China deployment with domestic services
+#
+# Uncomment and modify as needed:
+
+# services:
+#   postgres:
+#     # Use domestic registry mirror
+#     image: registry.cn-hangzhou.aliyuncs.com/library/postgres:16-alpine
+#
+#   cms:
+#     # Build with domestic npm mirror
+#     build:
+#       context: ./apps/cms
+#       args:
+#         NPM_REGISTRY: https://registry.npmmirror.com
+#     environment:
+#       # Baidu services integration
+#       BAIDU_API_KEY: ${BAIDU_API_KEY}
+#       BAIDU_SECRET_KEY: ${BAIDU_SECRET_KEY}
+#
+#   frontend:
+#     build:
+#       context: ./apps/frontend
+#       args:
+#         NPM_REGISTRY: https://registry.npmmirror.com
+#     environment:
+#       # Use domestic CDN
+#       NUXT_PUBLIC_CDN_URL: https://cdn.jsdelivr.net
+#       # For faster loading in China
+#       NUXT_PUBLIC_API_BASE_URL: https://api.yourdomain.cn
+#       NUXT_PUBLIC_STRAPI_URL: https://api.yourdomain.cn
+#
+#   nginx:
+#     # Use domestic nginx mirror
+#     image: registry.cn-hangzhou.aliyuncs.com/library/nginx:alpine
+
+# =============================================================================
+# STAGING ENVIRONMENT EXAMPLE
+# =============================================================================
+# For staging/testing environment
+#
+# Uncomment and modify as needed:
+
+# services:
+#   postgres:
+#     # Use smaller resources for staging
+#     deploy:
+#       resources:
+#         limits:
+#           cpus: '1'
+#           memory: 1G
+#
+#   cms:
+#     environment:
+#       NODE_ENV: staging
+#       # Use staging database
+#       DATABASE_HOST: staging-db.example.com
+#     # Enable debug logging
+#     logging:
+#       driver: "json-file"
+#       options:
+#         max-size: "10m"
+#         max-file: "3"
+#
+#   frontend:
+#     environment:
+#       NODE_ENV: staging
+#       NUXT_PUBLIC_API_BASE_URL: https://staging-api.example.com
+#       NUXT_PUBLIC_STRAPI_URL: https://staging-api.example.com
+
+# =============================================================================
+# WORKER/CRON JOBS EXAMPLE
+# =============================================================================
+# Enable cms-worker for scheduled tasks
+#
+# Uncomment to enable:
+
+# services:
+#   cms-worker:
+#     profiles: []  # Remove from profile to enable by default
+#     # Override command for cron jobs
+#     command: ["node", "/opt/app/scripts/cron.js"]
+#     # Or use a cron scheduler
+#     # command: ["crond", "-f"]
+
+# =============================================================================
+# VOLUME MOUNT EXAMPLES
+# =============================================================================
+# Different volume strategies for different environments
+
+# Development - local bind mounts
+# volumes:
+#   postgres_data:
+#     driver: local
+#     driver_opts:
+#       type: none
+#       device: ${PWD}/data/postgres
+#       o: bind
+#   strapi_uploads:
+#     driver: local
+#     driver_opts:
+#       type: none
+#       device: ${PWD}/data/uploads
+#       o: bind
+
+# Production - named volumes (default, already in docker-compose.yml)
+volumes:
+  postgres_data:
+    driver: local
+  strapi_uploads:
+    driver: local
+
+# Production with cloud storage (example for S3-compatible)
+# volumes:
+#   strapi_uploads:
+#     driver: rexray/s3fs
+#     driver_opts:
+#       accessKey: ${AWS_ACCESS_KEY}
+#       secretKey: ${AWS_SECRET_KEY}
+#       region: ${AWS_REGION}
+#       bucket: ${S3_BUCKET}
+
+# =============================================================================
+# NETWORK EXAMPLES
+# =============================================================================
+
+# networks:
+#   app_network:
+#     driver: bridge
+#     ipam:
+#       config:
+#         - subnet: 172.20.0.0/16
+
+# For production with existing network
+# networks:
+#   app_network:
+#     external: true
+#     name: production_network
