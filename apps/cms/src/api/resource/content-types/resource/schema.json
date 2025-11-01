@@ -37,7 +37,22 @@
       "default": true
     },
     "lastChecked": {
-      "type": "datetime"
+      "type": "datetime",
+      "default": null
+    },
+    "disciplines": {
+      "type": "json",
+      "default": []
+    },
+    "mediaType": {
+      "type": "enumeration",
+      "enum": [
+        "video",
+        "pdf",
+        "link",
+        "dataset"
+      ],
+      "default": "link"
     },
     "qrAsset": {
       "type": "media"

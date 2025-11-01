@@ -97,6 +97,10 @@ export type ResourceCategory =
   | 'Readings'
   | 'PBR Libraries'
 
+export type ResourceDiscipline = '环艺' | '产品' | '视传' | '数媒' | '公艺'
+
+export type ResourceMediaType = 'video' | 'pdf' | 'link' | 'dataset'
+
 export interface ResourceAttributes {
   title: string
   category?: ResourceCategory | null
@@ -104,11 +108,16 @@ export interface ResourceAttributes {
   url: string
   accessibilityFlag?: boolean | null
   lastChecked?: string | null
+  disciplines?: ResourceDiscipline[] | null
+  mediaType?: ResourceMediaType | null
   qrAsset?: {
     data: StrapiCollectionItem<StrapiMedia> | null
   } | null
   file?: {
     data: StrapiCollectionItem<StrapiMedia> | null
+  } | null
+  lessons?: {
+    data: Array<StrapiCollectionItem<any>> | null
   } | null
   createdAt?: string
   updatedAt?: string
@@ -123,8 +132,11 @@ export interface Resource {
   url: string
   accessibilityFlag?: boolean
   lastChecked?: string | null
+  disciplines?: ResourceDiscipline[]
+  mediaType?: ResourceMediaType
   qrAsset?: StrapiMedia | null
   file?: StrapiMedia | null
+  lessons?: any[]
   createdAt?: string
   updatedAt?: string
   publishedAt?: string
