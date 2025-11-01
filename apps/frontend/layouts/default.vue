@@ -38,6 +38,9 @@
         </main>
       </div>
     </div>
+
+    <!-- Cookie Consent Banner -->
+    <CookieConsentBanner />
   </div>
 </template>
 

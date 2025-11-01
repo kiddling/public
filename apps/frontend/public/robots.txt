@@ -1,2 +1,26 @@
-User-Agent: *
-Disallow:
+# robots.txt for Baidu SEO
+# Generated for Chinese market optimization
+
+# Default rules for all crawlers
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_nuxt/
+Disallow: /private/
+
+# Baidu-specific crawler rules
+User-agent: Baiduspider
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_nuxt/
+Disallow: /private/
+# Clean parameters for better indexing
+Clean-param: ref
+Clean-param: utm_source
+Clean-param: utm_medium
+Clean-param: utm_campaign
+
+# Sitemap location
+Sitemap: /sitemap.xml

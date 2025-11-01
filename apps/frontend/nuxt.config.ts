@@ -15,6 +15,7 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     '@nuxt/eslint',
     '@nuxt/icon',
+    '@nuxtjs/sitemap',
   ],
 
   // SSR configuration for China hosting
@@ -24,6 +25,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     // Private keys (server-side only)
     strapiApiToken: process.env.NUXT_STRAPI_API_TOKEN || '',
+    baiduLinkPushToken: process.env.NUXT_BAIDU_LINK_PUSH_TOKEN || '',
     
     // Public keys (exposed to client)
     public: {
@@ -31,6 +33,11 @@ export default defineNuxtConfig({
       strapiUrl: process.env.NUXT_PUBLIC_STRAPI_URL || 'http://localhost:1337',
       cmsUrl: process.env.NUXT_PUBLIC_STRAPI_URL || 'http://localhost:1337',
       cdnUrl: process.env.NUXT_PUBLIC_CDN_URL || '',
+      baiduSiteVerification: process.env.NUXT_PUBLIC_BAIDU_SITE_VERIFICATION || '',
+      baiduAnalyticsId: process.env.NUXT_PUBLIC_BAIDU_ANALYTICS_ID || '',
+      umamiWebsiteId: process.env.NUXT_PUBLIC_UMAMI_WEBSITE_ID || '',
+      umamiScriptUrl: process.env.NUXT_PUBLIC_UMAMI_SCRIPT_URL || '',
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000',
     },
   },
 
@@ -84,5 +91,18 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'node-server',
     compressPublicAssets: true,
+  },
+
+  // Sitemap configuration for SEO
+  sitemap: {
+    siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+    sources: [
+      '/api/__sitemap__/strapi-routes', // Dynamic routes from Strapi
+    ],
+    exclude: [
+      '/api/**',
+      '/admin/**',
+      '/_nuxt/**',
+    ],
   },
 })
