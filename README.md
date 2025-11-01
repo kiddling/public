@@ -80,6 +80,19 @@ Edit `.env` with your configuration - see `apps/cms/README.md` for details.
 
 ## ✨ Key Features
 
+### 🎨 Design Log System
+
+Complete design journal and portfolio management:
+
+- **Interactive Forms**: Structured recording of design process
+- **IndexedDB Storage**: Offline-first with local data storage
+- **PDF Export**: Professional document generation
+- **Search & Filter**: Quick access to past projects
+- **Draft System**: Auto-save and resume unfinished logs
+- **Template API**: Strapi-powered design templates
+
+👉 [View Design Log System Documentation](./docs/DESIGN_LOG_SYSTEM.md)
+
 ### 🔍 Global Search System
 
 Cross-application search that spans all content types:
@@ -103,6 +116,29 @@ Cross-application search that spans all content types:
   - Pagination support
 
 **Usage**: Simply press `Cmd/Ctrl + K` anywhere in the app to start searching!
+
+### 📊 Performance Monitoring
+
+Comprehensive performance tracking and optimization:
+
+- **Web Vitals**: Real-time metrics (LCP, FID, CLS, FCP, TTFB, INP)
+- **Lighthouse CI**: Automated performance audits in CI/CD
+- **Health Checks**: Built-in endpoints for monitoring
+- **Docker Health**: Container health checks and auto-restart
+
+👉 [View Monitoring Documentation](./docs/MONITORING.md)
+
+### 🐳 Docker & CI/CD
+
+Production-ready containerization and automation:
+
+- **Multi-stage Builds**: Optimized Docker images
+- **Docker Compose**: Complete orchestration (Frontend, CMS, PostgreSQL, Redis, Nginx)
+- **GitHub Actions**: Automated testing, building, and deployment
+- **Security Scanning**: Automated vulnerability checks
+
+👉 [View Docker Documentation](./docs/DOCKER.md)  
+👉 [View Deployment Guide](./docs/DEPLOYMENT.md)
 
 ## 📦 Package Manager & Chinese Mirrors
 

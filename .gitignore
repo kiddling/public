@@ -47,6 +47,10 @@ apps/frontend/.cache
 
 # Docker
 *.env.docker
+.env.docker
+
+# Lighthouse CI
+.lighthouseci/
 
 # Logs
 logs/

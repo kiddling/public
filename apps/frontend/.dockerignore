@@ -1,7 +1,6 @@
 node_modules
-.tmp
-.cache
-build
+.nuxt
+.output
 dist
 .git
 .gitignore
@@ -19,5 +18,3 @@ coverage
 *.md
 .DS_Store
 Thumbs.db
-data
-exports
