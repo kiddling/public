@@ -24,11 +24,16 @@ module.exports = {
         'categories:accessibility': ['error', { minScore: 0.9 }],
         'categories:best-practices': ['error', { minScore: 0.9 }],
         'categories:seo': ['error', { minScore: 0.9 }],
-        'first-contentful-paint': ['warn', { maxNumericValue: 2000 }],
+        'first-contentful-paint': ['warn', { maxNumericValue: 1500 }],
         'largest-contentful-paint': ['warn', { maxNumericValue: 2500 }],
         'cumulative-layout-shift': ['warn', { maxNumericValue: 0.1 }],
-        'total-blocking-time': ['warn', { maxNumericValue: 300 }],
-        'speed-index': ['warn', { maxNumericValue: 3000 }],
+        'total-blocking-time': ['warn', { maxNumericValue: 200 }],
+        'speed-index': ['warn', { maxNumericValue: 2500 }],
+        'interactive': ['warn', { maxNumericValue: 3500 }],
+        // Bundle size budgets
+        'resource-summary:script:size': ['warn', { maxNumericValue: 204800 }], // 200KB
+        'resource-summary:stylesheet:size': ['warn', { maxNumericValue: 102400 }], // 100KB
+        'resource-summary:total:size': ['warn', { maxNumericValue: 1048576 }], // 1MB
       },
     },
     upload: {

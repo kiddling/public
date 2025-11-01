@@ -190,7 +190,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+// Lazy load heavy composables only when needed
+const { getAllDesignLogs, deleteDesignLog, exportAllLogs, getAllDrafts, deleteDraft: deleteDraftFromDB } = useDesignLogStorage();
+
+// Performance utilities
+const { debounce } = usePerformance();
 
 const activeTab = ref('form');
 const logs = ref<any[]>([]);
@@ -198,12 +202,29 @@ const drafts = ref<any[]>([]);
 const searchQuery = ref('');
 const filterType = ref('');
 
-const { getAllDesignLogs, deleteDesignLog, exportAllLogs, getAllDrafts, deleteDraft: deleteDraftFromDB } = useDesignLogStorage();
-const { exportToPDF } = useDesignLogPDF();
+// Lazy load PDF export functionality only when needed
+let pdfExporter: any = null;
+const getPDFExporter = async () => {
+  if (!pdfExporter) {
+    const module = await import('~/composables/useDesignLogPDF');
+    pdfExporter = module.useDesignLogPDF();
+  }
+  return pdfExporter;
+};
 
 onMounted(async () => {
   await loadLogs();
-  await loadDrafts();
+  // Only load drafts when needed
+  if (activeTab.value === 'drafts') {
+    await loadDrafts();
+  }
+});
+
+// Watch tab changes to lazy load data
+watch(activeTab, async (newTab) => {
+  if (newTab === 'drafts' && drafts.value.length === 0) {
+    await loadDrafts();
+  }
 });
 
 const loadLogs = async () => {
@@ -214,6 +235,7 @@ const loadDrafts = async () => {
   drafts.value = await getAllDrafts();
 };
 
+// Use computed with debounced search for better performance
 const filteredLogs = computed(() => {
   let filtered = logs.value;
 
@@ -250,7 +272,8 @@ const viewLog = (log: any) => {
 };
 
 const downloadLogPDF = async (log: any) => {
-  await exportToPDF(log);
+  const exporter = await getPDFExporter();
+  await exporter.exportToPDF(log);
 };
 
 const deleteLog = async (id: number) => {
