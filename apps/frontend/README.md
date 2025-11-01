@@ -90,6 +90,135 @@ pnpm lint:fix
 pnpm typecheck
 ```
 
+## ⚡ Performance Monitoring
+
+The application includes comprehensive performance monitoring using Web Vitals and Lighthouse CI.
+
+### Web Vitals
+
+Web Vitals are automatically captured on the client side and reported to the analytics endpoint. Metrics include:
+
+- **CLS** (Cumulative Layout Shift) - Visual stability
+- **FCP** (First Contentful Paint) - Loading performance
+- **FID** (First Input Delay) - Interactivity (legacy)
+- **INP** (Interaction to Next Paint) - Interactivity
+- **LCP** (Largest Contentful Paint) - Loading performance
+- **TTFB** (Time to First Byte) - Server response time
+
+#### Viewing Web Vitals Logs
+
+Web Vitals are logged to the server console in real-time:
+
+```bash
+# Run the development server
+pnpm dev
+
+# In another terminal, check for Web Vitals logs
+pnpm web-vitals:report
+```
+
+Look for entries like:
+```
+[Web Vitals] {"timestamp":"2025-01-01T12:00:00.000Z","metric":"LCP","value":2500,"rating":"good",...}
+```
+
+#### Analytics Consent
+
+Web Vitals respect user analytics consent stored in localStorage under the key `analytics-consent`:
+
+```typescript
+// Enable analytics
+localStorage.setItem('analytics-consent', JSON.stringify({ analytics: true }))
+
+// Disable analytics
+localStorage.setItem('analytics-consent', JSON.stringify({ analytics: false }))
+```
+
+#### Performance Helpers
+
+The Web Vitals plugin provides helpers for custom performance measurements:
+
+```typescript
+// In a component or composable
+const { $webVitals } = useNuxtApp()
+
+// Mark a performance point
+$webVitals.mark('interaction-start')
+
+// Measure between marks
+$webVitals.mark('interaction-end')
+$webVitals.measure('user-interaction', 'interaction-start', 'interaction-end')
+
+// Get all performance entries
+const entries = $webVitals.getEntries()
+```
+
+### Lighthouse CI
+
+Lighthouse CI runs automated performance audits against production builds.
+
+#### Performance Budgets
+
+The following budgets are enforced:
+
+**Category Scores:**
+- Performance: ≥90
+- Accessibility: ≥90
+- Best Practices: ≥90
+- SEO: ≥95
+
+**Core Web Vitals:**
+- Time to Interactive (TTI): <3.5s
+- First Contentful Paint (FCP): <2s
+- Largest Contentful Paint (LCP): <2.5s
+- Total Blocking Time (TBT): <200ms
+- Cumulative Layout Shift (CLS): <0.1
+- Speed Index: <3s
+
+#### Running Lighthouse Locally
+
+```bash
+# 1. Build the production version
+pnpm build
+
+# 2. Run Lighthouse CI (starts preview server automatically)
+pnpm lighthouse:ci
+```
+
+Lighthouse will:
+1. Start a preview server
+2. Run audits on key routes (home, lesson, knowledge card)
+3. Generate HTML and JSON reports
+4. Assert performance budgets
+
+#### Interpreting Results
+
+**Success:**
+All budgets pass - your changes maintain performance standards.
+
+**Failure:**
+1. Check the generated HTML reports in `.lighthouseci/`
+2. Identify which metrics failed
+3. Review Web Vitals data for real-world impact
+4. Optimize code/assets as needed
+5. Re-run Lighthouse
+
+**Common Issues:**
+- Large JavaScript bundles → Code splitting, lazy loading
+- Unoptimized images → Use Nuxt Image, WebP format
+- Render-blocking resources → Defer non-critical CSS/JS
+- Layout shifts → Reserve space for dynamic content
+
+#### CI/CD Integration
+
+In CI pipelines, Lighthouse runs automatically on pull requests:
+
+```bash
+pnpm --filter frontend lighthouse:ci
+```
+
+See `tests/performance/README.md` for detailed documentation.
+
 ## 📁 Project Structure
 
 ```
