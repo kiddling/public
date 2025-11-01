@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "nuxt build",
+    "build:analyze": "ANALYZE=true nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
@@ -16,7 +17,9 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
-    "clean": "rm -rf .nuxt .output dist node_modules"
+    "clean": "rm -rf .nuxt .output dist node_modules",
+    "analyze:bundle": "pnpm build:analyze && open .nuxt/analyze/.vite-inspect/reports.html",
+    "perf:report": "node scripts/performance-report.js"
   },
   "dependencies": {
     "@nuxt/image": "^1.8.1",
@@ -50,7 +53,9 @@
     "@vueuse/nuxt": "^14.0.0",
     "eslint": "^9.38.0",
     "happy-dom": "^15.7.4",
+    "rollup-plugin-visualizer": "^5.12.0",
     "typescript": "^5.9.3",
+    "vite-plugin-compression": "^0.5.1",
     "vitest": "^2.1.1",
     "vue-tsc": "^3.1.2"
   }

@@ -1,3 +1,6 @@
+import { visualizer } from 'rollup-plugin-visualizer'
+import viteCompression from 'vite-plugin-compression'
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
@@ -49,6 +52,7 @@ export default defineNuxtConfig({
 
   // Content module configuration
   content: {
+    // @ts-ignore - highlight is a valid config but types may not be updated
     highlight: {
       theme: {
         default: 'github-light',
@@ -135,6 +139,7 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'node-server',
     compressPublicAssets: true,
+    // @ts-ignore - compression config is valid but types may not be fully exposed
     compression: {
       algorithm: 'gzip',
       // Enable Brotli compression for better compression ratios
@@ -158,5 +163,120 @@ export default defineNuxtConfig({
         },
       },
     },
+  },
+
+  // Vite configuration for build optimizations
+  vite: {
+    build: {
+      // Enable CSS code splitting
+      cssCodeSplit: true,
+      // Optimize chunk size
+      chunkSizeWarningLimit: 500,
+      // Rollup options for better code splitting
+      rollupOptions: {
+        output: {
+          // Manual chunks for better caching
+          manualChunks: (id) => {
+            // Vendor chunks strategy
+            if (id.includes('node_modules')) {
+              // Large libraries get their own chunks
+              if (id.includes('jspdf')) return 'vendor-jspdf'
+              if (id.includes('qrcode')) return 'vendor-qrcode'
+              if (id.includes('markdown-it')) return 'vendor-markdown'
+              if (id.includes('archiver')) return 'vendor-archiver'
+              if (id.includes('better-sqlite3')) return 'vendor-sqlite'
+              if (id.includes('sharp')) return 'vendor-sharp'
+              
+              // Vue ecosystem
+              if (id.includes('@vue') || id.includes('vue-router') || id.includes('pinia')) {
+                return 'vendor-vue'
+              }
+              
+              // VueUse and utilities
+              if (id.includes('@vueuse') || id.includes('axios')) {
+                return 'vendor-utils'
+              }
+              
+              // Other node_modules go to vendor chunk
+              return 'vendor'
+            }
+          },
+          // Optimize chunk file names
+          chunkFileNames: (chunkInfo) => {
+            const facadeModuleId = chunkInfo.facadeModuleId ? chunkInfo.facadeModuleId.split('/').pop() : 'chunk'
+            return `chunks/[name]-[hash].js`
+          },
+          entryFileNames: 'entry/[name]-[hash].js',
+          assetFileNames: 'assets/[name]-[hash].[ext]',
+        },
+      },
+    },
+    // Optimize dependencies
+    optimizeDeps: {
+      include: [
+        'vue',
+        'vue-router',
+        'pinia',
+        '@vueuse/core',
+      ],
+      exclude: [
+        'jspdf',
+        'archiver',
+        'better-sqlite3',
+        'sharp',
+      ],
+    },
+    plugins: [
+      // Bundle analyzer
+      process.env.ANALYZE && visualizer({
+        open: true,
+        filename: '.nuxt/analyze/stats.html',
+        gzipSize: true,
+        brotliSize: true,
+      }),
+      // Compression plugins for production
+      process.env.NODE_ENV === 'production' && viteCompression({
+        algorithm: 'gzip',
+        ext: '.gz',
+        threshold: 10240, // Only compress files > 10KB
+      }),
+      process.env.NODE_ENV === 'production' && viteCompression({
+        algorithm: 'brotliCompress',
+        ext: '.br',
+        threshold: 10240,
+      }),
+    ].filter(Boolean) as any, // Filter out false values and cast to any for type compatibility
+    // Server options for development
+    server: {
+      hmr: {
+        overlay: true,
+      },
+    },
+  },
+
+  // Experimental features for better performance
+  experimental: {
+    // Enable payload extraction for faster hydration
+    payloadExtraction: true,
+    // Enable render JSON payloads with support for revivable payloads
+    renderJsonPayloads: true,
+    // View transitions API
+    viewTransition: true,
+  },
+
+  // Router options for code splitting
+  router: {
+    options: {
+      // Enable strict mode for better performance
+      strict: true,
+    },
+  },
+
+  // Performance hints
+  build: {
+    // Analyze bundle in CI/CD
+    analyze: process.env.ANALYZE === 'true',
+    // Transpile specific packages if needed
+    transpile: [],
   },
 })

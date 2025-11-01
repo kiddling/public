@@ -76,8 +76,8 @@
         </div>
       </div>
 
-      <!-- Lightbox Modal -->
-      <StudentGalleryLightbox
+      <!-- Lightbox Modal - Lazy loaded for better performance -->
+      <LazyStudentGalleryLightbox
         v-if="lightboxOpen"
         :works="works"
         :initial-index="lightboxIndex"
