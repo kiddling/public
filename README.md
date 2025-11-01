@@ -78,6 +78,32 @@ cp .env.example .env
 
 Edit `.env` with your configuration - see `apps/cms/README.md` for details.
 
+## ✨ Key Features
+
+### 🔍 Global Search System
+
+Cross-application search that spans all content types:
+
+- **Comprehensive Coverage**: Search lessons, knowledge cards, student works, and resources
+- **Chinese Segmentation**: Uses `nodejieba` for accurate Chinese word segmentation
+- **Smart Highlighting**: Keywords highlighted with precomputed match ranges
+- **Keyboard Navigation**: 
+  - `Cmd/Ctrl + K` to open search
+  - Arrow keys to navigate results
+  - `Enter` to open, `ESC` to close
+- **Search History**: Automatically saves recent searches (localStorage)
+- **Recent Visits**: Quick access to recently viewed content
+- **Categorized Results**: Results grouped by content type with badges
+- **Difficulty Filtering**: Filter lessons by difficulty level
+- **Instant Suggestions**: Get search suggestions as you type
+- **Accessibility**: Full keyboard navigation, focus trap, ARIA labels
+- **Performance**: 
+  - 300ms debounce for smooth typing
+  - 60-second cache for faster repeat searches
+  - Pagination support
+
+**Usage**: Simply press `Cmd/Ctrl + K` anywhere in the app to start searching!
+
 ## 📦 Package Manager & Chinese Mirrors
 
 This project uses **pnpm** for fast, efficient dependency management. For users in China, we provide mirror configuration options:

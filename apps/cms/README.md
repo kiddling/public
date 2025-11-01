@@ -75,6 +75,40 @@ The admin panel will be available at `http://localhost:1337/admin`
 
 On first run, you'll be prompted to create an admin user.
 
+### Global Search API Setup
+
+The global search API uses Chinese word segmentation via `nodejieba`. After installing dependencies:
+
+```bash
+npm install
+```
+
+The global search endpoint will be available at:
+
+```
+GET /api/global-search?query=<search-term>&type=<lesson|knowledge-card|student-work|resource>&difficulty=<beginner|intermediate|advanced>&page=<1>&pageSize=<20>
+```
+
+**Query Parameters:**
+- `query` (required): Search term (minimum 2 characters)
+- `type` (optional): Comma-separated content types to search
+- `difficulty` (optional): Filter lessons by difficulty (comma-separated)
+- `page` (optional): Page number for pagination (default: 1)
+- `pageSize` (optional): Results per page (default: 20, max: 100)
+
+**Response includes:**
+- Grouped results by content type
+- Highlighted match ranges for keywords
+- Search suggestions
+- Pagination metadata
+
+**Cache Management:**
+Results are cached for 60 seconds. To clear cache:
+
+```
+POST /api/global-search/clear-cache
+```
+
 ### Using Docker Compose
 
 Start with PostgreSQL database:
