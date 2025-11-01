@@ -9,12 +9,14 @@
     @keydown.space.prevent="emit('click')"
   >
     <div class="relative aspect-[3/4] bg-gray-100 dark:bg-gray-700 overflow-hidden">
-      <img
+      <NuxtImg
         v-if="thumbnailUrl"
         :src="thumbnailUrl"
         :alt="thumbnailAlt"
         class="w-full h-full object-cover transition-transform group-hover:scale-105"
         loading="lazy"
+        preset="card"
+        sizes="xs:280px sm:300px md:320px lg:400px"
       />
       <div
         v-else

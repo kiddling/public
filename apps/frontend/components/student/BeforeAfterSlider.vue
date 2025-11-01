@@ -7,23 +7,27 @@
     @mousedown="handleMouseDown"
     @touchstart="handleTouchStart"
   >
-    <img
+    <NuxtImg
       :src="pair.afterMedia.url"
       :alt="pair.afterLabel"
       class="absolute inset-0 w-full h-full object-contain select-none"
       draggable="false"
+      preset="gallery"
+      sizes="sm:640px md:800px lg:1024px"
     />
 
     <div
       class="absolute inset-0 overflow-hidden"
       :style="{ width: `${sliderPosition}%` }"
     >
-      <img
+      <NuxtImg
         :src="pair.beforeMedia.url"
         :alt="pair.beforeLabel"
         class="absolute inset-0 w-full h-full object-contain select-none"
         :style="{ width: containerWidth + 'px' }"
         draggable="false"
+        preset="gallery"
+        sizes="sm:640px md:800px lg:1024px"
       />
     </div>
 

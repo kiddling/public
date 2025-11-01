@@ -178,10 +178,12 @@ onUnmounted(() => {
 
             <div v-if="qrCodeDataUri" class="flex flex-col items-center">
               <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">二维码</h3>
-              <img
+              <NuxtImg
                 :src="qrCodeDataUri"
-                alt="QR Code"
+                alt="QR Code for resource link"
                 class="w-64 h-64 border border-gray-200 dark:border-gray-700 rounded"
+                width="256"
+                height="256"
               />
               <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
                 扫描二维码以在移动设备上打开

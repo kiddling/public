@@ -250,10 +250,184 @@ Change the port in `.env`:
 PORT=3001
 ```
 
+## 🖼️ Image Optimization
+
+The project uses `@nuxt/image` for automatic image optimization, lazy loading, and responsive delivery.
+
+### Using NuxtImg
+
+Replace standard `<img>` tags with `<NuxtImg>`:
+
+```vue
+<template>
+  <!-- Basic usage -->
+  <NuxtImg src="/images/photo.jpg" alt="Description" />
+  
+  <!-- With preset -->
+  <NuxtImg 
+    src="/images/photo.jpg" 
+    alt="Student work" 
+    preset="gallery"
+    loading="lazy"
+  />
+  
+  <!-- With responsive sizes -->
+  <NuxtImg 
+    src="/images/photo.jpg" 
+    alt="Card image"
+    preset="card"
+    sizes="xs:280px sm:320px md:400px lg:500px"
+  />
+</template>
+```
+
+### Image Presets
+
+Pre-configured image sizes for consistent usage:
+
+- **thumbnail**: 200x200px, cover fit (profile pics, small cards)
+- **card**: 400x300px, cover fit (knowledge cards, resource cards)
+- **gallery**: 800px width, contain fit (galleries, lightboxes)
+- **hero**: 1920px width, contain fit (full-screen images)
+
+### Image Formats
+
+Images are automatically converted to modern formats:
+- **WebP**: ~25-35% smaller than JPEG
+- **AVIF**: ~50% smaller than JPEG (where supported)
+- Original format as fallback
+
+### Performance Best Practices
+
+1. **Always provide descriptive alt text** for accessibility
+2. **Use `loading="lazy"`** for below-fold images
+3. **Use appropriate presets** to avoid over-optimization
+4. **Leverage responsive sizes** for different viewports
+
+### Lazy Loading
+
+For custom lazy loading beyond images:
+
+```vue
+<script setup>
+import { useLazyLoad } from '~/composables/useLazyLoad'
+
+const { createLazyObserver, observeImages } = useLazyLoad()
+
+onMounted(() => {
+  const images = document.querySelectorAll('img[data-src]')
+  observeImages(Array.from(images))
+})
+</script>
+```
+
+Or use the directive:
+
+```vue
+<template>
+  <!-- Lazy load with directive -->
+  <div v-lazy-load class="heavy-section">
+    <!-- Content loads when scrolled into view -->
+  </div>
+</template>
+```
+
+## 🔤 Font Strategy
+
+The project uses a system font stack by default for instant loading and optimal Chinese typography.
+
+### System Fonts
+
+Configured in `tailwind.config.ts`:
+
+```typescript
+fontFamily: {
+  sans: [
+    'PingFang SC',        // macOS & iOS
+    'Hiragino Sans GB',   // Older macOS
+    'Microsoft YaHei',    // Windows
+    'WenQuanYi Micro Hei',// Linux
+    'sans-serif',
+  ],
+}
+```
+
+### Self-Hosting Fonts (Optional)
+
+To use custom fonts like Source Han Sans CN:
+
+1. Add font files to `public/fonts/` (see `public/fonts/README.md` for details)
+2. Uncomment `@font-face` declarations in `assets/css/fonts.css`
+3. Uncomment font preload in `nuxt.config.ts`
+4. Uncomment font name in `tailwind.config.ts`
+
+### Font Display Strategy
+
+All fonts use `font-display: swap`:
+- Text appears immediately with fallback fonts
+- Custom fonts swap in when ready
+- No Flash of Invisible Text (FOIT)
+
+### Performance Considerations
+
+**System Fonts** (Current Default):
+- ✅ Zero network requests
+- ✅ Instant rendering
+- ✅ Platform-optimized
+- ✅ Great Chinese support
+
+**Self-Hosted Fonts**:
+- ⚠️ Requires network requests
+- ⚠️ Needs careful subsetting
+- ✅ Consistent branding
+- ✅ Works in China (no CDN blocking)
+
+For most projects, system fonts are recommended.
+
+## 🚀 Asset Delivery & Caching
+
+### Caching Strategy
+
+Long-term caching is configured for static assets:
+
+```typescript
+// In nuxt.config.ts
+nitro: {
+  routeRules: {
+    '/fonts/**': { 
+      headers: { 'Cache-Control': 'public, max-age=31536000, immutable' }
+    },
+    '/images/**': { 
+      headers: { 'Cache-Control': 'public, max-age=31536000, immutable' }
+    },
+    '/_ipx/**': { // Optimized images
+      headers: { 'Cache-Control': 'public, max-age=31536000, immutable' }
+    },
+  }
+}
+```
+
+### Compression
+
+Brotli and Gzip compression are enabled for all assets:
+- HTML, CSS, JS: Automatically compressed
+- Images: Pre-optimized by `@nuxt/image`
+- Fonts: Pre-compressed when using WOFF2
+
+### CDN-Ready
+
+The app is optimized for CDN deployment:
+- Immutable asset URLs with content hashing
+- Long-term browser caching
+- Efficient compression
+- Optimized for China hosting
+
 ## 📚 Resources
 
 - [Nuxt 3 Documentation](https://nuxt.com)
+- [Nuxt Image Documentation](https://image.nuxt.com)
 - [Tailwind CSS Documentation](https://tailwindcss.com)
 - [Pinia Documentation](https://pinia.vuejs.org)
 - [VueUse Documentation](https://vueuse.org)
 - [Nuxt Content Documentation](https://content.nuxt.com)
+- [Source Han Sans Fonts](https://github.com/adobe-fonts/source-han-sans)

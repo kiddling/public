@@ -7,12 +7,14 @@
   >
     <!-- After Image (Background) -->
     <div class="relative">
-      <img
+      <NuxtImg
         v-if="after"
         :src="getImageUrl(after.url)"
-        :alt="after.alternativeText || 'After'"
+        :alt="after.alternativeText || 'After image'"
         class="w-full h-auto object-contain"
         draggable="false"
+        preset="gallery"
+        sizes="sm:640px md:800px lg:1024px"
       />
     </div>
 
@@ -21,12 +23,14 @@
       class="absolute inset-0 overflow-hidden"
       :style="{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }"
     >
-      <img
+      <NuxtImg
         v-if="before"
         :src="getImageUrl(before.url)"
-        :alt="before.alternativeText || 'Before'"
+        :alt="before.alternativeText || 'Before image'"
         class="w-full h-auto object-contain"
         draggable="false"
+        preset="gallery"
+        sizes="sm:640px md:800px lg:1024px"
       />
     </div>
 

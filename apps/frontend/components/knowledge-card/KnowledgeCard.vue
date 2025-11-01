@@ -36,12 +36,14 @@
 
     <!-- Card Media -->
     <div v-if="showMedia && firstMedia" class="card-media relative bg-gray-100 dark:bg-gray-800">
-      <img
+      <NuxtImg
         v-if="isImage(firstMedia)"
         :src="firstMedia.url"
-        :alt="firstMedia.alternativeText || card.title"
+        :alt="firstMedia.alternativeText || card.title || 'Knowledge card image'"
         class="w-full h-48 object-cover"
         loading="lazy"
+        preset="card"
+        sizes="sm:400px md:400px lg:400px"
       />
       <div v-else-if="isVideo(firstMedia)" class="relative h-48 flex items-center justify-center">
         <div class="absolute inset-0 bg-gradient-to-br from-gray-700 to-gray-900"></div>

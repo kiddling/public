@@ -65,11 +65,13 @@
               <div v-if="currentMediaType === 'beforeAfter'" class="w-full">
                 <BeforeAfterSlider :pair="currentBeforeAfterPair" />
               </div>
-              <img
+              <NuxtImg
                 v-else-if="currentMediaUrl"
                 :src="currentMediaUrl"
                 :alt="currentMediaAlt"
                 class="max-w-full max-h-full object-contain"
+                preset="hero"
+                sizes="sm:640px md:1024px lg:1536px xl:1920px"
               />
             </div>
 
@@ -95,10 +97,12 @@
                 :aria-label="`View ${item.type === 'beforeAfter' ? 'before/after comparison' : 'image'} ${index + 1}`"
                 @click="currentMediaIndex = index"
               >
-                <img
+                <NuxtImg
                   :src="item.thumbnailUrl"
                   :alt="`Thumbnail ${index + 1}`"
                   class="w-full h-full object-cover"
+                  width="64"
+                  height="64"
                 />
               </button>
             </div>

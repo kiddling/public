@@ -36,12 +36,14 @@
           class="h-64 w-full object-cover"
           :aria-label="media.alternativeText ?? media.caption ?? '视频 Video'"
         ></video>
-        <img
+        <NuxtImg
           v-else
           :src="media.url"
           :alt="media.alternativeText ?? media.caption ?? '图片 Image'"
           class="h-64 w-full object-cover"
           loading="lazy"
+          preset="gallery"
+          sizes="sm:640px md:400px lg:500px"
         />
         <figcaption v-if="media.caption || media.alternativeText" class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300">
           {{ media.caption ?? media.alternativeText }}

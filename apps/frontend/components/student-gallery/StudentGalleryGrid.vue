@@ -8,13 +8,15 @@
     >
       <div class="relative overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800">
         <!-- Image -->
-        <img
+        <NuxtImg
           v-if="work.assets && work.assets.length > 0"
           :src="getImageUrl(work.assets[0].url)"
-          :alt="work.studentName"
+          :alt="`Student work by ${work.studentName}`"
           loading="lazy"
           class="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-110"
           :style="{ aspectRatio: getAspectRatio(work.assets[0]) }"
+          preset="gallery"
+          sizes="xs:280px sm:300px md:320px lg:400px"
         />
         
         <!-- Placeholder if no image -->
