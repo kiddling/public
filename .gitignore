@@ -10,6 +10,13 @@ coverage/
 *.lcov
 .nyc_output
 
+# Playwright / E2E Tests
+test-results/
+playwright-report/
+playwright/.cache/
+apps/frontend/test-results/
+apps/frontend/playwright-report/
+
 # Production build files
 dist/
 .output/
