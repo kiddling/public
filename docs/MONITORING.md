@@ -473,7 +473,392 @@ module.exports = {
 
 ## 🛠️ 运维工具
 
-### 1. 数据库管理
+### 1. PM2 进程管理
+
+#### PM2 配置
+
+项目提供了 PM2 生态系统配置文件 `config/pm2/ecosystem.config.cjs`，用于管理 Nuxt 前端和 Strapi CMS 进程。
+
+#### 安装 PM2
+
+```bash
+# 全局安装 PM2
+npm install -g pm2
+
+# 或者使用项目本地 PM2
+pnpm add -g pm2
+```
+
+#### 启动应用
+
+```bash
+# 启动所有服务
+pm2 start config/pm2/ecosystem.config.cjs
+
+# 仅启动前端
+pm2 start config/pm2/ecosystem.config.cjs --only frontend
+
+# 仅启动 CMS
+pm2 start config/pm2/ecosystem.config.cjs --only cms
+
+# 使用生产环境配置
+pm2 start config/pm2/ecosystem.config.cjs --env production
+```
+
+#### 管理进程
+
+```bash
+# 查看进程列表
+pm2 list
+
+# 查看进程详情
+pm2 show frontend
+pm2 show cms
+
+# 重启服务
+pm2 restart frontend
+pm2 restart cms
+
+# 重新加载服务（零停机）
+pm2 reload config/pm2/ecosystem.config.cjs
+
+# 停止服务
+pm2 stop frontend
+pm2 stop cms
+
+# 删除进程
+pm2 delete frontend
+pm2 delete cms
+
+# 停止所有进程
+pm2 stop all
+```
+
+#### 查看日志
+
+```bash
+# 查看所有日志
+pm2 logs
+
+# 查看特定服务日志
+pm2 logs frontend
+pm2 logs cms
+
+# 清空日志
+pm2 flush
+
+# 查看实时监控
+pm2 monit
+```
+
+#### 日志管理
+
+```bash
+# 设置日志轮转（每天轮转，保留 30 天）
+pm2 install pm2-logrotate
+pm2 set pm2-logrotate:max_size 10M
+pm2 set pm2-logrotate:retain 30
+pm2 set pm2-logrotate:compress true
+pm2 set pm2-logrotate:dateFormat YYYY-MM-DD_HH-mm-ss
+```
+
+#### 开机自启动
+
+```bash
+# 保存当前进程列表
+pm2 save
+
+# 生成启动脚本
+pm2 startup
+
+# 执行显示的命令（需要 root 权限）
+# 例如: sudo env PATH=$PATH:/usr/bin pm2 startup systemd -u deploy --hp /home/deploy
+
+# 禁用自启动
+pm2 unstartup
+```
+
+#### PM2 监控
+
+```bash
+# 启用 PM2 Plus 监控（可选）
+pm2 plus
+
+# 或使用本地监控面板
+pm2 web
+```
+
+### 2. 备份和恢复
+
+#### 备份脚本
+
+项目提供了自动化备份脚本 `scripts/ops/backup.sh`，支持：
+- PostgreSQL 数据库备份（使用 `pg_dump`）
+- Strapi 上传文件备份（tar 压缩）
+- 自动清理过期备份
+- 灵活的保留策略
+
+#### 运行备份
+
+```bash
+# 基础备份（使用默认配置）
+./scripts/ops/backup.sh
+
+# 自定义保留期（保留 30 天）
+./scripts/ops/backup.sh --retention 30
+
+# 自定义备份目录
+./scripts/ops/backup.sh --backup-dir /var/backups/strapi
+
+# 查看帮助
+./scripts/ops/backup.sh --help
+```
+
+#### 环境变量配置
+
+在 `.env` 文件中配置数据库连接信息：
+
+```bash
+# 数据库配置
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+DATABASE_NAME=strapi
+DATABASE_USERNAME=strapi
+DATABASE_PASSWORD=your_password
+
+# 备份配置
+UPLOADS_DIR=./apps/cms/public/uploads
+BACKUP_DIR=./backups
+RETENTION_DAYS=7
+```
+
+#### 定时备份（使用 cron）
+
+```bash
+# 编辑 crontab
+crontab -e
+
+# 每天凌晨 2 点执行备份
+0 2 * * * cd /path/to/project && ./scripts/ops/backup.sh --retention 30 >> /var/log/backup.log 2>&1
+
+# 每周一凌晨 3 点执行备份（保留 90 天）
+0 3 * * 1 cd /path/to/project && ./scripts/ops/backup.sh --retention 90 --backup-dir /var/backups/weekly
+
+# 每月 1 号凌晨 4 点执行备份（保留 365 天）
+0 4 1 * * cd /path/to/project && ./scripts/ops/backup.sh --retention 365 --backup-dir /var/backups/monthly
+```
+
+#### 恢复数据
+
+使用 `scripts/ops/restore.sh` 恢复备份：
+
+```bash
+# 列出可用备份
+./scripts/ops/restore.sh --list
+
+# 恢复数据库
+./scripts/ops/restore.sh --postgres ./backups/postgres_strapi_20240101_120000.sql.gz
+
+# 恢复上传文件
+./scripts/ops/restore.sh --uploads ./backups/uploads_20240101_120000.tar.gz
+
+# 同时恢复数据库和文件
+./scripts/ops/restore.sh \
+  --postgres ./backups/postgres_strapi_20240101_120000.sql.gz \
+  --uploads ./backups/uploads_20240101_120000.tar.gz
+```
+
+⚠️ **注意**: 恢复操作会覆盖现有数据，请谨慎操作！
+
+### 3. 健康检查
+
+#### 健康检查脚本
+
+项目提供了健康检查脚本 `scripts/ops/healthcheck.sh`，用于监控服务可用性。
+
+#### 运行健康检查
+
+```bash
+# 检查默认端点
+./scripts/ops/healthcheck.sh
+
+# 检查自定义端点
+./scripts/ops/healthcheck.sh \
+  --frontend http://example.com \
+  --cms http://cms.example.com
+
+# 静默模式（仅返回退出码）
+./scripts/ops/healthcheck.sh --silent
+
+# 详细输出
+./scripts/ops/healthcheck.sh --verbose
+
+# 设置超时时间（秒）
+./scripts/ops/healthcheck.sh --timeout 30
+```
+
+#### 退出码说明
+
+- `0`: 所有健康检查通过
+- `1`: 前端健康检查失败
+- `2`: CMS 健康检查失败
+- `3`: 所有健康检查失败
+
+#### 定时健康检查（cron）
+
+```bash
+# 每 5 分钟检查一次
+*/5 * * * * /path/to/scripts/ops/healthcheck.sh --silent || /path/to/alert.sh
+
+# 每小时检查并记录日志
+0 * * * * /path/to/scripts/ops/healthcheck.sh >> /var/log/healthcheck.log 2>&1
+```
+
+#### Webhook 告警
+
+支持通过 webhook 发送告警通知：
+
+```bash
+# 使用 webhook 告警
+./scripts/ops/healthcheck.sh --webhook https://hooks.example.com/alert
+
+# 或通过环境变量配置
+export WEBHOOK_URL=https://hooks.example.com/alert
+./scripts/ops/healthcheck.sh
+```
+
+#### 集成阿里云 CloudMonitor
+
+```bash
+# 创建自定义监控脚本
+#!/bin/bash
+/path/to/scripts/ops/healthcheck.sh --silent
+EXIT_CODE=$?
+
+# 上报到阿里云 CloudMonitor
+aliyun cms PutCustomMetric \
+  --MetricName health_check \
+  --Namespace custom \
+  --Dimensions "{'service':'frontend','environment':'production'}" \
+  --Value $EXIT_CODE
+```
+
+#### 集成腾讯云 CODING
+
+在 CODING 持续集成中配置定时任务：
+
+```yaml
+# .coding-ci.yml
+name: health-check
+on:
+  schedule:
+    - cron: "*/5 * * * *"  # 每 5 分钟执行
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Health Check
+        run: |
+          ./scripts/ops/healthcheck.sh \
+            --frontend https://your-domain.com \
+            --cms https://cms.your-domain.com \
+            --webhook ${{ secrets.WEBHOOK_URL }}
+```
+
+### 4. Docker 日志管理
+
+#### 日志驱动配置
+
+在 `docker-compose.yml` 中配置日志选项：
+
+```yaml
+services:
+  frontend:
+    # ... 其他配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"     # 单个日志文件最大 10MB
+        max-file: "3"       # 保留最近 3 个日志文件
+        compress: "true"    # 压缩轮转的日志
+        labels: "service=frontend"
+        tag: "{{.Name}}/{{.ID}}"
+  
+  cms:
+    # ... 其他配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        compress: "true"
+        labels: "service=cms"
+        tag: "{{.Name}}/{{.ID}}"
+```
+
+#### 查看日志
+
+```bash
+# 查看所有服务日志
+docker-compose logs
+
+# 实时跟踪日志
+docker-compose logs -f
+
+# 查看特定服务日志
+docker-compose logs frontend
+docker-compose logs cms
+
+# 查看最近 100 行日志
+docker-compose logs --tail=100
+
+# 查看特定时间范围的日志
+docker-compose logs --since 2024-01-01T00:00:00
+docker-compose logs --until 2024-01-02T00:00:00
+
+# 带时间戳的日志
+docker-compose logs -t
+```
+
+#### 日志聚合（可选）
+
+使用 Loki + Promtail + Grafana 进行日志聚合：
+
+```yaml
+# docker-compose.yml
+version: '3.8'
+
+services:
+  # ... 现有服务
+
+  loki:
+    image: grafana/loki:latest
+    ports:
+      - "3100:3100"
+    volumes:
+      - loki_data:/loki
+      - ./config/loki:/etc/loki
+    command: -config.file=/etc/loki/config.yml
+
+  promtail:
+    image: grafana/promtail:latest
+    volumes:
+      - /var/log:/var/log
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - ./config/promtail:/etc/promtail
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - loki
+
+volumes:
+  loki_data:
+```
+
+### 5. 数据库管理
 
 #### PgAdmin (PostgreSQL)
 

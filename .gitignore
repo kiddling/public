@@ -108,3 +108,9 @@ temp/
 # Lock files (keep pnpm-lock.yaml if using pnpm)
 # package-lock.json
 # yarn.lock
+
+# Backups
+backups/
+*.backup_*
+*.sql.gz
+*.tar.gz
