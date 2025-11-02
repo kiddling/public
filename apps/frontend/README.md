@@ -148,6 +148,50 @@ docker stop nuxt-app
 docker rm nuxt-app
 ```
 
+### Docker Security Configuration
+
+The Docker container follows security best practices:
+
+#### Non-Root User
+
+The container runs as a non-root user (`nuxt` with UID 1001) for enhanced security. This prevents potential security vulnerabilities from allowing privilege escalation attacks.
+
+To verify the container is running as a non-root user:
+
+```bash
+# Check the user running the process
+docker exec nuxt-app whoami
+# Output: nuxt
+
+# Or inspect the user ID
+docker exec nuxt-app id
+# Output: uid=1001(nuxt) gid=1001(nodejs) groups=1001(nodejs)
+```
+
+#### Health Check
+
+The Dockerfile includes a `HEALTHCHECK` instruction that automatically monitors the application's health:
+
+- **Interval**: 30 seconds - checks health every 30 seconds
+- **Timeout**: 3 seconds - health check request must complete within 3 seconds
+- **Start Period**: 5 seconds - grace period for the app to start up
+- **Retries**: 3 - marks unhealthy after 3 consecutive failures
+
+The health check calls the `/api/health` endpoint and expects a 200 status code.
+
+View the health status:
+
+```bash
+# Check health status
+docker inspect --format='{{.State.Health.Status}}' nuxt-app
+# Output: healthy | unhealthy | starting
+
+# View detailed health check logs
+docker inspect --format='{{json .State.Health}}' nuxt-app | jq
+```
+
+Docker Compose will automatically restart unhealthy containers when configured with `restart: unless-stopped` or similar policies.
+
 ### Environment Variables
 
 The following environment variables can be configured when running the container:
