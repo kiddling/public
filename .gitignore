@@ -114,3 +114,7 @@ backups/
 *.backup_*
 *.sql.gz
 *.tar.gz
+
+# Docker volumes and data directories
+data/
+database/backups/
