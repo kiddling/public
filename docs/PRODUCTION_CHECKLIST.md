@@ -508,25 +508,48 @@ LIMIT 10;
 
 ## 合规性审核
 
-### 数据合规
-- [ ] GDPR 合规审核完成(如适用)
+> **🇨🇳 中国合规要求**: 如果您的应用在中国大陆运营，请务必查看详细的 [中国合规检查清单](./COMPLIANCE_CHECKLIST_CN.md)，包括ICP备案、数据驻留、个人信息保护法(PIPL)、网络安全等级保护等要求。
+
+### 中国大陆合规 (China Mainland Compliance)
+- [ ] ICP备案已完成并展示备案号
+  - 详见: [COMPLIANCE_CHECKLIST_CN.md - ICP备案要求](./COMPLIANCE_CHECKLIST_CN.md#icp备案要求)
+- [ ] 公安备案已完成（上线后30天内）
+- [ ] 数据存储在中国境内服务器
+  - 详见: [COMPLIANCE_CHECKLIST_CN.md - 数据驻留](./COMPLIANCE_CHECKLIST_CN.md#数据驻留与跨境传输)
+- [ ] 个人信息保护法(PIPL)合规
+  - 详见: [COMPLIANCE_CHECKLIST_CN.md - 个人信息保护](./COMPLIANCE_CHECKLIST_CN.md#个人信息保护)
+- [ ] 隐私政策使用简体中文并包含所有法定要求
+  - 模板: [隐私政策模板](./compliance/PRIVACY_POLICY_TEMPLATE.md)
+- [ ] Cookie同意机制已实施
+  - 实现指南: [Cookie同意模板](./compliance/COOKIE_CONSENT_TEMPLATE.md)
+- [ ] 网络安全等级保护(二级/三级)备案已完成
+  - 详见: [COMPLIANCE_CHECKLIST_CN.md - 网络安全等级保护](./COMPLIANCE_CHECKLIST_CN.md#网络安全等级保护)
+- [ ] 内容审核机制已实施（如有用户生成内容）
+
+**责任人**: 合规官、法务团队
+
+### 国际数据合规
+- [ ] GDPR 合规审核完成(如适用于欧盟用户)
   - 用户数据收集同意
   - 数据访问权利
   - 数据删除权利("被遗忘权")
   - 数据可移植性
-- [ ] 数据本地化要求满足(如适用)
-- [ ] 个人信息保护法(PIPL)合规(中国)
+- [ ] CCPA 合规审核完成(如适用于加州用户)
+- [ ] 数据本地化要求满足(各地区)
 - [ ] 数据分类和标记完成
 - [ ] 数据保留策略已实施
 
 **责任人**: 合规官、法务团队
 
-### 隐私政策
-- [ ] 隐私政策已发布
+### 隐私政策和法律文档
+- [ ] 隐私政策已发布并可访问
+  - 模板参考: [隐私政策模板](./compliance/PRIVACY_POLICY_TEMPLATE.md)
 - [ ] Cookie 政策已发布
-- [ ] 用户协议已发布
-- [ ] 数据处理协议已签署
+  - 模板参考: [Cookie政策](./compliance/COOKIE_CONSENT_TEMPLATE.md)
+- [ ] 用户协议/服务条款已发布
+- [ ] 数据处理协议已签署（与第三方供应商）
 - [ ] 隐私影响评估(PIA)已完成
+- [ ] 个人信息保护负责人信息已公开
 
 **责任人**: 法务团队、产品团队
 
