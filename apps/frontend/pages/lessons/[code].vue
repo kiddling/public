@@ -6,7 +6,9 @@
   >
     <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
       <div v-if="pending" class="space-y-6">
-        <div class="animate-pulse space-y-4 rounded-2xl bg-white/80 p-8 shadow-sm ring-1 ring-gray-100 dark:bg-gray-900/80 dark:ring-gray-800">
+        <div
+          class="animate-pulse space-y-4 rounded-2xl bg-white/80 p-8 shadow-sm ring-1 ring-gray-100 dark:bg-gray-900/80 dark:ring-gray-800"
+        >
           <div class="h-4 w-40 rounded bg-gray-200 dark:bg-gray-700"></div>
           <div class="h-10 w-5/6 rounded bg-gray-200 dark:bg-gray-700"></div>
           <div class="h-4 w-2/3 rounded bg-gray-200 dark:bg-gray-700"></div>
@@ -18,12 +20,16 @@
         </div>
 
         <div class="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
-          <div class="animate-pulse space-y-4 rounded-2xl bg-white/80 p-8 shadow-sm ring-1 ring-gray-100 dark:bg-gray-900/80 dark:ring-gray-800">
+          <div
+            class="animate-pulse space-y-4 rounded-2xl bg-white/80 p-8 shadow-sm ring-1 ring-gray-100 dark:bg-gray-900/80 dark:ring-gray-800"
+          >
             <div class="h-4 w-32 rounded bg-gray-200 dark:bg-gray-800"></div>
             <div class="h-52 rounded-lg bg-gray-100 dark:bg-gray-800"></div>
             <div class="h-4 w-48 rounded bg-gray-200 dark:bg-gray-800"></div>
           </div>
-          <div class="animate-pulse space-y-4 rounded-2xl bg-white/80 p-8 shadow-sm ring-1 ring-gray-100 dark:bg-gray-900/80 dark:ring-gray-800">
+          <div
+            class="animate-pulse space-y-4 rounded-2xl bg-white/80 p-8 shadow-sm ring-1 ring-gray-100 dark:bg-gray-900/80 dark:ring-gray-800"
+          >
             <div class="h-4 w-1/2 rounded bg-gray-200 dark:bg-gray-800"></div>
             <div class="h-40 rounded-lg bg-gray-100 dark:bg-gray-800"></div>
           </div>
@@ -40,7 +46,7 @@
         <p v-if="error && error.message" class="mt-2 text-sm text-gray-500 dark:text-gray-400">
           {{ error.message }}
         </p>
-        <div class="mt-6 flex justify-center gap-3 no-print">
+        <div class="no-print mt-6 flex justify-center gap-3">
           <NuxtLink
             to="/"
             class="inline-flex items-center rounded-lg bg-gray-100 px-5 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
@@ -49,7 +55,7 @@
           </NuxtLink>
           <button
             type="button"
-            class="inline-flex items-center rounded-lg bg-primary-500 px-5 py-2 text-sm font-medium text-white transition hover:bg-primary-600"
+            class="bg-primary-500 hover:bg-primary-600 inline-flex items-center rounded-lg px-5 py-2 text-sm font-medium text-white transition"
             @click="refresh"
           >
             Try again
@@ -68,10 +74,15 @@
         />
 
         <main class="grid gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
-          <article class="space-y-10 rounded-2xl bg-white/95 p-8 shadow-sm ring-1 ring-gray-100 dark:bg-gray-900 dark:ring-gray-800">
+          <article
+            class="space-y-10 rounded-2xl bg-white/95 p-8 shadow-sm ring-1 ring-gray-100 dark:bg-gray-900 dark:ring-gray-800"
+          >
             <section v-if="lesson.body" class="space-y-4">
               <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">概述 Overview</h2>
-              <div class="prose max-w-none text-gray-700 dark:prose-invert" v-html="lesson.body"></div>
+              <div
+                class="prose dark:prose-invert max-w-none text-gray-700"
+                v-html="lesson.body"
+              ></div>
             </section>
 
             <LessonDifficultySection
@@ -200,7 +211,7 @@ watch(
     }
     progressStore.markLessonViewed(code)
   },
-  { immediate: true },
+  { immediate: true }
 )
 
 // Auto-complete on scroll to bottom
@@ -311,8 +322,10 @@ useHead(() => {
   }
 
   [data-print-mode='current'][data-visible-level='base'] [data-difficulty-block][data-level='base'],
-  [data-print-mode='current'][data-visible-level='advance'] [data-difficulty-block][data-level='advance'],
-  [data-print-mode='current'][data-visible-level='stretch'] [data-difficulty-block][data-level='stretch'],
+  [data-print-mode='current'][data-visible-level='advance']
+    [data-difficulty-block][data-level='advance'],
+  [data-print-mode='current'][data-visible-level='stretch']
+    [data-difficulty-block][data-level='stretch'],
   [data-print-mode='all'] [data-difficulty-block] {
     display: block !important;
   }

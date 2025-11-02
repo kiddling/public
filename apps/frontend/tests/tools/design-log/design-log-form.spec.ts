@@ -154,7 +154,7 @@ describe('DesignLogForm', () => {
     store.setProjectInfo('Test Project', 'Description')
     store.setDesignProblem('Test problem')
 
-    const resetButton = wrapper.findAll('button').find(btn => btn.text() === 'Reset')
+    const resetButton = wrapper.findAll('button').find((btn) => btn.text() === 'Reset')
     await resetButton?.trigger('click')
 
     expect(global.confirm).toHaveBeenCalled()
@@ -229,7 +229,7 @@ describe('DesignLogForm', () => {
     store.state.saveStatus = 'saving'
     await wrapper.vm.$nextTick()
 
-    const saveButton = wrapper.findAll('button').find(btn => btn.text() === 'Save Design Log')
+    const saveButton = wrapper.findAll('button').find((btn) => btn.text() === 'Save Design Log')
     expect(saveButton?.attributes('disabled')).toBeDefined()
   })
 

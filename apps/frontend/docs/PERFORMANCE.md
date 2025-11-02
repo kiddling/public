@@ -18,10 +18,12 @@
 ### 1. Bundle 分析和优化 (Bundle Analysis)
 
 #### 使用工具
+
 - `rollup-plugin-visualizer` - 可视化 bundle 组成
 - `vite-plugin-compression` - 生成 gzip 和 brotli 压缩文件
 
 #### 分析命令
+
 ```bash
 # 构建并分析 bundle
 pnpm build:analyze
@@ -31,6 +33,7 @@ pnpm perf:report
 ```
 
 #### 手动 Chunk 策略
+
 ```typescript
 // nuxt.config.ts
 manualChunks: (id) => {
@@ -39,12 +42,12 @@ manualChunks: (id) => {
     if (id.includes('jspdf')) return 'vendor-jspdf'
     if (id.includes('qrcode')) return 'vendor-qrcode'
     if (id.includes('markdown-it')) return 'vendor-markdown'
-    
+
     // Vue 生态系统
     if (id.includes('@vue') || id.includes('vue-router')) {
       return 'vendor-vue'
     }
-    
+
     // 其他依赖
     return 'vendor'
   }
@@ -54,17 +57,18 @@ manualChunks: (id) => {
 ### 2. 代码分割 (Code Splitting)
 
 #### 路由级别分割
+
 Nuxt 3 自动为每个页面创建独立的 chunk：
+
 - `/pages/index.vue` → `pages/index.[hash].js`
 - `/pages/lessons/[id].vue` → `pages/lessons/[id].[hash].js`
 
 #### 组件懒加载
+
 ```vue
 <script setup lang="ts">
 // 使用 defineAsyncComponent 懒加载大型组件
-const HeavyComponent = defineAsyncComponent(() => 
-  import('~/components/HeavyComponent.vue')
-)
+const HeavyComponent = defineAsyncComponent(() => import('~/components/HeavyComponent.vue'))
 
 // 或者使用 Nuxt 的 Lazy 前缀
 </script>
@@ -76,6 +80,7 @@ const HeavyComponent = defineAsyncComponent(() =>
 ```
 
 #### 条件导入
+
 ```typescript
 // 仅在需要时导入
 const exportPDF = async () => {
@@ -98,18 +103,14 @@ const exportPDF = async () => {
     loading="lazy"
     alt="Hero image"
   />
-  
+
   <!-- 使用预设配置 -->
-  <NuxtImg
-    src="/images/card.jpg"
-    preset="card"
-    loading="lazy"
-    alt="Card image"
-  />
+  <NuxtImg src="/images/card.jpg" preset="card" loading="lazy" alt="Card image" />
 </template>
 ```
 
 #### 配置的预设
+
 - `thumbnail` - 200x200, WebP
 - `card` - 400x300, WebP
 - `gallery` - 800px width, WebP
@@ -118,7 +119,9 @@ const exportPDF = async () => {
 ### 4. 性能监控 (Performance Monitoring)
 
 #### Web Vitals 集成
+
 自动收集和报告核心性能指标：
+
 - LCP (Largest Contentful Paint)
 - FCP (First Contentful Paint)
 - CLS (Cumulative Layout Shift)
@@ -127,15 +130,10 @@ const exportPDF = async () => {
 - TTFB (Time to First Byte)
 
 #### 使用性能工具
+
 ```typescript
 // 在组件中使用
-const { 
-  mark, 
-  measure, 
-  debounce, 
-  throttle,
-  isSlowConnection 
-} = usePerformance()
+const { mark, measure, debounce, throttle, isSlowConnection } = usePerformance()
 
 // 标记性能点
 mark('data-fetch-start')
@@ -158,6 +156,7 @@ if (isSlowConnection()) {
 ### 5. 资源预加载 (Resource Preloading)
 
 #### 关键资源预加载
+
 ```typescript
 const { preloadResource, prefetchResource } = usePerformance()
 
@@ -169,29 +168,31 @@ prefetchResource('/api/lessons/next')
 ```
 
 #### 字体加载优化
+
 ```html
 <!-- 在 app.vue 或 layouts/default.vue 中 -->
 <template>
-  <Head>
-    <Link
+  <head>
+    <link
       rel="preload"
       href="/fonts/source-han-sans-cn-regular.woff2"
       as="font"
       type="font/woff2"
       crossorigin="anonymous"
     />
-  </Head>
+  </head>
 </template>
 ```
 
 ### 6. 运行时性能优化 (Runtime Performance)
 
 #### Vue 组件优化
+
 ```vue
 <script setup lang="ts">
 // 使用 computed 缓存计算结果
 const filteredItems = computed(() => {
-  return items.value.filter(item => item.active)
+  return items.value.filter((item) => item.active)
 })
 
 // 使用 shallowRef 减少响应式开销
@@ -203,12 +204,12 @@ const heavyData = shallowRef(largeDataset)
   <div v-memo="[item.id, item.updatedAt]">
     <ExpensiveComponent :item="item" />
   </div>
-  
+
   <!-- 使用 v-once 只渲染一次 -->
   <div v-once>
     <StaticContent />
   </div>
-  
+
   <!-- 使用 v-show 而不是 v-if（频繁切换） -->
   <div v-show="isVisible">
     <Content />
@@ -217,7 +218,9 @@ const heavyData = shallowRef(largeDataset)
 ```
 
 #### 长列表优化
+
 对于超过 100 项的列表，考虑使用虚拟滚动：
+
 ```bash
 pnpm add vue-virtual-scroller
 ```
@@ -229,11 +232,7 @@ import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 </script>
 
 <template>
-  <RecycleScroller
-    :items="items"
-    :item-size="80"
-    key-field="id"
-  >
+  <RecycleScroller :items="items" :item-size="80" key-field="id">
     <template #default="{ item }">
       <ListItem :item="item" />
     </template>
@@ -244,6 +243,7 @@ import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 ### 7. CSS 优化 (CSS Optimization)
 
 #### Tailwind CSS 优化
+
 ```javascript
 // tailwind.config.ts
 export default {
@@ -255,10 +255,10 @@ export default {
     './plugins/**/*.{js,ts}',
     './app.vue',
   ],
-  
+
   // 启用 JIT 模式（默认）
   mode: 'jit',
-  
+
   // 移除未使用的样式
   purge: {
     enabled: process.env.NODE_ENV === 'production',
@@ -267,29 +267,31 @@ export default {
 ```
 
 #### 关键 CSS 内联
+
 Nuxt 自动提取和内联关键 CSS，无需额外配置。
 
 ### 8. 服务端渲染优化 (SSR Optimization)
 
 #### 组件缓存
+
 ```typescript
 // nuxt.config.ts
 export default defineNuxtConfig({
   nitro: {
     routeRules: {
       // 缓存静态页面 1 小时
-      '/resources': { 
+      '/resources': {
         swr: 3600,
         cache: {
           maxAge: 3600,
-        }
+        },
       },
       // ISR：每 10 分钟重新验证
-      '/lessons/**': { 
+      '/lessons/**': {
         swr: 600,
         cache: {
           maxAge: 600,
-        }
+        },
       },
     },
   },
@@ -299,13 +301,15 @@ export default defineNuxtConfig({
 ### 9. 依赖优化 (Dependency Optimization)
 
 #### 审查和替换大型依赖
-| 原依赖 | 大小 | 替代方案 | 节省 |
-|--------|------|----------|------|
-| moment.js | ~70KB | date-fns | ~50KB |
-| lodash | ~70KB | lodash-es + tree-shaking | ~60KB |
-| axios | ~15KB | 原生 fetch API | ~15KB |
+
+| 原依赖    | 大小  | 替代方案                 | 节省  |
+| --------- | ----- | ------------------------ | ----- |
+| moment.js | ~70KB | date-fns                 | ~50KB |
+| lodash    | ~70KB | lodash-es + tree-shaking | ~60KB |
+| axios     | ~15KB | 原生 fetch API           | ~15KB |
 
 #### Tree-shaking 友好的导入
+
 ```typescript
 // ❌ 导入整个库
 import _ from 'lodash'
@@ -319,6 +323,7 @@ import { useDebounce } from '@vueuse/core'
 ### 10. 压缩和缓存 (Compression & Caching)
 
 #### 静态资源缓存
+
 ```typescript
 // nuxt.config.ts
 nitro: {
@@ -338,19 +343,20 @@ nitro: {
 ```
 
 #### Gzip 和 Brotli 压缩
+
 自动在构建时生成 `.gz` 和 `.br` 文件，由 Nginx 或 CDN 提供服务。
 
 ## 性能预算 (Performance Budgets)
 
-| 指标 | 目标 | 当前 | 状态 |
-|------|------|------|------|
-| 首屏 JS (gzipped) | < 200KB | - | - |
-| 总 JS (gzipped) | < 500KB | - | - |
-| 总 CSS | < 100KB | - | - |
-| 总资源 | < 1MB | - | - |
-| LCP | < 2.5s | - | - |
-| FCP | < 1.5s | - | - |
-| CLS | < 0.1 | - | - |
+| 指标              | 目标    | 当前 | 状态 |
+| ----------------- | ------- | ---- | ---- |
+| 首屏 JS (gzipped) | < 200KB | -    | -    |
+| 总 JS (gzipped)   | < 500KB | -    | -    |
+| 总 CSS            | < 100KB | -    | -    |
+| 总资源            | < 1MB   | -    | -    |
+| LCP               | < 2.5s  | -    | -    |
+| FCP               | < 1.5s  | -    | -    |
+| CLS               | < 0.1   | -    | -    |
 
 运行 `pnpm perf:report` 查看实际数据。
 
@@ -361,32 +367,38 @@ nitro: {
 Lighthouse CI 自动审计应用性能、可访问性、SEO 和最佳实践。
 
 #### 本地运行
+
 ```bash
 # 运行 Lighthouse 测试
 pnpm lighthouse
 ```
 
 #### 配置
+
 配置文件：`.lighthouserc.json`（项目根目录）
 
 测试的关键路由：
+
 - 首页 (`/`)
 - 学生作品 (`/students`)
 - 设计日志 (`/design-log`)
 - 下载中心 (`/downloads`)
 
 #### 性能预算
+
 - **Performance**: ≥ 90
 - **SEO**: ≥ 95
 - **Accessibility**: ≥ 95
 - **Best Practices**: ≥ 90
 
 #### 资源预算
+
 - JavaScript: ≤ 200KB
 - CSS: ≤ 100KB
 - 总资源: ≤ 1MB
 
 #### CI/CD 集成
+
 Lighthouse CI 在每次 PR 和 push 到 main/develop 分支时自动运行。报告以以下格式上传为 artifacts：
 
 ```
@@ -394,11 +406,13 @@ lighthouse-results-{branch}-{run_number}-{commit_sha}
 ```
 
 #### 查看报告
+
 1. 在 GitHub Actions 中导航到 Lighthouse CI 作业
 2. 下载 `lighthouse-results-*` artifact
 3. 解压并在浏览器中打开 `.html` 报告文件
 
 #### 解读结果
+
 - **Green (90-100)**: 良好，符合预期
 - **Orange (50-89)**: 需要改进
 - **Red (0-49)**: 需要立即修复
@@ -406,6 +420,7 @@ lighthouse-results-{branch}-{run_number}-{commit_sha}
 如果任何核心指标（Performance、SEO）低于预算，构建将失败。
 
 ### 性能报告
+
 ```bash
 # 生成性能报告
 pnpm build:frontend
@@ -413,7 +428,9 @@ pnpm perf:report
 ```
 
 ### 开发环境监控
+
 在浏览器控制台查看实时性能指标：
+
 ```javascript
 // 查看 Web Vitals
 window.__webVitals
@@ -425,6 +442,7 @@ performance.getEntries()
 ## 最佳实践清单 (Best Practices Checklist)
 
 ### 开发阶段
+
 - [ ] 使用 computed 而不是 methods（频繁调用）
 - [ ] 大型组件使用 defineAsyncComponent
 - [ ] 列表使用 key 属性
@@ -432,18 +450,21 @@ performance.getEntries()
 - [ ] 使用 shallowRef/shallowReactive（大型对象）
 
 ### 构建阶段
+
 - [ ] 运行 bundle 分析
 - [ ] 检查重复打包的模块
 - [ ] 验证代码分割策略
 - [ ] 检查性能预算
 
 ### 部署前
+
 - [ ] 运行 Lighthouse 测试
 - [ ] 检查压缩文件生成
 - [ ] 验证缓存策略
 - [ ] 测试慢速网络下的加载
 
 ### 生产环境
+
 - [ ] 启用 CDN
 - [ ] 配置正确的缓存头
 - [ ] 监控实际用户指标 (RUM)
@@ -452,24 +473,28 @@ performance.getEntries()
 ## 故障排查 (Troubleshooting)
 
 ### Bundle 过大
+
 1. 运行 `pnpm build:analyze` 查看组成
 2. 检查是否有重复打包的模块
 3. 考虑懒加载或代码分割
 4. 寻找更轻量的替代库
 
 ### LCP 过高
+
 1. 优化最大内容元素（通常是图片或文本块）
 2. 使用 `<NuxtImg>` 优化图片
 3. 预加载关键资源
 4. 减少渲染阻塞资源
 
 ### CLS 过高
+
 1. 为图片和视频设置尺寸
 2. 避免在现有内容上方插入内容
 3. 使用 CSS transforms 而不是改变尺寸
 4. 预留广告或动态内容的空间
 
 ### FCP/FID 过高
+
 1. 减少 JavaScript 执行时间
 2. 代码分割和懒加载
 3. 移除未使用的代码
@@ -486,6 +511,7 @@ performance.getEntries()
 ## 更新日志 (Changelog)
 
 ### 2024-11-01
+
 - ✅ 添加 bundle 分析配置
 - ✅ 实施代码分割策略
 - ✅ 配置性能监控

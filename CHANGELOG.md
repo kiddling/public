@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed - Lighthouse CI Configuration Improvements 🚀
 
 #### Lighthouse CI Enhancements
+
 - ✅ Migrated from `lighthouserc.js` to `.lighthouserc.json` for JSON-based configuration
 - ✅ Updated performance budgets: Performance ≥90, SEO ≥95 (increased from 90)
 - ✅ Added multiple critical route testing:
@@ -25,12 +26,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added - Batch Optimization Release 🚀
 
 #### Performance Monitoring & Testing
+
 - ✅ Web Vitals integration for real-time performance metrics (LCP, FID, CLS, FCP, TTFB, INP)
 - ✅ Lighthouse CI configuration for automated performance audits
 - ✅ Health check endpoints for Frontend (`/api/health`) and CMS (`/_health`)
 - ✅ Performance monitoring documentation
 
 #### Docker Containerization
+
 - ✅ Multi-stage Dockerfile for Nuxt frontend (3 stages: deps → builder → runner)
 - ✅ Optimized Strapi Docker image (reduced from ~800MB to ~180MB)
 - ✅ Docker Compose orchestration for complete stack (Frontend, CMS, PostgreSQL, Redis, Nginx)
@@ -41,6 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ✅ Comprehensive Docker documentation
 
 #### CI/CD Pipeline
+
 - ✅ GitHub Actions CI/CD workflow with automated testing, building, and deployment
 - ✅ Security audit workflow with npm audit, Snyk, and CodeQL analysis
 - ✅ Automated Docker image building and pushing to container registry
@@ -48,6 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ✅ Code quality checks (lint, format, typecheck)
 
 #### Design Tool Suite
+
 - ✅ Design Template API with Strapi custom endpoints
   - RESTful API for template management
   - CRUD operations for design templates
@@ -71,6 +76,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Draft recovery system
 
 #### Documentation
+
 - ✅ Comprehensive deployment guide (`docs/DEPLOYMENT.md`)
   - System requirements
   - Development and production deployment
@@ -104,11 +110,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 #### Package Management
+
 - Updated root `package.json` with new Docker and Lighthouse scripts
 - Added `@lhci/cli` dev dependency for Lighthouse CI
 - Added `idb`, `jspdf`, and `web-vitals` dependencies to frontend
 
 #### Configuration
+
 - Enhanced `.gitignore` to exclude Docker environment files and Lighthouse CI artifacts
 - Updated README with new features and documentation links
 

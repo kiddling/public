@@ -9,11 +9,13 @@
 ### 1. Bundle 分析和优化 ✅
 
 #### 工具集成
+
 - ✅ 安装并配置 `rollup-plugin-visualizer`
 - ✅ 安装并配置 `vite-plugin-compression`
 - ✅ 添加 bundle 分析命令
 
 **新增命令：**
+
 ```bash
 pnpm build:analyze      # 构建并分析 bundle
 pnpm analyze:bundle     # 打开分析报告
@@ -21,7 +23,9 @@ pnpm perf:report        # 生成性能报告
 ```
 
 #### Manual Chunks 策略
+
 实施智能代码分割，将大型依赖独立打包：
+
 - `vendor-jspdf` - PDF 生成库
 - `vendor-qrcode` - 二维码生成
 - `vendor-markdown` - Markdown 渲染
@@ -35,14 +39,17 @@ pnpm perf:report        # 生成性能报告
 ### 2. 代码分割优化 ✅
 
 #### 路由级别分割
+
 Nuxt 3 自动为每个页面创建独立 chunk（无需额外配置）
 
 #### 组件懒加载
+
 - ✅ 优化 `/pages/students.vue` - Lightbox 组件懒加载
 - ✅ 优化 `/pages/design-log.vue` - PDF 导出按需加载
 - ✅ 创建优化模式示例文档
 
 #### 使用示例
+
 ```vue
 <!-- 自动懒加载 -->
 <LazyHeavyComponent v-if="show" />
@@ -54,7 +61,9 @@ const { jsPDF } = await import('jspdf')
 ### 3. 依赖优化 ✅
 
 #### Tree-shaking 优化
+
 配置 Vite optimizeDeps：
+
 ```typescript
 optimizeDeps: {
   include: ['vue', 'vue-router', 'pinia', '@vueuse/core'],
@@ -63,6 +72,7 @@ optimizeDeps: {
 ```
 
 #### 推荐的导入方式
+
 ```typescript
 // ✅ 推荐
 import { debounce } from 'lodash-es'
@@ -76,21 +86,25 @@ import * as vueuse from '@vueuse/core'
 ### 4. 图片和资源优化 ✅
 
 #### @nuxt/image 配置
+
 - ✅ 自动 WebP 转换（带 fallback）
 - ✅ 响应式图片（srcset）
 - ✅ 懒加载（loading="lazy"）
 - ✅ 预设配置（thumbnail, card, gallery, hero）
 
 **使用效果：**
+
 - 图片大小减少 60-80%
 - 自动适配不同屏幕尺寸
 
 ### 5. 运行时性能优化 ✅
 
 #### 创建 usePerformance Composable
+
 位置：`/apps/frontend/composables/usePerformance.ts`
 
 **提供功能：**
+
 - `mark()` / `measure()` - 性能测量
 - `debounce()` / `throttle()` - 防抖节流
 - `getConnectionSpeed()` - 连接速度检测
@@ -100,6 +114,7 @@ import * as vueuse from '@vueuse/core'
 - `prefersReducedMotion()` - 减少动画检测
 
 #### 实际应用示例
+
 ```typescript
 // 防抖搜索
 const search = debounce(performSearch, 300)
@@ -116,17 +131,20 @@ if (isSlowConnection()) {
 ### 6. 加载性能优化 ✅
 
 #### Vite 构建配置
+
 - ✅ CSS 代码分割
 - ✅ 优化 chunk 大小警告阈值（500KB）
 - ✅ 自动文件名哈希
 - ✅ Gzip 和 Brotli 压缩（阈值 10KB）
 
 #### Nitro 服务器配置
+
 - ✅ 静态资源压缩
 - ✅ Brotli 压缩支持
 - ✅ 长期缓存策略（字体和图片 1 年）
 
 #### 实验性功能
+
 ```typescript
 experimental: {
   payloadExtraction: true,    // 更快的 hydration
@@ -138,9 +156,11 @@ experimental: {
 ### 7. 性能监控 ✅
 
 #### Web Vitals 增强
+
 位置：`/apps/frontend/plugins/web-vitals.client.ts`
 
 **功能增强：**
+
 - ✅ 实时性能指标收集
 - ✅ 性能预算检查
 - ✅ 超预算警告
@@ -158,9 +178,11 @@ experimental: {
 | TTFB | 600ms | 首字节时间 |
 
 #### 性能报告脚本
+
 位置：`/apps/frontend/scripts/performance-report.js`
 
 **功能：**
+
 - 分析构建产物大小
 - 计算 gzip/brotli 压缩后大小
 - 检查性能预算
@@ -171,6 +193,7 @@ experimental: {
 ### 8. 性能预算设置 ✅
 
 #### 配置的预算
+
 ```javascript
 // apps/frontend/scripts/performance-report.js
 entryJS: 200KB (gzipped)      // 首屏 JavaScript
@@ -180,6 +203,7 @@ totalAssets: 1MB              // 所有资源
 ```
 
 #### Lighthouse 配置更新
+
 ```javascript
 // .lighthouserc.json
 'first-contentful-paint': 1500ms
@@ -195,6 +219,7 @@ totalAssets: 1MB              // 所有资源
 ### 9. 文档和示例 ✅
 
 #### 创建的文档
+
 1. **完整性能指南**
    - 位置：`/apps/frontend/docs/PERFORMANCE.md`
    - 内容：详细的优化策略和最佳实践
@@ -217,18 +242,19 @@ totalAssets: 1MB              // 所有资源
 
 ## 验收标准检查
 
-| 标准 | 目标 | 状态 | 说明 |
-|-----|------|------|------|
-| 首屏 JS < 200KB | ✅ | 🔄 待测 | 配置已完成，需实际构建验证 |
-| Lighthouse > 90 | ✅ | 🔄 待测 | 预算已设置 |
-| FCP < 1.5s | ✅ | 🔄 待测 | 配置已完成 |
-| LCP < 2.5s | ✅ | 🔄 待测 | 配置已完成 |
-| 包体积减少 20%+ | ✅ | 🔄 待测 | 优化策略已实施 |
-| 体积分析报告 | ✅ | ✅ 完成 | 脚本已创建并可用 |
+| 标准            | 目标 | 状态    | 说明                       |
+| --------------- | ---- | ------- | -------------------------- |
+| 首屏 JS < 200KB | ✅   | 🔄 待测 | 配置已完成，需实际构建验证 |
+| Lighthouse > 90 | ✅   | 🔄 待测 | 预算已设置                 |
+| FCP < 1.5s      | ✅   | 🔄 待测 | 配置已完成                 |
+| LCP < 2.5s      | ✅   | 🔄 待测 | 配置已完成                 |
+| 包体积减少 20%+ | ✅   | 🔄 待测 | 优化策略已实施             |
+| 体积分析报告    | ✅   | ✅ 完成 | 脚本已创建并可用           |
 
 ## 如何使用
 
 ### 1. 分析 Bundle
+
 ```bash
 cd apps/frontend
 pnpm install
@@ -236,18 +262,21 @@ pnpm build:analyze
 ```
 
 ### 2. 查看性能报告
+
 ```bash
 pnpm build:frontend
 pnpm perf:report
 ```
 
 ### 3. 运行 Lighthouse
+
 ```bash
 pnpm build:frontend
 pnpm lighthouse
 ```
 
 ### 4. 开发环境监控
+
 ```bash
 pnpm dev:frontend
 
@@ -258,11 +287,13 @@ window.__webVitals
 ## 文件清单
 
 ### 配置文件
+
 - ✅ `apps/frontend/nuxt.config.ts` - 添加性能优化配置
 - ✅ `apps/frontend/package.json` - 添加新脚本和依赖
 - ✅ `.lighthouserc.json` - 更新性能预算
 
 ### 新增文件
+
 - ✅ `apps/frontend/composables/usePerformance.ts`
 - ✅ `apps/frontend/scripts/performance-report.js`
 - ✅ `apps/frontend/docs/PERFORMANCE.md`
@@ -273,6 +304,7 @@ window.__webVitals
 - ✅ `PERFORMANCE_OPTIMIZATION_SUMMARY.md` (本文档)
 
 ### 修改的文件
+
 - ✅ `apps/frontend/plugins/web-vitals.client.ts` - 增强监控功能
 - ✅ `apps/frontend/pages/students.vue` - 添加懒加载
 - ✅ `apps/frontend/pages/design-log.vue` - 优化动态导入
@@ -280,6 +312,7 @@ window.__webVitals
 ## 依赖更新
 
 ### 新增开发依赖
+
 ```json
 {
   "rollup-plugin-visualizer": "^5.12.0",
@@ -290,18 +323,21 @@ window.__webVitals
 ## 后续建议
 
 ### 短期（已完成基础设施）
+
 1. 运行 `pnpm build:analyze` 查看实际 bundle
 2. 使用 `pnpm perf:report` 生成基线报告
 3. 根据报告优化特定大型文件
 4. 对长列表实施虚拟滚动
 
 ### 中期
+
 - 添加 Service Worker 离线缓存
 - 实施 PWA 功能
 - 优化字体加载策略（自托管）
 - 配置 CDN
 
 ### 长期
+
 - 服务端组件缓存策略
 - Edge Functions 优化
 - ISR (Incremental Static Regeneration)
@@ -310,6 +346,7 @@ window.__webVitals
 ## 性能优化最佳实践清单
 
 ### ✅ 开发阶段
+
 - [x] 使用 computed 缓存计算结果
 - [x] 大型组件使用懒加载
 - [x] 列表使用唯一 key
@@ -317,17 +354,20 @@ window.__webVitals
 - [x] 使用 shallowRef（大型对象）
 
 ### ✅ 构建阶段
+
 - [x] Bundle 分析配置
 - [x] 代码分割策略
 - [x] 性能预算检查
 - [x] 压缩配置
 
 ### ✅ 部署前
+
 - [x] Lighthouse CI 配置
 - [x] 缓存策略配置
 - [x] 性能报告脚本
 
 ### ✅ 监控
+
 - [x] Web Vitals 集成
 - [x] 性能预算警告
 - [x] 开发环境监控

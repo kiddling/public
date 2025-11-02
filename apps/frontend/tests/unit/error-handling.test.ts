@@ -1,12 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { logger, LogLevel } from '~/utils/logger'
-import {
-  ErrorCode,
-  createError,
-  getErrorMessage,
-  getErrorCode,
-  isAppError,
-} from '~/types/error'
+import { ErrorCode, createError, getErrorMessage, getErrorCode, isAppError } from '~/types/error'
 
 describe('Logger', () => {
   beforeEach(() => {
@@ -43,10 +37,10 @@ describe('Logger', () => {
 
   it('should set minimum log level', () => {
     logger.setMinLevel(LogLevel.ERROR)
-    
+
     const consoleSpy = vi.spyOn(console, 'debug')
     logger.debug('Debug message')
-    
+
     expect(consoleSpy).not.toHaveBeenCalled()
   })
 })
@@ -55,13 +49,8 @@ describe('Error Types', () => {
   it('should create custom error with all properties', () => {
     const originalError = new Error('Original error')
     const context = { userId: '123', action: 'test' }
-    
-    const error = createError(
-      ErrorCode.NOT_FOUND,
-      'Custom message',
-      originalError,
-      context
-    )
+
+    const error = createError(ErrorCode.NOT_FOUND, 'Custom message', originalError, context)
 
     expect(error.code).toBe(ErrorCode.NOT_FOUND)
     expect(error.message).toBe('Custom message')
@@ -107,7 +96,7 @@ describe('Error Types', () => {
 describe('Error Messages', () => {
   it('should have Chinese error messages for all error codes', () => {
     const errorCodes = Object.values(ErrorCode)
-    
+
     errorCodes.forEach((code) => {
       const error = createError(code)
       expect(error.message).toBeTruthy()

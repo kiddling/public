@@ -15,11 +15,11 @@ Source Han Sans (思源黑体) is an excellent choice for Chinese typography. It
 
 2. **Subset Fonts (Recommended)**
    To reduce file size, create subsets containing only the characters you need:
-   
+
    ```bash
    # Install fonttools
    pip install fonttools brotli
-   
+
    # Create a subset (example with common Chinese characters)
    pyftsubset SourceHanSansCN-Regular.otf \
      --text-file=common-chars.txt \
@@ -47,13 +47,15 @@ Source Han Sans (思源黑体) is an excellent choice for Chinese typography. It
 - **Minimal subset**: 200-500 KB per weight (for specific use cases)
 
 For most applications, include:
+
 - Regular (400)
-- Medium (500) 
+- Medium (500)
 - Bold (700)
 
 ### Font Display Strategy
 
 The project uses `font-display: swap` to ensure text remains visible during font loading:
+
 - Text appears immediately using fallback fonts
 - Custom fonts swap in when loaded
 - No blank text (FOIT - Flash of Invisible Text)
@@ -61,6 +63,7 @@ The project uses `font-display: swap` to ensure text remains visible during font
 ### Browser Support
 
 WOFF2 format is supported by:
+
 - Chrome 36+
 - Firefox 39+
 - Safari 12+
@@ -84,11 +87,13 @@ pnpm dev
 ### Alternative: System Fonts
 
 The project is configured to use system fonts by default, which:
+
 - Load instantly (zero network requests)
 - Are optimized for each platform
 - Provide good Chinese typography support
 
 System font stack (in `tailwind.config.ts`):
+
 - PingFang SC (macOS/iOS)
 - Hiragino Sans GB (older macOS)
 - Microsoft YaHei (Windows)

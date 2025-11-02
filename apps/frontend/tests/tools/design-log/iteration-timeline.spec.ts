@@ -6,7 +6,8 @@ import type { IterationItem } from '~/stores/designLog'
 vi.mock('vue-draggable-next', () => ({
   VueDraggableNext: {
     name: 'draggable',
-    template: '<div><slot v-for="(item, index) in modelValue" :element="item" :index="index" /></div>',
+    template:
+      '<div><slot v-for="(item, index) in modelValue" :element="item" :index="index" /></div>',
     props: ['modelValue', 'itemKey', 'handle'],
     emits: ['update:modelValue', 'end'],
   },

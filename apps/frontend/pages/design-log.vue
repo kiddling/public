@@ -1,7 +1,7 @@
 <template>
   <div class="design-log-page container mx-auto px-4 py-8">
-    <div class="max-w-6xl mx-auto">
-      <h1 class="text-3xl font-bold mb-8">设计日志系统</h1>
+    <div class="mx-auto max-w-6xl">
+      <h1 class="mb-8 text-3xl font-bold">设计日志系统</h1>
 
       <!-- Tabs -->
       <div class="mb-8 border-b border-gray-200">
@@ -9,10 +9,10 @@
           <button
             @click="activeTab = 'form'"
             :class="[
-              'py-4 px-1 border-b-2 font-medium text-sm transition-colors',
+              'border-b-2 px-1 py-4 text-sm font-medium transition-colors',
               activeTab === 'form'
                 ? 'border-blue-500 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
             ]"
           >
             创建日志
@@ -20,10 +20,10 @@
           <button
             @click="activeTab = 'list'"
             :class="[
-              'py-4 px-1 border-b-2 font-medium text-sm transition-colors',
+              'border-b-2 px-1 py-4 text-sm font-medium transition-colors',
               activeTab === 'list'
                 ? 'border-blue-500 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
             ]"
           >
             日志列表 ({{ logs.length }})
@@ -31,10 +31,10 @@
           <button
             @click="activeTab = 'drafts'"
             :class="[
-              'py-4 px-1 border-b-2 font-medium text-sm transition-colors',
+              'border-b-2 px-1 py-4 text-sm font-medium transition-colors',
               activeTab === 'drafts'
                 ? 'border-blue-500 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
             ]"
           >
             草稿箱 ({{ drafts.length }})
@@ -49,16 +49,16 @@
 
       <div v-if="activeTab === 'list'" class="space-y-4">
         <!-- Search and Filter -->
-        <div class="flex gap-4 mb-6">
+        <div class="mb-6 flex gap-4">
           <input
             v-model="searchQuery"
             type="text"
             placeholder="搜索项目名称、标签..."
-            class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            class="flex-1 rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
           />
           <select
             v-model="filterType"
-            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            class="rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
           >
             <option value="">所有类型</option>
             <option value="web">网页设计</option>
@@ -70,38 +70,38 @@
         </div>
 
         <!-- Export Options -->
-        <div class="flex gap-4 mb-6">
+        <div class="mb-6 flex gap-4">
           <button
             @click="exportAllAsJSON"
-            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            class="rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
           >
             导出 JSON
           </button>
           <button
             @click="exportAllAsPDF"
-            class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            class="rounded-lg bg-green-600 px-4 py-2 text-white transition-colors hover:bg-green-700"
           >
             导出全部为 PDF
           </button>
         </div>
 
         <!-- Logs List -->
-        <div v-if="filteredLogs.length === 0" class="text-center py-12 text-gray-500">
+        <div v-if="filteredLogs.length === 0" class="py-12 text-center text-gray-500">
           <p class="text-lg">暂无设计日志</p>
-          <p class="text-sm mt-2">点击"创建日志"开始记录你的设计过程</p>
+          <p class="mt-2 text-sm">点击"创建日志"开始记录你的设计过程</p>
         </div>
 
         <div v-else class="grid gap-4">
           <div
             v-for="log in filteredLogs"
             :key="log.id"
-            class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow"
+            class="rounded-lg border border-gray-200 bg-white p-6 transition-shadow hover:shadow-md"
           >
-            <div class="flex justify-between items-start mb-4">
+            <div class="mb-4 flex items-start justify-between">
               <div>
-                <h3 class="text-xl font-semibold mb-2">{{ log.projectName }}</h3>
+                <h3 class="mb-2 text-xl font-semibold">{{ log.projectName }}</h3>
                 <div class="flex gap-2 text-sm text-gray-600">
-                  <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded">
+                  <span class="rounded bg-blue-100 px-2 py-1 text-blue-800">
                     {{ getProjectTypeLabel(log.projectType) }}
                   </span>
                   <span>{{ log.date }}</span>
@@ -132,13 +132,13 @@
               </div>
             </div>
 
-            <p class="text-gray-700 mb-3 line-clamp-2">{{ log.objective }}</p>
+            <p class="mb-3 line-clamp-2 text-gray-700">{{ log.objective }}</p>
 
             <div v-if="log.tags" class="flex flex-wrap gap-2">
               <span
                 v-for="tag in log.tags.split(',')"
                 :key="tag"
-                class="text-xs px-2 py-1 bg-gray-100 text-gray-700 rounded"
+                class="rounded bg-gray-100 px-2 py-1 text-xs text-gray-700"
               >
                 {{ tag.trim() }}
               </span>
@@ -148,7 +148,7 @@
       </div>
 
       <div v-if="activeTab === 'drafts'" class="space-y-4">
-        <div v-if="drafts.length === 0" class="text-center py-12 text-gray-500">
+        <div v-if="drafts.length === 0" class="py-12 text-center text-gray-500">
           <p class="text-lg">暂无草稿</p>
         </div>
 
@@ -156,11 +156,11 @@
           <div
             v-for="draft in drafts"
             :key="draft.id"
-            class="bg-yellow-50 border border-yellow-200 rounded-lg p-6"
+            class="rounded-lg border border-yellow-200 bg-yellow-50 p-6"
           >
-            <div class="flex justify-between items-start">
+            <div class="flex items-start justify-between">
               <div>
-                <h3 class="text-xl font-semibold mb-2">
+                <h3 class="mb-2 text-xl font-semibold">
                   {{ draft.projectName || '未命名草稿' }}
                 </h3>
                 <p class="text-sm text-gray-600">
@@ -170,13 +170,13 @@
               <div class="flex gap-2">
                 <button
                   @click="loadDraft(draft)"
-                  class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                  class="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
                 >
                   继续编辑
                 </button>
                 <button
                   @click="deleteDraft(draft.id!)"
-                  class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                  class="rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700"
                 >
                   删除
                 </button>
@@ -191,69 +191,76 @@
 
 <script setup lang="ts">
 // Lazy load heavy composables only when needed
-const { getAllDesignLogs, deleteDesignLog, exportAllLogs, getAllDrafts, deleteDraft: deleteDraftFromDB } = useDesignLogStorage();
+const {
+  getAllDesignLogs,
+  deleteDesignLog,
+  exportAllLogs,
+  getAllDrafts,
+  deleteDraft: deleteDraftFromDB,
+} = useDesignLogStorage()
 
 // Performance utilities
-const { debounce } = usePerformance();
+const { debounce } = usePerformance()
 
-const activeTab = ref('form');
-const logs = ref<any[]>([]);
-const drafts = ref<any[]>([]);
-const searchQuery = ref('');
-const filterType = ref('');
+const activeTab = ref('form')
+const logs = ref<any[]>([])
+const drafts = ref<any[]>([])
+const searchQuery = ref('')
+const filterType = ref('')
 
 // Lazy load PDF export functionality only when needed
-let pdfExporter: any = null;
+let pdfExporter: any = null
 const getPDFExporter = async () => {
   if (!pdfExporter) {
-    const module = await import('~/composables/useDesignLogPDF');
-    pdfExporter = module.useDesignLogPDF();
+    const module = await import('~/composables/useDesignLogPDF')
+    pdfExporter = module.useDesignLogPDF()
   }
-  return pdfExporter;
-};
+  return pdfExporter
+}
 
 onMounted(async () => {
-  await loadLogs();
+  await loadLogs()
   // Only load drafts when needed
   if (activeTab.value === 'drafts') {
-    await loadDrafts();
+    await loadDrafts()
   }
-});
+})
 
 // Watch tab changes to lazy load data
 watch(activeTab, async (newTab) => {
   if (newTab === 'drafts' && drafts.value.length === 0) {
-    await loadDrafts();
+    await loadDrafts()
   }
-});
+})
 
 const loadLogs = async () => {
-  logs.value = await getAllDesignLogs();
-};
+  logs.value = await getAllDesignLogs()
+}
 
 const loadDrafts = async () => {
-  drafts.value = await getAllDrafts();
-};
+  drafts.value = await getAllDrafts()
+}
 
 // Use computed with debounced search for better performance
 const filteredLogs = computed(() => {
-  let filtered = logs.value;
+  let filtered = logs.value
 
   if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase();
-    filtered = filtered.filter(log =>
-      log.projectName.toLowerCase().includes(query) ||
-      log.tags?.toLowerCase().includes(query) ||
-      log.objective?.toLowerCase().includes(query)
-    );
+    const query = searchQuery.value.toLowerCase()
+    filtered = filtered.filter(
+      (log) =>
+        log.projectName.toLowerCase().includes(query) ||
+        log.tags?.toLowerCase().includes(query) ||
+        log.objective?.toLowerCase().includes(query)
+    )
   }
 
   if (filterType.value) {
-    filtered = filtered.filter(log => log.projectType === filterType.value);
+    filtered = filtered.filter((log) => log.projectType === filterType.value)
   }
 
-  return filtered;
-});
+  return filtered
+})
 
 const getProjectTypeLabel = (type: string): string => {
   const labels: Record<string, string> = {
@@ -262,55 +269,55 @@ const getProjectTypeLabel = (type: string): string => {
     graphic: '平面设计',
     'ui-ux': 'UI/UX设计',
     other: '其他',
-  };
-  return labels[type] || type;
-};
+  }
+  return labels[type] || type
+}
 
 const viewLog = (log: any) => {
   // TODO: Implement modal or detail page
-  console.log('Viewing log:', log);
-};
+  console.log('Viewing log:', log)
+}
 
 const downloadLogPDF = async (log: any) => {
-  const exporter = await getPDFExporter();
-  await exporter.exportToPDF(log);
-};
+  const exporter = await getPDFExporter()
+  await exporter.exportToPDF(log)
+}
 
 const deleteLog = async (id: number) => {
   if (confirm('确定要删除这个设计日志吗？')) {
-    await deleteDesignLog(id);
-    await loadLogs();
+    await deleteDesignLog(id)
+    await loadLogs()
   }
-};
+}
 
 const exportAllAsJSON = async () => {
-  const json = await exportAllLogs();
-  const blob = new Blob([json], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `design-logs-${new Date().toISOString().split('T')[0]}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
-};
+  const json = await exportAllLogs()
+  const blob = new Blob([json], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `design-logs-${new Date().toISOString().split('T')[0]}.json`
+  a.click()
+  URL.revokeObjectURL(url)
+}
 
 const exportAllAsPDF = async () => {
   // TODO: Implement batch PDF export
-  alert('批量导出功能开发中...');
-};
+  alert('批量导出功能开发中...')
+}
 
 const loadDraft = (draft: any) => {
   // TODO: Load draft into form
-  activeTab.value = 'form';
-  console.log('Loading draft:', draft);
-};
+  activeTab.value = 'form'
+  console.log('Loading draft:', draft)
+}
 
 const deleteDraft = async (id: number) => {
   if (confirm('确定要删除这个草稿吗？')) {
-    await deleteDraftFromDB(id);
-    await loadDrafts();
+    await deleteDraftFromDB(id)
+    await loadDrafts()
   }
-};
+}
 </script>
 
 <style scoped>

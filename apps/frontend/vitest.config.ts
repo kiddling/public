@@ -14,12 +14,7 @@ export default defineConfig({
       provider: 'v8',
       enabled: true,
       reporter: ['text', 'html', 'json', 'lcov'],
-      include: [
-        'composables/**/*.ts',
-        'stores/**/*.ts',
-        'utils/**/*.ts',
-        'components/**/*.vue',
-      ],
+      include: ['composables/**/*.ts', 'stores/**/*.ts', 'utils/**/*.ts', 'components/**/*.vue'],
       exclude: [
         'tests/**',
         '**/*.spec.ts',

@@ -6,11 +6,8 @@
     </div>
 
     <!-- Empty State -->
-    <div
-      v-else-if="!cards.length"
-      class="empty-state text-center py-16 px-4"
-    >
-      <div class="max-w-md mx-auto">
+    <div v-else-if="!cards.length" class="empty-state px-4 py-16 text-center">
+      <div class="mx-auto max-w-md">
         <svg
           class="mx-auto h-16 w-16 text-gray-400 dark:text-gray-600"
           fill="none"
@@ -56,7 +53,7 @@
     <!-- Load More / Pagination -->
     <div v-if="hasMore && !loading" class="mt-8 text-center">
       <button
-        class="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+        class="bg-primary-600 hover:bg-primary-700 focus:ring-primary-500 rounded-lg px-6 py-2 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
         @click="$emit('load-more')"
       >
         Load More
@@ -66,7 +63,7 @@
     <!-- Loading More State -->
     <div v-if="loading && cards.length" class="mt-8">
       <div class="flex justify-center">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+        <div class="border-primary-600 h-8 w-8 animate-spin rounded-full border-b-2"></div>
       </div>
     </div>
   </div>
@@ -98,7 +95,7 @@ const props = withDefaults(
     skeletonCount: 6,
     columns: 3,
     emptyTitle: 'No knowledge cards found',
-    emptyMessage: 'Try adjusting your filters or search query to find what you\'re looking for.',
+    emptyMessage: "Try adjusting your filters or search query to find what you're looking for.",
   }
 )
 

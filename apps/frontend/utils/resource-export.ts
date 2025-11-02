@@ -44,10 +44,7 @@ export function generateResourceCSV(resources: Resource[]): string {
     escapeCSVField(stripHtml(resource.description || '')),
   ])
 
-  const csvContent = [
-    headers.join(','),
-    ...rows.map((row) => row.join(',')),
-  ].join('\n')
+  const csvContent = [headers.join(','), ...rows.map((row) => row.join(','))].join('\n')
 
   return csvContent
 }
@@ -56,7 +53,10 @@ export function generateResourceCSV(resources: Resource[]): string {
  * Strip HTML tags from string
  */
 function stripHtml(html: string): string {
-  return html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()
+  return html
+    .replace(/<[^>]*>/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
 }
 
 /**

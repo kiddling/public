@@ -14,6 +14,7 @@
 ### 必需工具
 
 所有脚本都需要：
+
 ```bash
 # Bash shell (内置)
 bash --version
@@ -23,6 +24,7 @@ which curl tar
 ```
 
 备份和恢复脚本额外需要：
+
 ```bash
 # PostgreSQL 客户端工具
 sudo apt-get install postgresql-client
@@ -61,11 +63,13 @@ NODE_ENV=production bash scripts/ops/validate-env.sh
 ### 验证项
 
 **核心配置**：
+
 - `HOST`, `PORT`, `APP_KEYS`
 - `API_TOKEN_SALT`, `ADMIN_JWT_SECRET`
 - `JWT_SECRET`, `TRANSFER_TOKEN_SALT`
 
 **安全配置**：
+
 - HSTS 设置
 - CSP 策略
 - CORS 配置
@@ -73,6 +77,7 @@ NODE_ENV=production bash scripts/ops/validate-env.sh
 - 访问频率限制
 
 **合规配置**：
+
 - ICP 备案号
 - 数据驻留
 - 个人信息保护
@@ -428,24 +433,27 @@ mkdir -p /var/log/ops
 ## 🔒 安全建议
 
 1. **保护备份文件**: 确保备份目录权限正确
+
    ```bash
    chmod 700 /path/to/backups
    chown your-user:your-group /path/to/backups
    ```
 
 2. **敏感信息**: 不要在脚本中硬编码密码，使用环境变量或 `.env` 文件
+
    ```bash
    chmod 600 .env
    ```
 
 3. **远程备份**: 定期将备份同步到远程存储
+
    ```bash
    # 使用 rsync
    rsync -avz /path/to/backups/ user@backup-server:/backups/
-   
+
    # 使用阿里云 OSS
    ossutil cp -r /path/to/backups/ oss://your-bucket/backups/
-   
+
    # 使用腾讯云 COS
    coscmd upload -r /path/to/backups/ /backups/
    ```
@@ -502,6 +510,7 @@ pm2 list
 ## 📞 支持
 
 如遇到问题，请：
+
 1. 查看脚本的 `--help` 输出
 2. 检查生成的日志文件
 3. 确认环境变量配置正确

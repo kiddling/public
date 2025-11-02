@@ -30,6 +30,7 @@ pages/tools/design-log.vue (Main Page)
 Main form component that orchestrates all sections of the design log.
 
 **Features:**
+
 - Project information section (name, description)
 - Design problem statement with word counter
 - Integration with all sub-components
@@ -38,9 +39,11 @@ Main form component that orchestrates all sections of the design log.
 - Reset functionality
 
 **Props:**
+
 - `tooltips?: Record<string, string>` - Tooltip content from templates
 
 **Interactions:**
+
 - Manages form state through Pinia store
 - Validates required fields before submission
 - Shows real-time save status
@@ -50,6 +53,7 @@ Main form component that orchestrates all sections of the design log.
 Manages a dynamic list of design decisions with add/remove functionality.
 
 **Features:**
+
 - Add/remove decision entries dynamically
 - Each decision has: title, description, rationale, impact
 - Visual indicators for each decision
@@ -57,11 +61,13 @@ Manages a dynamic list of design decisions with add/remove functionality.
 - Empty state message
 
 **Props:**
+
 - `decisions: DesignDecision[]` - Array of decisions
 - `tooltip?: string` - Help text
 - `error?: string` - Validation error message
 
 **Events:**
+
 - `add` - Emitted when adding a new decision
 - `update` - Emitted when updating a decision field
 - `remove` - Emitted when removing a decision
@@ -71,6 +77,7 @@ Manages a dynamic list of design decisions with add/remove functionality.
 Interactive timeline component with drag-and-drop reordering using `vue-draggable-next`.
 
 **Features:**
+
 - Drag-and-drop reordering of iterations
 - Keyboard navigation (Arrow Up/Down to reorder)
 - Version tracking with dates
@@ -79,16 +86,19 @@ Interactive timeline component with drag-and-drop reordering using `vue-draggabl
 - Visual drag handle indicator
 
 **Props:**
+
 - `iterations: IterationItem[]` - Array of iterations
 - `tooltip?: string` - Help text
 
 **Events:**
+
 - `add` - Emitted when adding a new iteration
 - `update` - Emitted when updating an iteration
 - `remove` - Emitted when removing an iteration
 - `reorder` - Emitted when items are reordered
 
 **Accessibility:**
+
 - Keyboard-accessible drag handles
 - Arrow key navigation for reordering
 - ARIA labels for screen readers
@@ -99,6 +109,7 @@ Interactive timeline component with drag-and-drop reordering using `vue-draggabl
 File upload component with drag-and-drop support and preview functionality.
 
 **Features:**
+
 - Drag-and-drop file upload
 - Click-to-browse file selection
 - File type validation (images, PDF)
@@ -108,14 +119,17 @@ File upload component with drag-and-drop support and preview functionality.
 - Remove attachment functionality
 
 **Props:**
+
 - `attachments: AttachmentFile[]` - Array of attached files
 - `tooltip?: string` - Help text
 
 **Events:**
+
 - `add` - Emitted when a file is added
 - `remove` - Emitted when a file is removed
 
 **Validation:**
+
 - Accepts: images (all formats), PDF
 - Max file size: 10MB per file
 - Visual feedback for drag state
@@ -125,12 +139,14 @@ File upload component with drag-and-drop support and preview functionality.
 Inline help component that displays contextual guidance.
 
 **Features:**
+
 - Toggle visibility on click
 - Positioned absolutely near the trigger
 - Smooth transitions
 - Auto-dismiss on blur
 
 **Props:**
+
 - `content: string` - Help text to display
 - `ariaLabel?: string` - Accessibility label
 
@@ -141,6 +157,7 @@ Inline help component that displays contextual guidance.
 Located at: `stores/designLog.ts`
 
 **State:**
+
 ```typescript
 {
   projectName: string
@@ -157,10 +174,12 @@ Located at: `stores/designLog.ts`
 ```
 
 **Computed:**
+
 - `wordCount` - Word count for design problem
 - `isValid` - Overall form validation status
 
 **Actions:**
+
 - `setProjectInfo()` - Update project details
 - `setDesignProblem()` - Update problem statement
 - `addDecision()` - Add new decision
@@ -185,11 +204,13 @@ Located at: `stores/designLog.ts`
 Located at: `composables/useDesignLogTemplate.ts`
 
 **Functions:**
+
 - `useDesignLogTemplates()` - Fetch all available templates
 - `useDesignLogTemplate(id)` - Fetch specific template by ID
 - `useDefaultDesignLogTemplate()` - Fetch default template with fallback
 
 **Template Structure:**
+
 ```typescript
 {
   id: number
@@ -210,29 +231,34 @@ Located at: `composables/useDesignLogTemplate.ts`
 If the Strapi API is unavailable, a built-in fallback template is provided with default tooltips and guidance.
 
 **API Endpoint:**
+
 - Base: `/api/cms/design-log-templates`
 - Single: `/api/cms/design-log-templates/{id}`
 
 ## Styling
 
 ### Approach
+
 - **Tailwind CSS** for all styling
 - Dark mode support via `dark:` classes
 - Responsive design with mobile-first approach
 - Consistent spacing using Tailwind's spacing scale
 
 ### Color Scheme
+
 - Primary: Blue (blue-500, blue-600)
 - Success: Green (green-500)
 - Error: Red (red-500)
 - Neutral: Gray scale
 
 ### Responsive Breakpoints
+
 - Mobile: default (< 640px)
 - Tablet: `md:` (≥ 768px)
 - Desktop: `lg:` (≥ 1024px)
 
 ### Design Patterns
+
 - Cards with shadow for content sections
 - Rounded corners (rounded-lg, rounded-md)
 - Hover states for interactive elements
@@ -242,24 +268,28 @@ If the Strapi API is unavailable, a built-in fallback template is provided with 
 ## Accessibility
 
 ### ARIA Support
+
 - All interactive elements have appropriate ARIA labels
 - Form inputs have associated labels
 - Error messages are announced
 - Loading states are indicated
 
 ### Keyboard Navigation
+
 - Tab order follows logical flow
 - Enter/Space for button activation
 - Arrow keys for drag-and-drop reordering
 - Escape to close popovers (planned)
 
 ### Screen Reader Support
+
 - Semantic HTML elements
 - Descriptive button labels
 - Status announcements for save operations
 - List items properly structured
 
 ### Visual Accessibility
+
 - Sufficient color contrast
 - Focus indicators on all interactive elements
 - Icon + text combinations
@@ -268,17 +298,20 @@ If the Strapi API is unavailable, a built-in fallback template is provided with 
 ## Validation
 
 ### Required Fields
+
 1. Project Name
 2. Design Problem Statement
 3. At least one Design Decision
 
 ### Validation Behavior
+
 - Real-time validation on input
 - Error messages display below fields
 - Submit button remains enabled (server handles final validation)
 - Errors clear when user starts typing
 
 ### Error Messages
+
 - Specific, actionable error messages
 - Displayed in red with appropriate icons
 - Persistent until resolved
@@ -286,20 +319,24 @@ If the Strapi API is unavailable, a built-in fallback template is provided with 
 ## Dependencies
 
 ### External Libraries
+
 - `vue-draggable-next` - Drag-and-drop functionality
 - `pinia` - State management
 - `@nuxtjs/tailwindcss` - Styling
 
 ### Nuxt Modules
+
 - `@vueuse/nuxt` - Composable utilities
 - `@nuxtjs/color-mode` - Dark mode support
 
 ## Testing
 
 ### Unit Tests
+
 Located in: `tests/tools/design-log/`
 
 **Test Coverage:**
+
 1. **Component Tests**
    - Form rendering and validation
    - Decision add/remove/update
@@ -316,11 +353,13 @@ Located in: `tests/tools/design-log/`
    - Fallback handling
 
 ### Test Framework
+
 - **Vitest** - Test runner
 - **@vue/test-utils** - Component testing utilities
 - **@nuxt/test-utils** - Nuxt-specific testing helpers
 
 ### Mock Strategy
+
 - Strapi API calls are mocked
 - Drag-and-drop events are simulated
 - File uploads use stub data
@@ -328,27 +367,32 @@ Located in: `tests/tools/design-log/`
 ## UX Considerations
 
 ### Save Status Indicators
+
 - **Idle**: No indicator shown
 - **Saving**: Spinning loader + "Saving..." text
 - **Saved**: Checkmark icon + "Saved successfully" (auto-dismisses after 3s)
 - **Error**: X icon + "Error saving" (persistent)
 
 ### Form State Management
+
 - `isDirty` flag tracks unsaved changes
 - Reset button confirms before clearing
 - Template data only loads if form is clean
 
 ### Help System
+
 - Inline help icons (?) next to labels
 - Popover with contextual guidance
 - Guidance banner at page top
 
 ### Empty States
+
 - Friendly messages when no items exist
 - Call-to-action buttons prominently displayed
 - Icons to reinforce the message
 
 ### File Upload UX
+
 - Visual feedback for drag state
 - File size/type restrictions clearly stated
 - Instant preview for images
@@ -357,12 +401,14 @@ Located in: `tests/tools/design-log/`
 ## Performance
 
 ### Optimizations
+
 - Lazy loading of components
 - Debounced auto-save (if implemented)
 - Efficient reactivity with computed properties
 - Minimal re-renders through proper key usage
 
 ### Loading States
+
 - Loading spinner while fetching template
 - Graceful degradation if API fails
 - Fallback template always available
@@ -381,6 +427,7 @@ Located in: `tests/tools/design-log/`
 ## Maintenance
 
 ### Adding New Fields
+
 1. Update the store interface in `stores/designLog.ts`
 2. Add form fields in `DesignLogForm.vue`
 3. Update validation logic
@@ -388,12 +435,14 @@ Located in: `tests/tools/design-log/`
 5. Update tests
 
 ### Modifying Templates
+
 1. Update Strapi content type
 2. Modify `DesignLogTemplate` interface
 3. Update fallback template
 4. Test loading and display
 
 ### Styling Updates
+
 1. Use Tailwind classes consistently
 2. Test in both light and dark modes
 3. Verify responsive behavior
@@ -404,21 +453,25 @@ Located in: `tests/tools/design-log/`
 ### Common Issues
 
 **Template not loading:**
+
 - Check Strapi API connectivity
 - Verify endpoint configuration
 - Fallback template should still work
 
 **Drag-and-drop not working:**
+
 - Ensure `vue-draggable-next` is installed
 - Check for JavaScript errors
 - Verify browser compatibility
 
 **Dark mode issues:**
+
 - Test with `colorMode.preference = 'dark'`
 - Verify all `dark:` classes are present
 - Check Tailwind config
 
 **Form validation not working:**
+
 - Check store action calls
 - Verify error state updates
 - Ensure error messages are displayed
@@ -426,6 +479,7 @@ Located in: `tests/tools/design-log/`
 ## Contact & Support
 
 For questions or issues with the Design Log Tool, please refer to:
+
 - Project README
 - Component inline documentation
 - Test files for usage examples

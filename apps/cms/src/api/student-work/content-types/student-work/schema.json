@@ -23,24 +23,14 @@
     },
     "discipline": {
       "type": "enumeration",
-      "enum": [
-        "环艺",
-        "产品",
-        "视传",
-        "数媒",
-        "公艺"
-      ]
+      "enum": ["环艺", "产品", "视传", "数媒", "公艺"]
     },
     "grade": {
       "type": "string"
     },
     "loop": {
       "type": "enumeration",
-      "enum": [
-        "Loop 1",
-        "Loop 2",
-        "Loop 3"
-      ]
+      "enum": ["Loop 1", "Loop 2", "Loop 3"]
     },
     "description": {
       "type": "richtext"

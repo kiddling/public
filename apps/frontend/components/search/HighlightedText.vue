@@ -4,7 +4,8 @@
       <mark
         v-if="segment.highlighted"
         class="bg-yellow-200 px-1 font-semibold text-gray-900 dark:bg-yellow-700/50 dark:text-yellow-100"
-      >{{ segment.text }}</mark>
+        >{{ segment.text }}</mark
+      >
       <span v-else>{{ segment.text }}</span>
     </template>
   </span>

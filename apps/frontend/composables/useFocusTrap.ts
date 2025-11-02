@@ -32,12 +32,8 @@ export function useFocusTrap(
   const previouslyFocusedElement = ref<HTMLElement | null>(null)
 
   const getFocusableElements = (container: HTMLElement): HTMLElement[] => {
-    const elements = Array.from(
-      container.querySelectorAll<HTMLElement>(FOCUSABLE_ELEMENTS)
-    )
-    return elements.filter(
-      (el) => !el.hasAttribute('disabled') && el.offsetParent !== null
-    )
+    const elements = Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_ELEMENTS))
+    return elements.filter((el) => !el.hasAttribute('disabled') && el.offsetParent !== null)
   }
 
   const trapFocus = (event: KeyboardEvent) => {

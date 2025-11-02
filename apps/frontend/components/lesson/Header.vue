@@ -1,11 +1,15 @@
 <template>
-  <header class="rounded-2xl bg-white/90 p-8 shadow-sm ring-1 ring-gray-100 dark:bg-gray-900 dark:text-gray-100 dark:ring-gray-800">
+  <header
+    class="rounded-2xl bg-white/90 p-8 shadow-sm ring-1 ring-gray-100 dark:bg-gray-900 dark:text-gray-100 dark:ring-gray-800"
+  >
     <div class="flex flex-wrap items-start justify-between gap-6">
       <div class="max-w-3xl space-y-3">
-        <p class="text-sm font-semibold uppercase tracking-wide text-primary-600 dark:text-primary-300">
+        <p
+          class="text-primary-600 dark:text-primary-300 text-sm font-semibold uppercase tracking-wide"
+        >
           Lesson {{ lesson.code }}
         </p>
-        <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-50 sm:text-4xl">
+        <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl dark:text-gray-50">
           {{ lesson.title }}
         </h1>
         <p v-if="lesson.summary" class="text-base text-gray-600 dark:text-gray-300">
@@ -22,7 +26,7 @@
         </span>
         <button
           type="button"
-          class="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition hover:border-primary-500 hover:text-primary-600 dark:border-gray-700 dark:text-gray-200 dark:hover:border-primary-400 dark:hover:text-primary-300"
+          class="hover:border-primary-500 hover:text-primary-600 dark:hover:border-primary-400 dark:hover:text-primary-300 inline-flex items-center gap-2 rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition dark:border-gray-700 dark:text-gray-200"
           @click="$emit('toggleCompletion')"
         >
           <span v-if="progress.completed">标记为未完成 Mark as incomplete</span>
@@ -40,14 +44,14 @@
       <div class="no-print flex flex-wrap items-center gap-2">
         <button
           type="button"
-          class="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition hover:border-primary-500 hover:text-primary-600 dark:border-gray-700 dark:text-gray-200 dark:hover:border-primary-400 dark:hover:text-primary-300"
+          class="hover:border-primary-500 hover:text-primary-600 dark:hover:border-primary-400 dark:hover:text-primary-300 inline-flex items-center gap-2 rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition dark:border-gray-700 dark:text-gray-200"
           @click="$emit('print', 'current')"
         >
           打印当前难度 Print selected level
         </button>
         <button
           type="button"
-          class="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition hover:border-primary-500 hover:text-primary-600 dark:border-gray-700 dark:text-gray-200 dark:hover:border-primary-400 dark:hover:text-primary-300"
+          class="hover:border-primary-500 hover:text-primary-600 dark:hover:border-primary-400 dark:hover:text-primary-300 inline-flex items-center gap-2 rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition dark:border-gray-700 dark:text-gray-200"
           @click="$emit('print', 'all')"
         >
           打印所有难度 Print all levels
@@ -55,19 +59,30 @@
       </div>
     </div>
 
-    <div v-if="loop" class="mt-6 grid gap-4 rounded-xl border border-dashed border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/40 sm:grid-cols-3">
+    <div
+      v-if="loop"
+      class="mt-6 grid gap-4 rounded-xl border border-dashed border-gray-200 bg-gray-50 p-4 sm:grid-cols-3 dark:border-gray-700 dark:bg-gray-800/40"
+    >
       <div>
-        <p class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Loop Title</p>
-        <p class="mt-1 text-sm font-medium text-gray-900 dark:text-gray-100">{{ loop.title ?? 'Loop' }}</p>
+        <p class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+          Loop Title
+        </p>
+        <p class="mt-1 text-sm font-medium text-gray-900 dark:text-gray-100">
+          {{ loop.title ?? 'Loop' }}
+        </p>
       </div>
       <div>
-        <p class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Sequence</p>
+        <p class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+          Sequence
+        </p>
         <p class="mt-1 text-sm text-gray-900 dark:text-gray-100">
           {{ loop.order != null ? `Step ${loop.order}` : 'Not specified' }}
         </p>
       </div>
       <div v-if="loop.summary || loop.description">
-        <p class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Overview</p>
+        <p class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+          Overview
+        </p>
         <p class="mt-1 text-sm text-gray-700 dark:text-gray-300">
           {{ loop.summary ?? loop.description }}
         </p>

@@ -14,6 +14,7 @@ pnpm perf:report
 ```
 
 **输出：**
+
 - Bundle 可视化：`.nuxt/analyze/stats.html`
 - 性能报告：`performance-report.json`
 
@@ -97,11 +98,7 @@ const handleScroll = throttle((event) => {
 ```vue
 <template>
   <!-- 只在 id 或 updatedAt 变化时重新渲染 -->
-  <div
-    v-for="item in items"
-    :key="item.id"
-    v-memo="[item.id, item.updatedAt]"
-  >
+  <div v-for="item in items" :key="item.id" v-memo="[item.id, item.updatedAt]">
     <ExpensiveComponent :item="item" />
   </div>
 </template>
@@ -111,14 +108,14 @@ const handleScroll = throttle((event) => {
 
 ### 目标值
 
-| 指标 | 目标 |
-|------|------|
+| 指标    | 目标              |
+| ------- | ----------------- |
 | 首屏 JS | < 200KB (gzipped) |
-| 总 JS | < 500KB (gzipped) |
-| 总 CSS | < 100KB |
-| FCP | < 1.5s |
-| LCP | < 2.5s |
-| CLS | < 0.1 |
+| 总 JS   | < 500KB (gzipped) |
+| 总 CSS  | < 100KB           |
+| FCP     | < 1.5s            |
+| LCP     | < 2.5s            |
+| CLS     | < 0.1             |
 
 ### 检查命令
 
@@ -136,14 +133,14 @@ pnpm lighthouse
 
 ```typescript
 const {
-  mark,              // 标记性能点
-  measure,           // 测量性能
-  debounce,          // 防抖
-  throttle,          // 节流
-  getConnectionSpeed,// 连接速度
+  mark, // 标记性能点
+  measure, // 测量性能
+  debounce, // 防抖
+  throttle, // 节流
+  getConnectionSpeed, // 连接速度
   isSlowConnection, // 慢速检测
-  preloadResource,   // 预加载
-  prefetchResource,  // 预取
+  preloadResource, // 预加载
+  prefetchResource, // 预取
 } = usePerformance()
 ```
 
@@ -208,12 +205,7 @@ pnpm build:analyze
 
 ```vue
 <!-- 1. 优化最大元素（通常是图片） -->
-<NuxtImg
-  src="/hero.jpg"
-  preset="hero"
-  priority
-  loading="eager"
-/>
+<NuxtImg src="/hero.jpg" preset="hero" priority loading="eager" />
 
 <!-- 2. 预加载关键资源 -->
 <Link rel="preload" href="/hero.jpg" as="image" />
@@ -223,12 +215,7 @@ pnpm build:analyze
 
 ```vue
 <!-- 为图片设置尺寸 -->
-<NuxtImg
-  src="/image.jpg"
-  width="400"
-  height="300"
-  alt="Image"
-/>
+<NuxtImg src="/image.jpg" width="400" height="300" alt="Image" />
 
 <!-- 或使用 aspect-ratio -->
 <div class="aspect-w-16 aspect-h-9">
@@ -253,6 +240,7 @@ pnpm build:analyze
 ## ✅ 检查清单
 
 开发新功能时：
+
 - [ ] 大型组件使用懒加载
 - [ ] 图片使用 `<NuxtImg>`
 - [ ] 搜索/滚动使用防抖/节流
@@ -260,12 +248,14 @@ pnpm build:analyze
 - [ ] 避免不必要的响应式
 
 提交前：
+
 - [ ] 运行 `pnpm build:analyze`
 - [ ] 检查 bundle 大小
 - [ ] 运行 `pnpm perf:report`
 - [ ] 检查性能预算
 
 部署前：
+
 - [ ] 运行 `pnpm lighthouse`
 - [ ] 检查 Performance 分数
 - [ ] 验证 Web Vitals 指标

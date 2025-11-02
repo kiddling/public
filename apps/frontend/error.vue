@@ -1,63 +1,67 @@
 <template>
   <NuxtLayout>
-    <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 px-4">
-      <div class="max-w-2xl w-full">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 md:p-12">
+    <div
+      class="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4 dark:from-gray-900 dark:to-gray-800"
+    >
+      <div class="w-full max-w-2xl">
+        <div class="rounded-2xl bg-white p-8 shadow-2xl md:p-12 dark:bg-gray-800">
           <!-- Error Icon -->
-          <div class="flex justify-center mb-6">
-            <div 
-              class="w-20 h-20 rounded-full flex items-center justify-center"
+          <div class="mb-6 flex justify-center">
+            <div
+              class="flex h-20 w-20 items-center justify-center rounded-full"
               :class="iconBgClass"
             >
-              <Icon :name="iconName" class="w-12 h-12" :class="iconColorClass" />
+              <Icon :name="iconName" class="h-12 w-12" :class="iconColorClass" />
             </div>
           </div>
 
           <!-- Error Title -->
-          <h1 class="text-3xl md:text-4xl font-bold text-center text-gray-900 dark:text-white mb-4">
+          <h1 class="mb-4 text-center text-3xl font-bold text-gray-900 md:text-4xl dark:text-white">
             {{ title }}
           </h1>
 
           <!-- Error Message -->
-          <p class="text-lg text-center text-gray-600 dark:text-gray-300 mb-8">
+          <p class="mb-8 text-center text-lg text-gray-600 dark:text-gray-300">
             {{ message }}
           </p>
 
           <!-- Error Details (Dev only) -->
           <div v-if="isDev && error?.stack" class="mb-8">
-            <details class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
-              <summary class="cursor-pointer font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <details class="rounded-lg bg-gray-50 p-4 dark:bg-gray-900">
+              <summary class="mb-2 cursor-pointer font-semibold text-gray-700 dark:text-gray-300">
                 错误详情 (仅开发环境)
               </summary>
-              <pre class="text-xs text-gray-600 dark:text-gray-400 overflow-x-auto">{{ error.stack }}</pre>
+              <pre class="overflow-x-auto text-xs text-gray-600 dark:text-gray-400">{{
+                error.stack
+              }}</pre>
             </details>
           </div>
 
           <!-- Action Buttons -->
-          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <div class="flex flex-col justify-center gap-4 sm:flex-row">
             <button
               v-if="showRetry"
               @click="handleRetry"
-              class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl"
+              class="rounded-lg bg-indigo-600 px-6 py-3 font-semibold text-white shadow-lg transition-colors duration-200 hover:bg-indigo-700 hover:shadow-xl"
             >
-              <Icon name="mdi:refresh" class="w-5 h-5 inline-block mr-2" />
+              <Icon name="mdi:refresh" class="mr-2 inline-block h-5 w-5" />
               重试
             </button>
-            
+
             <button
               @click="handleGoHome"
-              class="px-6 py-3 bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold rounded-lg transition-colors duration-200"
+              class="rounded-lg border-2 border-gray-300 bg-white px-6 py-3 font-semibold text-gray-700 transition-colors duration-200 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
             >
-              <Icon name="mdi:home" class="w-5 h-5 inline-block mr-2" />
+              <Icon name="mdi:home" class="mr-2 inline-block h-5 w-5" />
               返回首页
             </button>
 
             <button
               v-if="canGoBack"
               @click="handleGoBack"
-              class="px-6 py-3 bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold rounded-lg transition-colors duration-200"
+              class="rounded-lg border-2 border-gray-300 bg-white px-6 py-3 font-semibold text-gray-700 transition-colors duration-200 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
             >
-              <Icon name="mdi:arrow-left" class="w-5 h-5 inline-block mr-2" />
+              <Icon name="mdi:arrow-left" class="mr-2 inline-block h-5 w-5" />
               返回上一页
             </button>
           </div>
@@ -66,7 +70,10 @@
           <div class="mt-8 text-center">
             <p class="text-sm text-gray-500 dark:text-gray-400">
               如果问题持续存在，请联系
-              <a href="mailto:support@example.com" class="text-indigo-600 dark:text-indigo-400 hover:underline">
+              <a
+                href="mailto:support@example.com"
+                class="text-indigo-600 hover:underline dark:text-indigo-400"
+              >
                 技术支持
               </a>
             </p>

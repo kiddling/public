@@ -3,10 +3,10 @@
     <!-- Example 1: Lazy Loading Heavy Components -->
     <section class="example-section">
       <h2>1. 懒加载重型组件 (Lazy Loading Heavy Components)</h2>
-      
+
       <!-- Only load when needed -->
       <LazyHeavyChart v-if="showChart" :data="chartData" />
-      
+
       <button @click="showChart = !showChart">
         {{ showChart ? '隐藏图表' : '显示图表' }}
       </button>
@@ -15,7 +15,7 @@
     <!-- Example 2: Virtual Scrolling for Long Lists -->
     <section class="example-section">
       <h2>2. 虚拟滚动优化长列表 (Virtual Scrolling)</h2>
-      
+
       <!-- For lists > 100 items, use virtual scrolling -->
       <div v-if="items.length > 100" class="virtual-list">
         <!-- Would use vue-virtual-scroller here -->
@@ -23,7 +23,7 @@
           {{ item.name }}
         </div>
       </div>
-      
+
       <!-- Regular list for small datasets -->
       <div v-else>
         <div v-for="item in items" :key="item.id">
@@ -35,7 +35,7 @@
     <!-- Example 3: Debounced Search -->
     <section class="example-section">
       <h2>3. 防抖搜索 (Debounced Search)</h2>
-      
+
       <input
         v-model="searchQuery"
         @input="debouncedSearch"
@@ -43,7 +43,7 @@
         placeholder="搜索..."
         class="search-input"
       />
-      
+
       <p>搜索中: {{ isSearching ? '是' : '否' }}</p>
       <p>结果: {{ searchResults.length }} 项</p>
     </section>
@@ -51,20 +51,18 @@
     <!-- Example 4: Throttled Scroll -->
     <section class="example-section">
       <h2>4. 节流滚动 (Throttled Scroll)</h2>
-      
+
       <div class="scrollable" @scroll="throttledScroll">
-        <div v-for="i in 100" :key="i" class="scroll-item">
-          Item {{ i }}
-        </div>
+        <div v-for="i in 100" :key="i" class="scroll-item">Item {{ i }}</div>
       </div>
-      
+
       <p>滚动位置: {{ scrollPosition }}px</p>
     </section>
 
     <!-- Example 5: v-memo for Expensive Renders -->
     <section class="example-section">
       <h2>5. v-memo 优化渲染 (Memoized Rendering)</h2>
-      
+
       <!-- Only re-render when these dependencies change -->
       <div v-for="item in expensiveItems" :key="item.id" v-memo="[item.id, item.updatedAt]">
         <ExpensiveComponent :item="item" />
@@ -74,7 +72,7 @@
     <!-- Example 6: v-once for Static Content -->
     <section class="example-section">
       <h2>6. v-once 静态内容 (Static Content)</h2>
-      
+
       <!-- Render once and never update -->
       <div v-once>
         <h3>{{ staticTitle }}</h3>
@@ -85,7 +83,7 @@
     <!-- Example 7: Computed Caching -->
     <section class="example-section">
       <h2>7. 计算属性缓存 (Computed Caching)</h2>
-      
+
       <!-- Uses cached value unless dependencies change -->
       <p>过滤后的项目: {{ filteredItems.length }}</p>
       <p>总价: {{ totalPrice }}</p>
@@ -94,7 +92,7 @@
     <!-- Example 8: Dynamic Imports -->
     <section class="example-section">
       <h2>8. 动态导入 (Dynamic Imports)</h2>
-      
+
       <button @click="exportPDF">导出 PDF</button>
       <button @click="generateQR">生成二维码</button>
     </section>
@@ -102,7 +100,7 @@
     <!-- Example 9: Image Optimization -->
     <section class="example-section">
       <h2>9. 图片优化 (Image Optimization)</h2>
-      
+
       <!-- Auto WebP conversion and responsive images -->
       <NuxtImg
         src="/images/sample.jpg"
@@ -116,10 +114,10 @@
     <!-- Example 10: Slow Connection Detection -->
     <section class="example-section">
       <h2>10. 慢速连接检测 (Slow Connection Detection)</h2>
-      
+
       <p>连接速度: {{ connectionSpeed }}</p>
       <p>慢速连接: {{ isSlowConnection ? '是' : '否' }}</p>
-      
+
       <div v-if="isSlowConnection">
         <p class="warning">检测到慢速连接，已启用低质量模式</p>
       </div>
@@ -128,7 +126,7 @@
     <!-- Example 11: Preloading -->
     <section class="example-section">
       <h2>11. 资源预加载 (Resource Preloading)</h2>
-      
+
       <button @click="preloadNextPage">预加载下一页</button>
       <button @click="preloadFont">预加载字体</button>
     </section>
@@ -136,11 +134,8 @@
     <!-- Example 12: Reduce Motion -->
     <section class="example-section">
       <h2>12. 减少动画 (Reduced Motion)</h2>
-      
-      <div
-        :class="{ 'animate-fade-in': !reducedMotion }"
-        class="animated-box"
-      >
+
+      <div :class="{ 'animate-fade-in': !reducedMotion }" class="animated-box">
         {{ reducedMotion ? '静态模式' : '动画模式' }}
       </div>
     </section>
@@ -149,10 +144,10 @@
 
 <script setup lang="ts">
 // Performance utilities
-const { 
-  debounce, 
-  throttle, 
-  getConnectionSpeed, 
+const {
+  debounce,
+  throttle,
+  getConnectionSpeed,
   isSlowConnection: checkSlowConnection,
   prefersReducedMotion,
   preloadResource,
@@ -166,10 +161,12 @@ const showChart = ref(false)
 const chartData = ref([1, 2, 3, 4, 5])
 
 // Example 2: Virtual Scrolling
-const items = ref(Array.from({ length: 1000 }, (_, i) => ({
-  id: i,
-  name: `Item ${i}`,
-})))
+const items = ref(
+  Array.from({ length: 1000 }, (_, i) => ({
+    id: i,
+    name: `Item ${i}`,
+  }))
+)
 const visibleItems = computed(() => items.value.slice(0, 50))
 
 // Example 3: Debounced Search
@@ -180,14 +177,14 @@ const isSearching = ref(false)
 const performSearch = async (query: string) => {
   isSearching.value = true
   mark('search-start')
-  
+
   // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, 300))
-  
-  searchResults.value = items.value.filter(item =>
+  await new Promise((resolve) => setTimeout(resolve, 300))
+
+  searchResults.value = items.value.filter((item) =>
     item.name.toLowerCase().includes(query.toLowerCase())
   )
-  
+
   mark('search-end')
   measure('search-duration', 'search-start', 'search-end')
   isSearching.value = false
@@ -216,7 +213,7 @@ const staticDescription = '这段内容永远不会改变'
 // Example 7: Computed Caching
 const filteredItems = computed(() => {
   console.log('Filtered items computed')
-  return items.value.filter(item => item.id % 2 === 0)
+  return items.value.filter((item) => item.id % 2 === 0)
 })
 
 const totalPrice = computed(() => {
@@ -230,7 +227,7 @@ const exportPDF = async () => {
   const { jsPDF } = await import('jspdf')
   mark('pdf-import-end')
   measure('pdf-import', 'pdf-import-start', 'pdf-import-end')
-  
+
   // Use jsPDF
   console.log('Exporting PDF...')
 }
@@ -240,7 +237,7 @@ const generateQR = async () => {
   const QRCode = await import('qrcode')
   mark('qr-import-end')
   measure('qr-import', 'qr-import-start', 'qr-import-end')
-  
+
   // Use QRCode
   console.log('Generating QR code...')
 }

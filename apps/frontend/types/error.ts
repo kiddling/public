@@ -7,7 +7,7 @@ export enum ErrorCode {
   NETWORK_ERROR = 'NETWORK_ERROR',
   TIMEOUT = 'TIMEOUT',
   OFFLINE = 'OFFLINE',
-  
+
   // API errors
   API_ERROR = 'API_ERROR',
   UNAUTHORIZED = 'UNAUTHORIZED',
@@ -15,11 +15,11 @@ export enum ErrorCode {
   NOT_FOUND = 'NOT_FOUND',
   SERVER_ERROR = 'SERVER_ERROR',
   BAD_REQUEST = 'BAD_REQUEST',
-  
+
   // Client errors
   VALIDATION_ERROR = 'VALIDATION_ERROR',
   PARSE_ERROR = 'PARSE_ERROR',
-  
+
   // Unknown
   UNKNOWN_ERROR = 'UNKNOWN_ERROR',
 }
@@ -92,15 +92,15 @@ export function getErrorMessage(error: unknown): string {
   if (isAppError(error)) {
     return error.message
   }
-  
+
   if (error instanceof Error) {
     return error.message
   }
-  
+
   if (typeof error === 'string') {
     return error
   }
-  
+
   return ERROR_MESSAGES[ErrorCode.UNKNOWN_ERROR]
 }
 
@@ -108,6 +108,6 @@ export function getErrorCode(error: unknown): ErrorCode {
   if (isAppError(error)) {
     return error.code
   }
-  
+
   return ErrorCode.UNKNOWN_ERROR
 }

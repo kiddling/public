@@ -7,6 +7,7 @@
 ## 优化目标 (Optimization Goals)
 
 ### 性能指标目标
+
 - ✅ 首屏 JS bundle < 200KB (gzipped)
 - ✅ Lighthouse Performance 分数 > 90
 - ✅ 首次内容绘制 (FCP) < 1.5s
@@ -19,10 +20,12 @@
 ### 1. Bundle 分析和优化 (Bundle Analysis & Optimization)
 
 #### 工具集成
+
 - ✅ **rollup-plugin-visualizer** - 可视化 bundle 组成
 - ✅ **vite-plugin-compression** - 自动生成 gzip/brotli 压缩
 
 #### 新增命令
+
 ```bash
 # 分析 bundle 大小
 pnpm build:analyze
@@ -32,6 +35,7 @@ pnpm perf:report
 ```
 
 #### Manual Chunks 策略
+
 实施了智能代码分割策略，将大型依赖库独立打包：
 
 ```typescript
@@ -50,6 +54,7 @@ pnpm perf:report
 ```
 
 **优势：**
+
 - 更好的缓存策略
 - 并行下载优化
 - 减少重复打包
@@ -57,13 +62,16 @@ pnpm perf:report
 ### 2. 代码分割优化 (Code Splitting)
 
 #### 路由级别分割
+
 Nuxt 3 自动为每个页面生成独立的 chunk：
+
 - `/pages/index.vue` → 独立 chunk
 - `/pages/lessons/[id].vue` → 独立 chunk
 - `/pages/students.vue` → 独立 chunk
 - 等等...
 
 #### 组件懒加载
+
 已优化关键页面的组件加载：
 
 ```vue
@@ -75,11 +83,13 @@ const { jsPDF } = await import('jspdf')
 ```
 
 **实施位置：**
+
 - ✅ `/pages/students.vue` - Lightbox 组件懒加载
 - ✅ `/pages/design-log.vue` - PDF 导出功能按需加载
 - ✅ 所有模态框和弹窗组件
 
 #### 依赖按需加载
+
 ```typescript
 // ❌ 旧方式：全部预加载
 import { jsPDF } from 'jspdf'
@@ -97,12 +107,14 @@ const exportPDF = async () => {
 已配置 `@nuxt/image` 模块进行自动优化：
 
 #### 功能特性
+
 - ✅ 自动 WebP 转换（带 fallback）
 - ✅ 响应式图片（srcset）
 - ✅ 懒加载（loading="lazy"）
 - ✅ 图片预设配置
 
 #### 配置的预设
+
 ```typescript
 thumbnail: 200x200, WebP, cover
 card: 400x300, WebP, cover
@@ -111,6 +123,7 @@ hero: 1920px, WebP, inside
 ```
 
 #### 使用示例
+
 ```vue
 <NuxtImg
   src="/images/card.jpg"
@@ -122,6 +135,7 @@ hero: 1920px, WebP, inside
 ```
 
 **效果：**
+
 - 图片大小减少 60-80%
 - 自动适配不同屏幕尺寸
 - 提升加载速度
@@ -129,6 +143,7 @@ hero: 1920px, WebP, inside
 ### 4. 性能监控 (Performance Monitoring)
 
 #### Web Vitals 集成
+
 增强的 Web Vitals 插件，包含：
 
 - ✅ 实时性能指标收集
@@ -137,6 +152,7 @@ hero: 1920px, WebP, inside
 - ✅ 开发环境性能日志
 
 **监控指标：**
+
 - LCP (Largest Contentful Paint) - 预算: 2500ms
 - FCP (First Contentful Paint) - 预算: 1500ms
 - CLS (Cumulative Layout Shift) - 预算: 0.1
@@ -145,23 +161,25 @@ hero: 1920px, WebP, inside
 - TTFB (Time to First Byte) - 预算: 600ms
 
 #### 性能工具 Composable
+
 创建了 `usePerformance` composable，提供：
 
 ```typescript
 const {
-  mark,              // 标记性能点
-  measure,           // 测量性能
-  debounce,          // 防抖函数
-  throttle,          // 节流函数
+  mark, // 标记性能点
+  measure, // 测量性能
+  debounce, // 防抖函数
+  throttle, // 节流函数
   getConnectionSpeed, // 获取连接速度
-  isSlowConnection,  // 检测慢速连接
-  preloadResource,   // 预加载资源
-  prefetchResource,  // 预取资源
-  observeLongTasks,  // 观察长任务
+  isSlowConnection, // 检测慢速连接
+  preloadResource, // 预加载资源
+  prefetchResource, // 预取资源
+  observeLongTasks, // 观察长任务
 } = usePerformance()
 ```
 
 **实际应用：**
+
 - 搜索防抖（300ms）
 - 滚动节流（100ms）
 - 慢速连接自适应
@@ -170,6 +188,7 @@ const {
 ### 5. 构建优化 (Build Optimization)
 
 #### Vite 配置优化
+
 ```typescript
 // CSS 代码分割
 cssCodeSplit: true
@@ -186,6 +205,7 @@ optimizeDeps: {
 ```
 
 #### Nitro 配置优化
+
 ```typescript
 // 静态资源压缩
 compressPublicAssets: true
@@ -214,9 +234,11 @@ experimental: {
 ### 7. 运行时优化示例 (Runtime Optimization Examples)
 
 创建了完整的性能优化模式示例文件：
+
 - 📄 `/docs/examples/performance-patterns.vue`
 
 **包含模式：**
+
 1. ✅ 组件懒加载
 2. ✅ 虚拟滚动
 3. ✅ 防抖搜索
@@ -233,14 +255,16 @@ experimental: {
 ## 性能预算 (Performance Budgets)
 
 ### 配置的预算
-| 资源类型 | 预算 | 说明 |
-|---------|------|------|
+
+| 资源类型          | 预算  | 说明            |
+| ----------------- | ----- | --------------- |
 | 入口 JS (gzipped) | 200KB | 首屏 JavaScript |
-| 总 JS (gzipped) | 500KB | 所有 JavaScript |
-| 总 CSS | 100KB | 所有样式表 |
-| 总资源 | 1MB | 所有资源总和 |
+| 总 JS (gzipped)   | 500KB | 所有 JavaScript |
+| 总 CSS            | 100KB | 所有样式表      |
+| 总资源            | 1MB   | 所有资源总和    |
 
 ### Lighthouse 配置
+
 ```javascript
 // .lighthouserc.json
 'first-contentful-paint': 1500ms
@@ -254,9 +278,11 @@ experimental: {
 ## 工具和脚本 (Tools & Scripts)
 
 ### 性能分析脚本
+
 创建了 `/scripts/performance-report.js`：
 
 **功能：**
+
 - ✅ 分析构建产物大小
 - ✅ 计算 gzip/原始大小
 - ✅ 检查性能预算
@@ -265,6 +291,7 @@ experimental: {
 - ✅ 预算超标时失败
 
 ### 使用方法
+
 ```bash
 # 1. 构建应用
 pnpm build:frontend
@@ -277,6 +304,7 @@ pnpm perf:report
 ```
 
 ### 报告内容
+
 ```json
 {
   "timestamp": "2024-11-01T...",
@@ -294,11 +322,13 @@ pnpm perf:report
 ## 文档 (Documentation)
 
 ### 创建的文档
+
 1. ✅ `/docs/PERFORMANCE.md` - 完整性能优化指南
 2. ✅ `/docs/examples/performance-patterns.vue` - 优化模式示例
 3. ✅ `PERFORMANCE_OPTIMIZATION.md` - 本实施报告
 
 ### 文档内容
+
 - 优化策略详解
 - 代码示例
 - 最佳实践清单
@@ -308,6 +338,7 @@ pnpm perf:report
 ## 依赖更新 (Dependency Updates)
 
 ### 新增开发依赖
+
 ```json
 {
   "rollup-plugin-visualizer": "^5.12.0",
@@ -316,6 +347,7 @@ pnpm perf:report
 ```
 
 ### 已存在的优化依赖
+
 ```json
 {
   "@nuxt/image": "^1.8.1",
@@ -327,6 +359,7 @@ pnpm perf:report
 ## 最佳实践清单 (Best Practices Checklist)
 
 ### 开发阶段
+
 - ✅ 使用 computed 缓存计算结果
 - ✅ 大型组件使用懒加载
 - ✅ 列表使用唯一 key
@@ -334,17 +367,20 @@ pnpm perf:report
 - ✅ 使用 shallowRef（大型对象）
 
 ### 构建阶段
+
 - ✅ Bundle 分析配置
 - ✅ 代码分割策略
 - ✅ 性能预算检查
 - ✅ 压缩配置
 
 ### 部署前
+
 - ✅ Lighthouse CI 配置
 - ✅ 缓存策略配置
 - ✅ 性能报告脚本
 
 ### 监控
+
 - ✅ Web Vitals 集成
 - ✅ 性能预算警告
 - ✅ 开发环境监控
@@ -352,6 +388,7 @@ pnpm perf:report
 ## 8. 预渲染和 ISR 优化 (Pre-rendering & ISR Optimization)
 
 ### Nitro 预渲染配置
+
 实施了智能预渲染策略，静态页面在构建时生成：
 
 ```typescript
@@ -379,27 +416,31 @@ nitro: {
 ```
 
 **优势：**
+
 - 首屏加载更快
 - 减少服务器负载
 - 更好的 SEO
 - 离线可访问性
 
 ### 路由规则和缓存策略
+
 针对不同类型的页面配置了差异化的缓存策略：
 
 #### 静态页面（Pre-rendered + SWR）
+
 ```typescript
-'/': { 
+'/': {
   prerender: true,
   swr: true,  // 启用 stale-while-revalidate
 }
-'/design-log': { 
+'/design-log': {
   prerender: true,
   swr: 3600,  // 1小时后重新验证
 }
 ```
 
 #### CMS 驱动页面（ISR）
+
 ```typescript
 '/lessons/**': {
   swr: 1800,  // 30分钟缓存
@@ -411,6 +452,7 @@ nitro: {
 ```
 
 #### API 路由（短缓存）
+
 ```typescript
 '/api/**': {
   cache: {
@@ -420,6 +462,7 @@ nitro: {
 ```
 
 **ISR 优势：**
+
 - 平衡内容新鲜度和性能
 - 适合 CMS 数据不频繁更新的场景
 - 提供过期内容同时后台刷新
@@ -428,6 +471,7 @@ nitro: {
 ### 9. Feature-based 代码分割 (Feature-based Code Splitting)
 
 #### 按功能域分割
+
 增强了 manual chunks 策略，按功能模块组织代码：
 
 ```typescript
@@ -458,6 +502,7 @@ if (id.includes('/pages/downloads/') || id.includes('/pages/resources/')) {
 ```
 
 **优势：**
+
 - 按需加载功能模块
 - 更好的代码组织
 - 提高缓存命中率
@@ -466,9 +511,11 @@ if (id.includes('/pages/downloads/') || id.includes('/pages/resources/')) {
 ### 10. 智能预取优化 (Smart Prefetching)
 
 #### 针对中国带宽环境优化
+
 创建了智能预取插件 (`plugins/smart-prefetch.client.ts`)：
 
 **功能特性：**
+
 1. **连接速度检测** - 仅在快速连接（4G/5G）时预取
 2. **节省流量模式** - 尊重用户的 Save-Data 设置
 3. **带宽阈值** - 下行速度 > 1.5 Mbps 才预取
@@ -477,6 +524,7 @@ if (id.includes('/pages/downloads/') || id.includes('/pages/resources/')) {
 6. **重型页面控制** - 禁用重型页面的自动预取
 
 #### 重型页面配置
+
 通过 Nuxt hooks 配置重型页面的预取行为：
 
 ```typescript
@@ -493,6 +541,7 @@ hooks: {
 ```
 
 **使用方法：**
+
 ```vue
 <!-- 手动标记需要预取的重型页面链接 -->
 <NuxtLink to="/lessons/abc" data-prefetch>查看课程</NuxtLink>
@@ -504,9 +553,11 @@ hooks: {
 ### 11. Bundle Budget 自动化检查 (Automated Bundle Budget)
 
 #### 创建了 Bundle Budget 脚本
+
 位置: `scripts/perf/bundle-budget.mjs`
 
 **功能：**
+
 - ✅ 自动分析构建产物
 - ✅ 检查 gzip 后的文件大小
 - ✅ 验证性能预算
@@ -515,6 +566,7 @@ hooks: {
 - ✅ 预算超标时失败构建
 
 #### 预算定义
+
 ```javascript
 budgets = {
   entryJS: 200 KB (gzipped),      // 首屏 JavaScript
@@ -532,6 +584,7 @@ budgets = {
 ```
 
 #### 使用方法
+
 ```bash
 # 1. 构建应用
 pnpm build:frontend
@@ -547,11 +600,14 @@ BUDGET_MARGIN=15 pnpm bundle:check
 ```
 
 #### 输出报告
+
 脚本会生成：
+
 - **终端输出** - 彩色格式化的预算检查结果
 - **JSON 报告** - `apps/frontend/.output/bundle-budget-report.json`
 
 报告内容：
+
 ```json
 {
   "timestamp": "2024-11-02T...",
@@ -578,6 +634,7 @@ BUDGET_MARGIN=15 pnpm bundle:check
 ```
 
 #### CI/CD 集成
+
 ```yaml
 # .github/workflows/ci.yml
 - name: Build Frontend
@@ -589,6 +646,7 @@ BUDGET_MARGIN=15 pnpm bundle:check
 ```
 
 **环境变量：**
+
 - `BUILD_DIR` - 构建输出目录（默认: `apps/frontend/.output/public`）
 - `STRICT_MODE` - 严格模式（默认: `true`）
 - `BUDGET_MARGIN` - 允许的容差百分比（默认: `0`，范围: `0-20`）
@@ -607,6 +665,7 @@ app: {
 ```
 
 **优势：**
+
 - 更流畅的用户体验
 - 避免布局闪烁
 - 减少累积布局偏移（CLS）
@@ -614,6 +673,7 @@ app: {
 ## 下一步优化建议 (Future Optimizations)
 
 ### 短期（已完成基础设施）
+
 1. ✅ 运行 `pnpm build:analyze` 查看实际 bundle
 2. ✅ 使用 `pnpm perf:report` 生成报告
 3. ✅ Bundle budget 自动化检查
@@ -623,6 +683,7 @@ app: {
 7. ⏳ 实施虚拟滚动（长列表页面）
 
 ### 中期
+
 - 📋 添加 Service Worker 缓存
 - 📋 实施 PWA 功能
 - 📋 优化字体加载策略
@@ -630,6 +691,7 @@ app: {
 - 📋 Edge Functions 部署
 
 ### 长期
+
 - 📋 实施服务端组件缓存
 - 📋 设置真实用户监控 (RUM)
 - 📋 A/B 测试性能优化
@@ -637,18 +699,19 @@ app: {
 
 ## 验收标准检查 (Acceptance Criteria)
 
-| 标准 | 目标 | 状态 | 备注 |
-|-----|------|------|------|
-| 首屏 JS < 200KB | ✅ | 🔄 待测 | 配置已完成 |
-| Lighthouse > 90 | ✅ | 🔄 待测 | 预算已设置 |
-| FCP < 1.5s | ✅ | 🔄 待测 | 配置已完成 |
-| LCP < 2.5s | ✅ | 🔄 待测 | 配置已完成 |
-| 包体积减少 20%+ | ✅ | 🔄 待测 | 优化已实施 |
-| 体积分析报告 | ✅ | ✅ 完成 | 脚本已创建 |
+| 标准            | 目标 | 状态    | 备注       |
+| --------------- | ---- | ------- | ---------- |
+| 首屏 JS < 200KB | ✅   | 🔄 待测 | 配置已完成 |
+| Lighthouse > 90 | ✅   | 🔄 待测 | 预算已设置 |
+| FCP < 1.5s      | ✅   | 🔄 待测 | 配置已完成 |
+| LCP < 2.5s      | ✅   | 🔄 待测 | 配置已完成 |
+| 包体积减少 20%+ | ✅   | 🔄 待测 | 优化已实施 |
+| 体积分析报告    | ✅   | ✅ 完成 | 脚本已创建 |
 
 ## 如何验证优化效果 (How to Verify)
 
 ### 1. 本地构建和分析
+
 ```bash
 # 安装依赖
 pnpm install
@@ -667,6 +730,7 @@ pnpm bundle:check
 ```
 
 ### 2. 验证预渲染输出
+
 ```bash
 # 构建应用
 pnpm build:frontend
@@ -682,6 +746,7 @@ pnpm --filter frontend preview
 ```
 
 输出应该包含：
+
 - `index.html` - 首页
 - `design-log/index.html` - 设计日志页
 - `resources/index.html` - 资源页
@@ -689,6 +754,7 @@ pnpm --filter frontend preview
 - 等等...
 
 ### 3. 测试 ISR 和缓存策略
+
 ```bash
 # 启动生产构建预览
 pnpm --filter frontend preview
@@ -700,11 +766,13 @@ curl -I http://localhost:3000/lessons/example
 ```
 
 检查 `Cache-Control` 头：
+
 - 静态页面应该有 SWR 策略
 - CMS 页面应该有 ISR 缓存
 - API 路由应该有短缓存
 
 ### 4. 运行 Lighthouse
+
 ```bash
 # 构建应用
 pnpm build:frontend
@@ -714,12 +782,14 @@ pnpm lighthouse
 ```
 
 重点观察指标：
+
 - Performance > 90
 - FCP < 1.5s
 - LCP < 2.5s
 - CLS < 0.1
 
 ### 5. 开发环境监控
+
 ```bash
 # 启动开发服务器
 pnpm dev:frontend
@@ -729,6 +799,7 @@ window.__webVitals
 ```
 
 ### 6. 查看性能报告
+
 ```bash
 # 查看 bundle budget 报告
 cat apps/frontend/.output/bundle-budget-report.json
@@ -741,12 +812,14 @@ open apps/frontend/.nuxt/analyze/stats.html
 ```
 
 ### 7. 验证智能预取
+
 ```bash
 # 启动开发服务器
 pnpm dev:frontend
 ```
 
 在浏览器开发者工具中：
+
 1. 打开 Network 标签
 2. 勾选 "Disable cache"
 3. 打开任意页面
@@ -754,6 +827,7 @@ pnpm dev:frontend
 5. 在慢速连接模拟下测试（Network throttling）
 
 预期行为：
+
 - 4G/5G 连接时会自动预取
 - 3G 连接时不预取
 - 启用 Save-Data 时不预取
@@ -762,10 +836,12 @@ pnpm dev:frontend
 ## 参考资料 (References)
 
 ### 内部文档
+
 - [完整性能指南](/docs/PERFORMANCE.md)
 - [优化模式示例](/docs/examples/performance-patterns.vue)
 
 ### 外部资源
+
 - [Nuxt Performance](https://nuxt.com/docs/guide/concepts/rendering)
 - [Web Vitals](https://web.dev/vitals/)
 - [Lighthouse](https://developers.google.com/web/tools/lighthouse)
@@ -788,11 +864,13 @@ pnpm dev:frontend
 ### 关键成果
 
 #### 构建策略
+
 - **预渲染**: 9 个关键静态页面在构建时生成
 - **ISR**: CMS 驱动页面使用 30 分钟缓存 + 后台重新验证
 - **Feature Chunks**: 按功能域组织代码，提高缓存命中率
 
 #### 性能预算
+
 ```
 - Entry JS: 200 KB (gzipped)
 - Total JS: 500 KB (gzipped)
@@ -801,11 +879,13 @@ pnpm dev:frontend
 ```
 
 #### 智能优化
+
 - **连接感知预取**: 仅在 4G/5G 或 > 1.5 Mbps 连接时预取
 - **重型页面控制**: `/lessons`, `/knowledge-cards`, `/students` 禁用自动预取
 - **空闲预取**: 使用 requestIdleCallback 在浏览器空闲时预取
 
 #### CI/CD 集成
+
 ```bash
 # 开发和测试
 pnpm dev:frontend              # 开发服务器
@@ -864,6 +944,7 @@ Web Vitals 插件 (批处理、离线队列)
 位置: `plugins/web-vitals.client.ts`
 
 **功能特性：**
+
 - ✅ **批处理** - 收集 5 个指标或 10 秒后发送
 - ✅ **离线处理** - 离线时保存到 localStorage
 - ✅ **自动重试** - 失败后最多重试 3 次
@@ -872,6 +953,7 @@ Web Vitals 插件 (批处理、离线队列)
 - ✅ **性能预算检查** - 实时警告超出预算的指标
 
 **监控指标：**
+
 - LCP (Largest Contentful Paint)
 - FID (First Input Delay)
 - CLS (Cumulative Layout Shift)
@@ -884,6 +966,7 @@ Web Vitals 插件 (批处理、离线队列)
 位置: `server/api/observability/vitals.post.ts`
 
 **功能：**
+
 - ✅ **请求验证** - 验证 payload 格式和必需字段
 - ✅ **数据丰富** - 添加 IP、User Agent、时间戳等元数据
 - ✅ **速率限制** - 每个会话每小时最多 100 个请求
@@ -896,6 +979,7 @@ Web Vitals 插件 (批处理、离线队列)
 位置: `utils/perf.ts`
 
 **工具类：**
+
 ```typescript
 import { perfMark, perfMeasure, measureAsync } from '~/utils/perf'
 
@@ -914,6 +998,7 @@ const result = await measureAsync('fetch-users', async () => {
 ```
 
 **功能：**
+
 - ✅ 创建性能标记
 - ✅ 测量时间间隔
 - ✅ 同步/异步函数包装器
@@ -925,6 +1010,7 @@ const result = await measureAsync('fetch-users', async () => {
 位置: `composables/useMonitoring.ts`
 
 **用法示例：**
+
 ```typescript
 const { trackDataFetch, trackInteraction, trackRouteChange } = useMonitoring()
 
@@ -1000,7 +1086,9 @@ queueMetric(vitalsMetric)
 ```javascript
 // 当达到批处理大小或超时时
 const payload = {
-  metrics: [/* 批量指标 */],
+  metrics: [
+    /* 批量指标 */
+  ],
   sessionId: 'session-123',
   timestamp: Date.now(),
   userAgent: navigator.userAgent,
@@ -1028,7 +1116,7 @@ checkRateLimit(ip, sessionId)
 if (Math.random() > samplingRate) return
 
 // 丰富数据
-const enrichedMetrics = metrics.map(m => ({
+const enrichedMetrics = metrics.map((m) => ({
   ...m,
   userAgent: req.headers['user-agent'],
   ip: getClientIP(req),
@@ -1171,7 +1259,7 @@ scrape_configs:
         labels:
           job: frontend
           __path__: /var/log/app/frontend.log
-    
+
     pipeline_stages:
       - json:
           expressions:
@@ -1179,7 +1267,7 @@ scrape_configs:
             metric: metric
             value: value
             page: page
-      
+
       - match:
           selector: '{type="web-vitals"}'
           stages:
@@ -1277,11 +1365,9 @@ export function useLessons() {
   const { trackDataFetch } = useMonitoring()
 
   async function fetchLessons() {
-    return await trackDataFetch(
-      'lessons-list',
-      () => $fetch('/api/lessons'),
-      { source: 'composable' }
-    )
+    return await trackDataFetch('lessons-list', () => $fetch('/api/lessons'), {
+      source: 'composable',
+    })
   }
 
   return { fetchLessons }
@@ -1343,12 +1429,14 @@ pnpm --filter frontend preview
 #### 问题：没有收到指标
 
 1. 检查遥测是否启用：
+
    ```bash
    # 确认环境变量
    echo $NUXT_PUBLIC_ENABLE_VITALS_TELEMETRY
    ```
 
 2. 检查采样率：
+
    ```bash
    # 如果采样率太低，可能不会收集指标
    echo $NUXT_PUBLIC_VITALS_SAMPLING_RATE

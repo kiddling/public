@@ -99,6 +99,7 @@ FROM node:22-alpine AS runner
 ```
 
 **优势:**
+
 - 大幅减小最终镜像大小
 - 提高安全性（非 root 用户）
 - 构建缓存优化
@@ -106,6 +107,7 @@ FROM node:22-alpine AS runner
 ### CMS Dockerfile
 
 类似的多阶段构建策略：
+
 - 生产依赖与开发依赖分离
 - 最小化最终镜像
 - 健康检查集成
@@ -116,7 +118,7 @@ FROM node:22-alpine AS runner
 
 ```yaml
 healthcheck:
-  test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+  test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:3000/api/health']
   interval: 30s
   timeout: 10s
   retries: 3
@@ -151,6 +153,7 @@ curl http://localhost:1337/_health
 ### 完整栈 (docker-compose.yml)
 
 包含所有服务：
+
 - PostgreSQL (数据库)
 - Strapi CMS
 - Nuxt Frontend
@@ -160,6 +163,7 @@ curl http://localhost:1337/_health
 ### 开发栈 (docker-compose.dev.yml)
 
 仅包含支持服务：
+
 - PostgreSQL
 - Redis
 
@@ -219,6 +223,7 @@ USER nuxtjs
 ### 2. 最小化镜像
 
 使用 Alpine Linux 基础镜像：
+
 - Frontend: ~150MB (相比 ~1GB 的标准镜像)
 - CMS: ~180MB
 
@@ -350,10 +355,10 @@ GitHub Actions 自动构建和推送镜像：
 
 ```yaml
 logging:
-  driver: "json-file"
+  driver: 'json-file'
   options:
-    max-size: "10m"
-    max-file: "3"
+    max-size: '10m'
+    max-file: '3'
 ```
 
 ### Prometheus 监控
@@ -364,14 +369,14 @@ logging:
 prometheus:
   image: prom/prometheus:latest
   ports:
-    - "9090:9090"
+    - '9090:9090'
   volumes:
     - ./config/prometheus:/etc/prometheus
 
 grafana:
   image: grafana/grafana:latest
   ports:
-    - "3001:3000"
+    - '3001:3000'
 ```
 
 ## 🌍 中国大陆优化
@@ -384,10 +389,7 @@ grafana:
 
 ```json
 {
-  "registry-mirrors": [
-    "https://docker.mirrors.ustc.edu.cn",
-    "https://hub-mirror.c.163.com"
-  ]
+  "registry-mirrors": ["https://docker.mirrors.ustc.edu.cn", "https://hub-mirror.c.163.com"]
 }
 ```
 

@@ -18,16 +18,19 @@ test.describe('Progress Tracking', () => {
     await page.waitForLoadState('networkidle')
 
     // Navigate to a lesson
-    const lessonLink = page.locator('a').filter({ hasText: /Welcome|Foundation|Line/i }).first()
+    const lessonLink = page
+      .locator('a')
+      .filter({ hasText: /Welcome|Foundation|Line/i })
+      .first()
     await lessonLink.click()
     await page.waitForLoadState('networkidle')
 
     // Look for complete button
-    const completeButton = page.locator('button, [role="button"]').filter({ 
-      hasText: /complete|完成|mark.*complete/i 
+    const completeButton = page.locator('button, [role="button"]').filter({
+      hasText: /complete|完成|mark.*complete/i,
     })
 
-    if (await completeButton.count() > 0) {
+    if ((await completeButton.count()) > 0) {
       const button = completeButton.first()
       await button.click()
 
@@ -35,11 +38,11 @@ test.describe('Progress Tracking', () => {
       await page.waitForTimeout(1000)
 
       // Check if button state changed
-      const updatedButton = page.locator('button, [role="button"]').filter({ 
-        hasText: /completed|已完成/i 
+      const updatedButton = page.locator('button, [role="button"]').filter({
+        hasText: /completed|已完成/i,
       })
-      
-      if (await updatedButton.count() > 0) {
+
+      if ((await updatedButton.count()) > 0) {
         await expect(updatedButton.first()).toBeVisible()
       }
     }
@@ -71,8 +74,10 @@ test.describe('Progress Tracking', () => {
     await page.waitForLoadState('networkidle')
 
     // Look for progress indicators in navigation
-    const progressIndicators = page.locator('[data-test*="progress"], [data-test*="complete"], .completed, .progress-indicator')
-    
+    const progressIndicators = page.locator(
+      '[data-test*="progress"], [data-test*="complete"], .completed, .progress-indicator'
+    )
+
     // Should have some progress indicators if implemented
     const count = await progressIndicators.count()
     // Note: This is optional as the UI might not show this
@@ -84,7 +89,7 @@ test.describe('Progress Tracking', () => {
 
     // Look for spiral or progress visualization
     const spiralViz = page.locator('[data-test="spiral"], [data-test="progress-viz"], svg').first()
-    
+
     if (await spiralViz.isVisible()) {
       // Spiral visualization exists
       await expect(spiralViz).toBeVisible()
@@ -117,7 +122,7 @@ test.describe('Progress Tracking', () => {
 
     // Look for progress percentage display
     const progressText = page.locator('text=/\\d+%/, text=/progress/i')
-    
+
     // Progress display might exist
     const count = await progressText.count()
   })
@@ -128,7 +133,7 @@ test.describe('Progress Tracking', () => {
 
     // Complete multiple lessons
     const lessons = ['lesson-1', 'lesson-2', 'lesson-3']
-    
+
     for (const lessonId of lessons) {
       await setLessonProgress(page, lessonId, true)
     }
@@ -153,11 +158,11 @@ test.describe('Progress Tracking', () => {
     await page.waitForLoadState('networkidle')
 
     // Look for uncomplete button
-    const uncompleteButton = page.locator('button').filter({ 
-      hasText: /uncomplete|mark.*incomplete|reset/i 
+    const uncompleteButton = page.locator('button').filter({
+      hasText: /uncomplete|mark.*incomplete|reset/i,
     })
 
-    if (await uncompleteButton.count() > 0) {
+    if ((await uncompleteButton.count()) > 0) {
       await uncompleteButton.first().click()
       await page.waitForTimeout(500)
 

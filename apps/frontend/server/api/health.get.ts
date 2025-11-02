@@ -4,7 +4,7 @@
 
 export default defineEventHandler(async (event) => {
   const startTime = Date.now()
-  
+
   // Basic health checks
   const checks = {
     status: 'healthy',
@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
   try {
     const config = useRuntimeConfig()
     const strapiUrl = config.public.strapiUrl
-    
+
     if (strapiUrl) {
       const checkStart = Date.now()
       const response = await $fetch(`${strapiUrl}/api`, {

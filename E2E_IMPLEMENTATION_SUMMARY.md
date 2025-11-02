@@ -9,16 +9,19 @@ Successfully implemented a comprehensive Playwright-based end-to-end testing sui
 ### 1. ✅ Tooling Setup
 
 **Dependencies Added:**
+
 - `@playwright/test` - E2E testing framework
 - `@axe-core/playwright` - Accessibility testing
 - `h3` - HTTP server for mock backend (already in project)
 
 **Scripts Added:**
+
 - `pnpm test:e2e` - Run all E2E tests
 - `pnpm test:e2e:ui` - Interactive UI mode
 - `pnpm test:e2e:debug` - Debug mode
 
 **Configuration:**
+
 - `apps/frontend/playwright.config.ts` - Full Playwright configuration
   - 4 browser projects: Chromium, Firefox, WebKit, Mobile Chrome
   - Mock Strapi server on port 3457
@@ -29,12 +32,14 @@ Successfully implemented a comprehensive Playwright-based end-to-end testing sui
 ### 2. ✅ Mock Strapi Layer
 
 **Mock Server:** `tests/e2e/mocks/strapi-mock-server.ts`
+
 - H3-based HTTP server on port 3457
 - Serves fixture-based responses for all Strapi endpoints
 - Supports query parameters for filtering
 - Health check endpoint
 
 **Fixtures Created:**
+
 - `lessons.ts` - 5 lesson fixtures with varying difficulty levels
 - `navigation.ts` - Navigation structure with parts and loops
 - `resources.ts` - Downloadable resources with metadata
@@ -43,6 +48,7 @@ Successfully implemented a comprehensive Playwright-based end-to-end testing sui
 - `knowledge-cards.ts` - Searchable knowledge cards
 
 **Endpoints Implemented:**
+
 - `GET /api/lessons` (with filtering by slug)
 - `GET /api/lessons/:id`
 - `GET /api/navigation`
@@ -55,6 +61,7 @@ Successfully implemented a comprehensive Playwright-based end-to-end testing sui
 - `GET /health`
 
 **Global Setup/Teardown:**
+
 - `global-setup.ts` - Starts mock server before tests
 - `global-teardown.ts` - Cleanup after tests
 
@@ -63,12 +70,14 @@ Successfully implemented a comprehensive Playwright-based end-to-end testing sui
 Created 7 comprehensive test specifications:
 
 #### `smoke.spec.ts` (8 tests)
+
 - Homepage loading
 - Console error checking
 - Navigation elements
 - Mock server health
 
 #### `course-browsing.spec.ts` (10 tests)
+
 - Lesson navigation sidebar
 - Content rendering
 - Breadcrumb navigation
@@ -80,6 +89,7 @@ Created 7 comprehensive test specifications:
 - Keyboard navigation
 
 #### `progress-tracking.spec.ts` (8 tests)
+
 - Mark lessons complete
 - localStorage persistence
 - Progress UI updates
@@ -88,6 +98,7 @@ Created 7 comprehensive test specifications:
 - Progress restoration
 
 #### `command-search.spec.ts` (10 tests)
+
 - Cmd+K / Ctrl+K keyboard shortcut
 - Chinese keyword search
 - English keyword search
@@ -99,6 +110,7 @@ Created 7 comprehensive test specifications:
 - Type filtering
 
 #### `student-gallery.spec.ts` (11 tests)
+
 - Gallery grid display
 - Grade level filtering
 - Medium filtering
@@ -112,6 +124,7 @@ Created 7 comprehensive test specifications:
 - Empty state handling
 
 #### `resource-download.spec.ts` (10 tests)
+
 - Resources list display
 - Category filtering
 - Resource preview
@@ -124,6 +137,7 @@ Created 7 comprehensive test specifications:
 - Download cancellation
 
 #### `design-log.spec.ts` (10 tests)
+
 - Form display
 - Field filling
 - Autosave indicator
@@ -140,6 +154,7 @@ Created 7 comprehensive test specifications:
 ### 4. ✅ Performance & Accessibility
 
 **Accessibility Helpers** (`helpers/accessibility.ts`):
+
 - `runAxeCheck()` - Run axe scans with WCAG 2.1 AA standards
 - `formatAxeViolations()` - Format violations for readable output
 - `testKeyboardNavigation()` - Test focus management
@@ -147,6 +162,7 @@ Created 7 comprehensive test specifications:
 - `checkAriaLive()` - Check live regions
 
 **Performance Helpers** (`helpers/performance.ts`):
+
 - `capturePerformanceMetrics()` - Capture browser performance data
 - `measureWebVitals()` - Core Web Vitals (LCP, FID, CLS, FCP)
 - `assertPerformanceThresholds()` - Validate against thresholds
@@ -154,12 +170,14 @@ Created 7 comprehensive test specifications:
 - `formatPerformanceMetrics()` - Human-readable output
 
 **Thresholds:**
+
 - **Desktop:** LCP < 2.5s, FID < 100ms, CLS < 0.1, TTFB < 600ms
 - **Mobile:** LCP < 4s, FID < 100ms, CLS < 0.1, TTFB < 1s
 
 ### 5. ✅ Additional Helpers
 
 **Storage Helpers** (`helpers/storage.ts`):
+
 - `clearLocalStorage()` / `clearSessionStorage()` / `clearAllStorage()`
 - `getLocalStorageItem()` / `setLocalStorageItem()`
 - `getAllLocalStorage()`
@@ -167,6 +185,7 @@ Created 7 comprehensive test specifications:
 - `waitForLocalStorageKey()`
 
 **Navigation Helpers** (`helpers/navigation.ts`):
+
 - `navigateAndWait()` - Navigate with proper waits
 - `waitForHydration()` - Wait for Nuxt hydration
 - `clickAndWait()` - Click and wait for navigation
@@ -177,6 +196,7 @@ Created 7 comprehensive test specifications:
 ### 6. ✅ Cross-Browser Support
 
 Configured 4 browser projects:
+
 - **Chromium** - Chrome/Edge testing
 - **Firefox** - Firefox testing
 - **WebKit** - Safari testing
@@ -187,6 +207,7 @@ All tests run across all browsers in CI.
 ### 7. ✅ CI Integration
 
 **GitHub Actions Workflow** (`.github/workflows/ci.yml`):
+
 - New `e2e` job added
 - Runs in parallel with existing quality/test jobs
 - Matrix strategy across 4 browser projects
@@ -199,6 +220,7 @@ All tests run across all browsers in CI.
 - Runs on all PRs and merges
 
 **Environment Variables:**
+
 ```yaml
 CI: true
 E2E_BASE_URL: http://localhost:3456
@@ -247,12 +269,15 @@ E2E_STRAPI_PORT: 3457
 ### 9. ✅ Configuration Files
 
 **Environment:**
+
 - `.env.e2e` - E2E-specific environment variables
 
 **TypeScript/ESLint:**
+
 - Playwright types automatically included via `@playwright/test`
 
 **Git:**
+
 - Updated `.gitignore` to exclude:
   - `test-results/`
   - `playwright-report/`
@@ -261,6 +286,7 @@ E2E_STRAPI_PORT: 3457
 ### 10. ✅ Verification
 
 Created verification script:
+
 - `tests/e2e/verify-setup.ts` - Checks all required files exist
 - Run with: `npx tsx tests/e2e/verify-setup.ts`
 - ✅ All 24 required files verified
@@ -303,16 +329,16 @@ apps/frontend/
 
 ## Test Coverage Summary
 
-| Feature | Tests | Accessibility | Performance |
-|---------|-------|---------------|-------------|
-| Course Browsing | ✅ 10 | ✅ | ✅ |
-| Progress Tracking | ✅ 8 | - | - |
-| Command Search | ✅ 10 | - | - |
-| Student Gallery | ✅ 11 | ✅ | - |
-| Resource Download | ✅ 10 | - | - |
-| Design Log | ✅ 10 | - | - |
-| Smoke Tests | ✅ 8 | - | - |
-| **TOTAL** | **67** | **2 specs** | **1 spec** |
+| Feature           | Tests  | Accessibility | Performance |
+| ----------------- | ------ | ------------- | ----------- |
+| Course Browsing   | ✅ 10  | ✅            | ✅          |
+| Progress Tracking | ✅ 8   | -             | -           |
+| Command Search    | ✅ 10  | -             | -           |
+| Student Gallery   | ✅ 11  | ✅            | -           |
+| Resource Download | ✅ 10  | -             | -           |
+| Design Log        | ✅ 10  | -             | -           |
+| Smoke Tests       | ✅ 8   | -             | -           |
+| **TOTAL**         | **67** | **2 specs**   | **1 spec**  |
 
 ## How to Use
 

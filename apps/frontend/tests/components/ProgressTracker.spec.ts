@@ -54,7 +54,7 @@ describe('ProgressTracker', () => {
     const pinia = createPinia()
     const navigationStore = useNavigationStore(pinia)
     const progressStore = useProgressStore(pinia)
-    
+
     await navigationStore.loadStructure({ data: mockNavigationResponse })
     progressStore.markLessonComplete('P-00')
 
@@ -75,7 +75,7 @@ describe('ProgressTracker', () => {
     const pinia = createPinia()
     const navigationStore = useNavigationStore(pinia)
     const progressStore = useProgressStore(pinia)
-    
+
     await navigationStore.loadStructure({ data: mockNavigationResponse })
     progressStore.markLessonComplete('P-00')
 
@@ -97,7 +97,7 @@ describe('ProgressTracker', () => {
     const pinia = createPinia()
     const navigationStore = useNavigationStore(pinia)
     const progressStore = useProgressStore(pinia)
-    
+
     await navigationStore.loadStructure({ data: mockNavigationResponse })
     progressStore.markLessonComplete('P-00')
 
@@ -118,7 +118,7 @@ describe('ProgressTracker', () => {
   it('shows empty state when no lessons are completed', async () => {
     const pinia = createPinia()
     const navigationStore = useNavigationStore(pinia)
-    
+
     await navigationStore.loadStructure({ data: mockNavigationResponse })
 
     const wrapper = mount(ProgressTracker, {
@@ -138,12 +138,12 @@ describe('ProgressTracker', () => {
     const pinia = createPinia()
     const navigationStore = useNavigationStore(pinia)
     const progressStore = useProgressStore(pinia)
-    
+
     await navigationStore.loadStructure({ data: mockNavigationResponse })
-    
+
     // Mark all lessons complete
     const lessons = navigationStore.courseStructure?.lessons ?? []
-    lessons.forEach(lesson => {
+    lessons.forEach((lesson) => {
       progressStore.markLessonComplete(lesson.code)
     })
 
@@ -164,7 +164,7 @@ describe('ProgressTracker', () => {
     const pinia = createPinia()
     const navigationStore = useNavigationStore(pinia)
     const progressStore = useProgressStore(pinia)
-    
+
     await navigationStore.loadStructure({ data: mockNavigationResponse })
 
     const wrapper = mount(ProgressTracker, {
@@ -182,9 +182,9 @@ describe('ProgressTracker', () => {
     // Find and click the first completion button in remaining lessons
     const buttons = wrapper.findAll('button[aria-label*="Mark"]')
     expect(buttons.length).toBeGreaterThan(0)
-    
+
     await buttons[0].trigger('click')
-    
+
     // The lesson should now be marked as complete
     expect(progressStore.completedCount).toBeGreaterThan(0)
   })
@@ -192,7 +192,7 @@ describe('ProgressTracker', () => {
   it('emits navigate event when lesson is selected', async () => {
     const pinia = createPinia()
     const navigationStore = useNavigationStore(pinia)
-    
+
     await navigationStore.loadStructure({ data: mockNavigationResponse })
 
     const wrapper = mount(ProgressTracker, {
@@ -206,13 +206,13 @@ describe('ProgressTracker', () => {
     })
 
     // Find and click a lesson button
-    const lessonButtons = wrapper.findAll('button[type="button"]').filter(btn => 
-      btn.text().includes('P-00') || btn.text().includes('P-01')
-    )
-    
+    const lessonButtons = wrapper
+      .findAll('button[type="button"]')
+      .filter((btn) => btn.text().includes('P-00') || btn.text().includes('P-01'))
+
     if (lessonButtons.length > 0) {
       await lessonButtons[0].trigger('click')
-      
+
       expect(wrapper.emitted('navigate')).toBeTruthy()
     }
   })
@@ -220,7 +220,7 @@ describe('ProgressTracker', () => {
   it('renders compact variant correctly', async () => {
     const pinia = createPinia()
     const navigationStore = useNavigationStore(pinia)
-    
+
     await navigationStore.loadStructure({ data: mockNavigationResponse })
 
     const wrapper = mount(ProgressTracker, {
@@ -243,7 +243,7 @@ describe('ProgressTracker', () => {
     const pinia = createPinia()
     const navigationStore = useNavigationStore(pinia)
     const progressStore = useProgressStore(pinia)
-    
+
     await navigationStore.loadStructure({ data: mockNavigationResponse })
     progressStore.markLessonViewed('P-00')
     progressStore.markLessonViewed('P-01')
@@ -265,7 +265,7 @@ describe('ProgressTracker', () => {
     const pinia = createPinia()
     const navigationStore = useNavigationStore(pinia)
     const progressStore = useProgressStore(pinia)
-    
+
     await navigationStore.loadStructure({ data: mockNavigationResponse })
     progressStore.markLessonComplete('P-00')
 

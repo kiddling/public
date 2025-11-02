@@ -2,7 +2,7 @@ import { defineEventHandler, getRequestHeader, setResponseHeaders } from 'h3'
 
 export default defineEventHandler((event) => {
   const config = useRuntimeConfig()
-  
+
   // Get security configuration from runtime config
   const securityConfig = {
     hsts: {
@@ -32,7 +32,8 @@ export default defineEventHandler((event) => {
     },
     xFrameOptions: config.public.securityXFrameOptions || 'DENY',
     referrerPolicy: config.public.securityReferrerPolicy || 'strict-origin-when-cross-origin',
-    permissionsPolicy: config.public.securityPermissionsPolicy || 'camera=(), microphone=(), geolocation=()',
+    permissionsPolicy:
+      config.public.securityPermissionsPolicy || 'camera=(), microphone=(), geolocation=()',
     xContentTypeOptions: config.public.securityXContentTypeOptions !== 'false',
     xXssProtection: config.public.securityXXssProtection !== 'false',
     secureCookies: config.public.securitySecureCookies !== 'false',
@@ -41,11 +42,11 @@ export default defineEventHandler((event) => {
   // HTTPS enforcement - check X-Forwarded-Proto header
   const proto = getRequestHeader(event, 'x-forwarded-proto')
   const httpsEnforced = config.public.securityEnforceHttps !== 'false'
-  
+
   if (httpsEnforced && proto === 'http' && process.env.NODE_ENV === 'production') {
     const host = getRequestHeader(event, 'host')
     const url = event.node.req.url || '/'
-    
+
     // Redirect to HTTPS
     event.node.res.writeHead(301, {
       Location: `https://${host}${url}`,
@@ -65,7 +66,7 @@ export default defineEventHandler((event) => {
     ]
       .filter(Boolean)
       .join('; ')
-    
+
     headers['Strict-Transport-Security'] = hstsValue
   }
 
@@ -88,9 +89,10 @@ export default defineEventHandler((event) => {
     ]
       .filter(Boolean)
       .join('; ')
-    
+
     if (securityConfig.csp.reportUri) {
-      headers['Content-Security-Policy'] = `${cspDirectives}; report-uri ${securityConfig.csp.reportUri}`
+      headers['Content-Security-Policy'] =
+        `${cspDirectives}; report-uri ${securityConfig.csp.reportUri}`
     } else {
       headers['Content-Security-Policy'] = cspDirectives
     }

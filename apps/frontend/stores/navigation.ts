@@ -30,7 +30,7 @@ function cloneLookupMaps(source: NavigationLookupMaps): NavigationLookupMaps {
       appendices: [...source.byPart.appendices],
     },
     byLoop: Object.fromEntries(
-      Object.entries(source.byLoop).map(([loopId, lessons]) => [loopId, [...lessons]]),
+      Object.entries(source.byLoop).map(([loopId, lessons]) => [loopId, [...lessons]])
     ),
   }
 }
@@ -81,10 +81,10 @@ export const useNavigationStore = defineStore('navigation', () => {
     }
 
     const previous = lesson.navigation.previousCode
-      ? resolveLesson(lesson.navigation.previousCode) ?? null
+      ? (resolveLesson(lesson.navigation.previousCode) ?? null)
       : null
     const next = lesson.navigation.nextCode
-      ? resolveLesson(lesson.navigation.nextCode) ?? null
+      ? (resolveLesson(lesson.navigation.nextCode) ?? null)
       : null
 
     return { previous, next }

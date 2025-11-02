@@ -88,9 +88,7 @@ export function getAccessibilityStatus(
 /**
  * Normalize a single resource from Strapi response
  */
-export function normalizeResource(
-  item: StrapiCollectionItem<ResourceAttributes>
-): Resource {
+export function normalizeResource(item: StrapiCollectionItem<ResourceAttributes>): Resource {
   const attrs = item.attributes
 
   return {
@@ -115,9 +113,7 @@ export function normalizeResource(
 /**
  * Normalize a collection of resources from Strapi response
  */
-export function normalizeResources(
-  response: StrapiResourceResponse
-): Resource[] {
+export function normalizeResources(response: StrapiResourceResponse): Resource[] {
   if (!response?.data || !Array.isArray(response.data)) {
     return []
   }
@@ -148,10 +144,7 @@ export function groupResourcesByCategory(resources: Resource[]) {
 /**
  * Filter resources by search query
  */
-export function filterResourcesBySearch(
-  resources: Resource[],
-  query: string
-): Resource[] {
+export function filterResourcesBySearch(resources: Resource[], query: string): Resource[] {
   if (!query || query.trim().length === 0) {
     return resources
   }
@@ -252,13 +245,11 @@ export function calculateResourceStats(resources: Resource[]) {
       byDiscipline.set(discipline, (byDiscipline.get(discipline) || 0) + 1)
     })
 
-    const status = getAccessibilityStatus(
-      resource.accessibilityFlag,
-      resource.lastChecked
-    )
+    const status = getAccessibilityStatus(resource.accessibilityFlag, resource.lastChecked)
 
     if (status.status === 'verified') accessible++
-    else if (status.status === 'needs-attention' || status.status === 'needs-revalidation') needsAttention++
+    else if (status.status === 'needs-attention' || status.status === 'needs-revalidation')
+      needsAttention++
     else unchecked++
   })
 

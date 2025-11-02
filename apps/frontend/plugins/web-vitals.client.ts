@@ -3,12 +3,12 @@ import type { VitalsMetric } from '~/server/api/observability/vitals.post'
 
 // Performance budgets (target thresholds)
 const PERFORMANCE_BUDGETS = {
-  LCP: 2500,  // Largest Contentful Paint
-  FCP: 1500,  // First Contentful Paint
-  CLS: 0.1,   // Cumulative Layout Shift
-  FID: 100,   // First Input Delay
-  INP: 200,   // Interaction to Next Paint
-  TTFB: 600,  // Time to First Byte
+  LCP: 2500, // Largest Contentful Paint
+  FCP: 1500, // First Contentful Paint
+  CLS: 0.1, // Cumulative Layout Shift
+  FID: 100, // First Input Delay
+  INP: 200, // Interaction to Next Paint
+  TTFB: 600, // Time to First Byte
 }
 
 // Batching configuration
@@ -32,7 +32,7 @@ export default defineNuxtPlugin(() => {
   const metricsStore: Record<string, number> = {}
   const metricsQueue: VitalsMetric[] = []
   const offlineQueue: VitalsMetric[] = []
-  
+
   let batchTimer: ReturnType<typeof setTimeout> | null = null
   let sessionId = ''
   let isOnline = true
@@ -52,7 +52,7 @@ export default defineNuxtPlugin(() => {
     }
 
     sessionId = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`
-    
+
     try {
       sessionStorage.setItem('vitals-session-id', sessionId)
     } catch {
@@ -127,9 +127,12 @@ export default defineNuxtPlugin(() => {
 
       // Retry logic
       if (retryCount < MAX_RETRY_ATTEMPTS) {
-        setTimeout(() => {
-          sendBatch(metrics, retryCount + 1)
-        }, RETRY_DELAY * (retryCount + 1))
+        setTimeout(
+          () => {
+            sendBatch(metrics, retryCount + 1)
+          },
+          RETRY_DELAY * (retryCount + 1)
+        )
       } else {
         // Move to offline queue if all retries failed
         offlineQueue.push(...metrics)
@@ -289,8 +292,9 @@ export default defineNuxtPlugin(() => {
 
   // Expose metrics for debugging
   if (process.dev) {
-    (window as any).__webVitals = metricsStore
-    (window as any).__webVitalsQueue = metricsQueue
-    (window as any).__webVitalsOffline = offlineQueue
+    ;(window as any).__webVitals =
+      metricsStore(window as any).__webVitalsQueue =
+      metricsQueue(window as any).__webVitalsOffline =
+        offlineQueue
   }
 })

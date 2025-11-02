@@ -87,8 +87,12 @@ function analyzeBuild() {
 
   const allFiles = getAllFiles(OUTPUT_DIR)
 
-  const jsFiles = allFiles.filter((f) => f.endsWith('.js') && !f.endsWith('.gz') && !f.endsWith('.br'))
-  const cssFiles = allFiles.filter((f) => f.endsWith('.css') && !f.endsWith('.gz') && !f.endsWith('.br'))
+  const jsFiles = allFiles.filter(
+    (f) => f.endsWith('.js') && !f.endsWith('.gz') && !f.endsWith('.br')
+  )
+  const cssFiles = allFiles.filter(
+    (f) => f.endsWith('.css') && !f.endsWith('.gz') && !f.endsWith('.br')
+  )
   const imageFiles = allFiles.filter((f) => /\.(png|jpg|jpeg|gif|svg|webp|avif)$/.test(f))
   const fontFiles = allFiles.filter((f) => /\.(woff|woff2|ttf|eot)$/.test(f))
 
@@ -182,7 +186,7 @@ function analyzeBuild() {
 
   // Print summary
   console.log('📊 Build Analysis Summary\n')
-  console.log('=' .repeat(50))
+  console.log('='.repeat(50))
   console.log('\n📦 Total Size')
   console.log(`  Raw: ${formatBytes(totalSize)}`)
   console.log(`  Gzipped: ${formatBytes(totalGzipSize)}`)
@@ -201,7 +205,7 @@ function analyzeBuild() {
   console.log(`  Size: ${formatBytes(fontSize)}`)
 
   console.log('\n\n🎯 Performance Budgets\n')
-  console.log('=' .repeat(50))
+  console.log('='.repeat(50))
 
   Object.entries(report.budgets).forEach(([name, data]) => {
     const status = data.passed ? '✅' : '❌'
@@ -213,7 +217,7 @@ function analyzeBuild() {
   })
 
   console.log('\n\n📋 Top 10 Largest Files\n')
-  console.log('=' .repeat(50))
+  console.log('='.repeat(50))
 
   report.largestFiles.forEach((file, index) => {
     console.log(`\n${index + 1}. ${file.path}`)

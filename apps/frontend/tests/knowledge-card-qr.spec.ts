@@ -25,7 +25,7 @@ describe('KnowledgeCardQrModal', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-    
+
     // Mock clipboard API
     Object.assign(navigator, {
       clipboard: {
@@ -103,7 +103,7 @@ describe('KnowledgeCardQrModal', () => {
       },
     })
 
-    const closeButton = wrapper.findAll('button').find(btn => btn.text() === 'Close')
+    const closeButton = wrapper.findAll('button').find((btn) => btn.text() === 'Close')
     if (closeButton) {
       await closeButton.trigger('click')
       expect(wrapper.emitted('close')).toBeTruthy()
@@ -176,7 +176,7 @@ describe('KnowledgeCardQrModal', () => {
       },
     })
 
-    const downloadButton = wrapper.findAll('button').find(btn => btn.text() === 'Download QR')
+    const downloadButton = wrapper.findAll('button').find((btn) => btn.text() === 'Download QR')
     expect(downloadButton).toBeTruthy()
   })
 
@@ -209,7 +209,7 @@ describe('KnowledgeCardQrModal', () => {
       return document.createElement(tag)
     })
 
-    const downloadButton = wrapper.findAll('button').find(btn => btn.text() === 'Download QR')
+    const downloadButton = wrapper.findAll('button').find((btn) => btn.text() === 'Download QR')
     if (downloadButton) {
       await downloadButton.trigger('click')
 

@@ -1,3 +1,3 @@
-import { factories } from '@strapi/strapi';
+import { factories } from '@strapi/strapi'
 
-export default factories.createCoreController('api::knowledge-card.knowledge-card');
+export default factories.createCoreController('api::knowledge-card.knowledge-card')

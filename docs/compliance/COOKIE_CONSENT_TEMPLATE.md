@@ -20,6 +20,7 @@ Cookie是网站或应用程序发送到您的计算机、手机或其他访问�
 ### Cookie的工作原理
 
 当您访问使用Cookie的网站时：
+
 1. 网站向您的浏览器发送Cookie
 2. 浏览器将Cookie存储在您的设备上
 3. 下次访问该网站时，浏览器会将Cookie发送回网站
@@ -58,15 +59,16 @@ Cookie是网站或应用程序发送到您的计算机、手机或其他访问�
 
 这些Cookie对于网站的基本功能是必需的。没有这些Cookie，网站的某些功能将无法正常工作。**您不能拒绝这些Cookie。**
 
-| Cookie名称 | 目的 | 有效期 | 类型 |
-|-----------|------|--------|------|
-| session_id | 维持用户会话 | 会话 | 第一方 |
-| csrf_token | 防止跨站请求伪造（CSRF）攻击 | 会话 | 第一方 |
-| auth_token | 身份验证 | [X小时/天] | 第一方 |
-| cookie_consent | 记录您的Cookie同意选项 | 1年 | 第一方 |
-| [其他必要Cookie] | [目的] | [期限] | [类型] |
+| Cookie名称       | 目的                         | 有效期     | 类型   |
+| ---------------- | ---------------------------- | ---------- | ------ |
+| session_id       | 维持用户会话                 | 会话       | 第一方 |
+| csrf_token       | 防止跨站请求伪造（CSRF）攻击 | 会话       | 第一方 |
+| auth_token       | 身份验证                     | [X小时/天] | 第一方 |
+| cookie_consent   | 记录您的Cookie同意选项       | 1年        | 第一方 |
+| [其他必要Cookie] | [目的]                       | [期限]     | [类型] |
 
 **使用目的**:
+
 - 维持您的登录状态
 - 保存购物车内容
 - 确保网站安全
@@ -76,15 +78,16 @@ Cookie是网站或应用程序发送到您的计算机、手机或其他访问�
 
 这些Cookie使网站能够记住您的选择和偏好，提供更个性化的体验。
 
-| Cookie名称 | 目的 | 有效期 | 类型 |
-|-----------|------|--------|------|
-| lang | 记住语言选择 | 1年 | 第一方 |
-| theme | 记住主题偏好（亮色/暗色） | 1年 | 第一方 |
-| font_size | 记住字体大小设置 | 1年 | 第一方 |
-| layout_pref | 记住布局偏好 | 1年 | 第一方 |
-| [其他功能Cookie] | [目的] | [期限] | [类型] |
+| Cookie名称       | 目的                      | 有效期 | 类型   |
+| ---------------- | ------------------------- | ------ | ------ |
+| lang             | 记住语言选择              | 1年    | 第一方 |
+| theme            | 记住主题偏好（亮色/暗色） | 1年    | 第一方 |
+| font_size        | 记住字体大小设置          | 1年    | 第一方 |
+| layout_pref      | 记住布局偏好              | 1年    | 第一方 |
+| [其他功能Cookie] | [目的]                    | [期限] | [类型] |
 
 **使用目的**:
+
 - 记住您的语言选择
 - 保存您的界面布局偏好
 - 记住您的视频播放设置
@@ -95,15 +98,16 @@ Cookie是网站或应用程序发送到您的计算机、手机或其他访问�
 
 这些Cookie帮助我们了解访问者如何使用网站，以便我们改善网站性能和用户体验。收集的信息是聚合和匿名的。
 
-| Cookie名称 | 提供商 | 目的 | 有效期 | 隐私政策 |
-|-----------|--------|------|--------|---------|
-| _ga | Google Analytics | 区分用户 | 2年 | [链接] |
-| _gid | Google Analytics | 区分用户 | 24小时 | [链接] |
-| _gat | Google Analytics | 限制请求率 | 1分钟 | [链接] |
-| HMACCOUNT | 百度统计 | 识别用户 | 1年 | [链接] |
-| [其他分析Cookie] | [提供商] | [目的] | [期限] | [链接] |
+| Cookie名称       | 提供商           | 目的       | 有效期 | 隐私政策 |
+| ---------------- | ---------------- | ---------- | ------ | -------- |
+| \_ga             | Google Analytics | 区分用户   | 2年    | [链接]   |
+| \_gid            | Google Analytics | 区分用户   | 24小时 | [链接]   |
+| \_gat            | Google Analytics | 限制请求率 | 1分钟  | [链接]   |
+| HMACCOUNT        | 百度统计         | 识别用户   | 1年    | [链接]   |
+| [其他分析Cookie] | [提供商]         | [目的]     | [期限] | [链接]   |
 
 **使用目的**:
+
 - 统计网站访问量和流量来源
 - 了解哪些页面最受欢迎
 - 识别技术问题和错误
@@ -111,6 +115,7 @@ Cookie是网站或应用程序发送到您的计算机、手机或其他访问�
 - 改善用户体验
 
 **收集的信息**:
+
 - 页面访问量
 - 访问时长和跳出率
 - 设备类型和屏幕分辨率
@@ -125,12 +130,13 @@ Cookie是网站或应用程序发送到您的计算机、手机或其他访问�
 
 这些Cookie用于向您展示与您相关的广告，限制广告展示次数，并衡量广告活动的效果。
 
-| Cookie名称 | 提供商 | 目的 | 有效期 | 隐私政策 |
-|-----------|--------|------|--------|---------|
-| [Cookie名称] | [广告平台] | 广告定向 | [期限] | [链接] |
-| [Cookie名称] | [广告平台] | 再营销 | [期限] | [链接] |
+| Cookie名称   | 提供商     | 目的     | 有效期 | 隐私政策 |
+| ------------ | ---------- | -------- | ------ | -------- |
+| [Cookie名称] | [广告平台] | 广告定向 | [期限] | [链接]   |
+| [Cookie名称] | [广告平台] | 再营销   | [期限] | [链接]   |
 
 **使用目的**:
+
 - 展示与您兴趣相关的广告
 - 防止您多次看到相同广告
 - 衡量广告活动的效果
@@ -147,6 +153,7 @@ Cookie是网站或应用程序发送到您的计算机、手机或其他访问�
 ### 4.1 分析服务
 
 **Google Analytics** / **百度统计** / **友盟统计**
+
 - **目的**: 网站流量分析和用户行为分析
 - **收集的信息**: 页面浏览量、访问时长、设备信息、地理位置（概略）
 - **隐私政策**: [链接]
@@ -157,6 +164,7 @@ Cookie是网站或应用程序发送到您的计算机、手机或其他访问�
 [如适用]
 
 **微信分享** / **微博分享** / **QQ分享**
+
 - **目的**: 允许您在社交媒体上分享内容
 - **收集的信息**: 您分享的内容、社交媒体ID
 - **隐私政策**: [链接]
@@ -166,6 +174,7 @@ Cookie是网站或应用程序发送到您的计算机、手机或其他访问�
 [如适用]
 
 **[广告平台名称]**
+
 - **目的**: 广告投放和效果追踪
 - **收集的信息**: 浏览行为、广告互动、设备信息
 - **隐私政策**: [链接]
@@ -173,9 +182,9 @@ Cookie是网站或应用程序发送到您的计算机、手机或其他访问�
 
 ### 4.4 其他第三方服务
 
-| 服务名称 | 提供商 | 目的 | 隐私政策 |
-|---------|--------|------|---------|
-| [服务名称] | [提供商] | [目的] | [链接] |
+| 服务名称   | 提供商   | 目的   | 隐私政策 |
+| ---------- | -------- | ------ | -------- |
+| [服务名称] | [提供商] | [目的] | [链接]   |
 
 ---
 
@@ -188,6 +197,7 @@ Cookie是网站或应用程序发送到您的计算机、手机或其他访问�
 **用途**: 存储应用程序数据和用户偏好设置
 
 **存储内容**:
+
 - 用户界面设置
 - 草稿内容
 - 离线数据缓存
@@ -223,10 +233,12 @@ Cookie是网站或应用程序发送到您的计算机、手机或其他访问�
 **最简便的方式**: 使用我们的Cookie设置工具来管理您的偏好。
 
 访问方式:
+
 - 点击网站底部的"Cookie设置"链接
 - 或访问: [Cookie设置页面URL]
 
 在设置页面，您可以:
+
 - ✅ 接受或拒绝不同类别的Cookie
 - ✅ 查看详细的Cookie列表
 - ✅ 随时更改您的选择
@@ -236,21 +248,25 @@ Cookie是网站或应用程序发送到您的计算机、手机或其他访问�
 大多数浏览器允许您通过设置管理Cookie。
 
 **Chrome浏览器**:
+
 1. 点击右上角三点菜单 → 设置
 2. 隐私和安全 → Cookie及其他网站数据
 3. 选择Cookie设置选项
 
 **Firefox浏览器**:
+
 1. 点击右上角三线菜单 → 设置
 2. 隐私与安全 → Cookie和网站数据
 3. 选择Cookie设置选项
 
 **Safari浏览器**:
+
 1. 偏好设置 → 隐私
 2. 管理网站数据
 3. 阻止Cookie设置
 
 **Edge浏览器**:
+
 1. 设置 → Cookie和网站权限
 2. Cookie和站点数据
 3. 选择Cookie设置选项
@@ -258,19 +274,23 @@ Cookie是网站或应用程序发送到您的计算机、手机或其他访问�
 ### 6.3 移动设备设置
 
 **iOS设备**:
+
 1. 设置 → Safari → 隐私与安全性
 2. 阻止所有Cookie
 
 **Android设备**:
+
 1. Chrome设置 → 网站设置 → Cookie
 2. 选择Cookie设置选项
 
 ### 6.4 退出第三方Cookie
 
 **Google Analytics退出**:
+
 - 安装 [Google Analytics退出浏览器插件](https://tools.google.com/dlpage/gaoptout)
 
 **广告Cookie退出**:
+
 - 访问 [中国互联网广告协会](http://www.iaa-china.org/)（如适用）
 - 或各广告平台的退出页面
 
@@ -306,6 +326,7 @@ Cookie是网站或应用程序发送到您的计算机、手机或其他访问�
 我们可能会不时更新本Cookie政策，以反映Cookie使用方式的变化或法律要求的变化。
 
 **当我们进行重大变更时，我们会**:
+
 - 更新本页面顶部的"最后更新日期"
 - 通过Cookie横幅通知您
 - 在某些情况下，通过电子邮件通知您
@@ -359,15 +380,11 @@ Cookie是网站或应用程序发送到您的计算机、手机或其他访问�
       <a href="/cookie-policy" target="_blank">了解更多</a>
     </p>
     <div class="cookie-banner__actions">
-      <button type="button" class="btn-primary" onclick="acceptAllCookies()">
-        接受所有
-      </button>
+      <button type="button" class="btn-primary" onclick="acceptAllCookies()">接受所有</button>
       <button type="button" class="btn-secondary" onclick="rejectNonEssential()">
         仅接受必要Cookie
       </button>
-      <button type="button" class="btn-link" onclick="showCookieSettings()">
-        Cookie设置
-      </button>
+      <button type="button" class="btn-link" onclick="showCookieSettings()">Cookie设置</button>
     </div>
   </div>
 </div>
@@ -383,33 +400,28 @@ Cookie是网站或应用程序发送到您的计算机、手机或其他访问�
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
-  
+
   <div class="cookie-banner__body">
-    <p>
-      我们使用Cookie来改善您的体验。您可以选择接受所有Cookie，
-      或者自定义您的Cookie偏好。
-    </p>
-    
+    <p>我们使用Cookie来改善您的体验。您可以选择接受所有Cookie， 或者自定义您的Cookie偏好。</p>
+
     <div class="cookie-categories">
       <!-- 必要Cookie -->
       <div class="cookie-category">
         <div class="cookie-category__header">
           <label>
-            <input type="checkbox" checked disabled>
+            <input type="checkbox" checked disabled />
             <strong>必要Cookie</strong>
             <span class="required-badge">必需</span>
           </label>
         </div>
-        <p class="cookie-category__desc">
-          这些Cookie对于网站正常运行是必需的，无法禁用。
-        </p>
+        <p class="cookie-category__desc">这些Cookie对于网站正常运行是必需的，无法禁用。</p>
       </div>
-      
+
       <!-- 功能性Cookie -->
       <div class="cookie-category">
         <div class="cookie-category__header">
           <label>
-            <input type="checkbox" id="cookie-functional" checked>
+            <input type="checkbox" id="cookie-functional" checked />
             <strong>功能性Cookie</strong>
           </label>
           <button type="button" class="toggle-details" onclick="toggleDetails('functional')">
@@ -422,12 +434,12 @@ Cookie是网站或应用程序发送到您的计算机、手机或其他访问�
           <p><strong>有效期</strong>: 最长1年</p>
         </div>
       </div>
-      
+
       <!-- 分析Cookie -->
       <div class="cookie-category">
         <div class="cookie-category__header">
           <label>
-            <input type="checkbox" id="cookie-analytics" checked>
+            <input type="checkbox" id="cookie-analytics" checked />
             <strong>分析Cookie</strong>
           </label>
           <button type="button" class="toggle-details" onclick="toggleDetails('analytics')">
@@ -441,12 +453,12 @@ Cookie是网站或应用程序发送到您的计算机、手机或其他访问�
           <p><strong>有效期</strong>: 最长2年</p>
         </div>
       </div>
-      
+
       <!-- 广告Cookie -->
       <div class="cookie-category">
         <div class="cookie-category__header">
           <label>
-            <input type="checkbox" id="cookie-advertising">
+            <input type="checkbox" id="cookie-advertising" />
             <strong>广告Cookie</strong>
           </label>
           <button type="button" class="toggle-details" onclick="toggleDetails('advertising')">
@@ -461,21 +473,15 @@ Cookie是网站或应用程序发送到您的计算机、手机或其他访问�
       </div>
     </div>
   </div>
-  
+
   <div class="cookie-banner__footer">
-    <button type="button" class="btn-primary" onclick="savePreferences()">
-      保存设置
-    </button>
-    <button type="button" class="btn-secondary" onclick="acceptAll()">
-      接受所有
-    </button>
-    <button type="button" class="btn-text" onclick="rejectAll()">
-      拒绝非必要Cookie
-    </button>
+    <button type="button" class="btn-primary" onclick="savePreferences()">保存设置</button>
+    <button type="button" class="btn-secondary" onclick="acceptAll()">接受所有</button>
+    <button type="button" class="btn-text" onclick="rejectAll()">拒绝非必要Cookie</button>
   </div>
-  
+
   <div class="cookie-banner__links">
-    <a href="/privacy-policy">隐私政策</a> | 
+    <a href="/privacy-policy">隐私政策</a> |
     <a href="/cookie-policy">Cookie政策</a>
   </div>
 </div>
@@ -504,12 +510,7 @@ Cookie是网站或应用程序发送到您的计算机、手机或其他访问�
       <div class="cookie-consent-banner" @click.stop>
         <div class="cookie-consent-header">
           <h2 id="cookie-consent-title">Cookie使用提示</h2>
-          <button
-            type="button"
-            class="close-button"
-            @click="showBanner = false"
-            aria-label="关闭"
-          >
+          <button type="button" class="close-button" @click="showBanner = false" aria-label="关闭">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -540,9 +541,7 @@ Cookie是网站或应用程序发送到您的计算机、手机或其他访问�
         </div>
 
         <div class="cookie-consent-footer">
-          <button type="button" class="btn btn-primary" @click="acceptAll">
-            接受所有Cookie
-          </button>
+          <button type="button" class="btn btn-primary" @click="acceptAll">接受所有Cookie</button>
           <button type="button" class="btn btn-secondary" @click="rejectNonEssential">
             仅接受必要Cookie
           </button>
@@ -556,28 +555,23 @@ Cookie是网站或应用程序发送到您的计算机、手机或其他访问�
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { useCookieConsent } from '~/composables/useCookieConsent';
+import { ref, onMounted } from 'vue'
+import { useCookieConsent } from '~/composables/useCookieConsent'
 
-const { 
-  hasConsent, 
-  getConsent, 
-  setConsent, 
-  categories 
-} = useCookieConsent();
+const { hasConsent, getConsent, setConsent, categories } = useCookieConsent()
 
-const showBanner = ref(false);
-const showDetails = ref(false);
+const showBanner = ref(false)
+const showDetails = ref(false)
 
 onMounted(() => {
   // 检查是否已有Cookie同意记录
   if (!hasConsent()) {
-    showBanner.value = true;
-    
+    showBanner.value = true
+
     // 焦点陷阱
-    trapFocus();
+    trapFocus()
   }
-});
+})
 
 function acceptAll() {
   setConsent({
@@ -585,11 +579,11 @@ function acceptAll() {
     functional: true,
     analytics: true,
     advertising: true,
-  });
-  showBanner.value = false;
-  
+  })
+  showBanner.value = false
+
   // 加载第三方脚本
-  loadThirdPartyScripts();
+  loadThirdPartyScripts()
 }
 
 function rejectNonEssential() {
@@ -598,15 +592,15 @@ function rejectNonEssential() {
     functional: false,
     analytics: false,
     advertising: false,
-  });
-  showBanner.value = false;
+  })
+  showBanner.value = false
 }
 
 function toggleCategory(categoryId: string) {
   // 实现类别切换逻辑
-  const category = categories.value.find(c => c.id === categoryId);
+  const category = categories.value.find((c) => c.id === categoryId)
   if (category && !category.required) {
-    category.enabled = !category.enabled;
+    category.enabled = !category.enabled
   }
 }
 
@@ -617,16 +611,16 @@ function trapFocus() {
 
 function loadThirdPartyScripts() {
   // 根据用户同意加载第三方脚本
-  const consent = getConsent();
-  
+  const consent = getConsent()
+
   if (consent.analytics) {
     // 加载分析脚本（Google Analytics、百度统计等）
-    loadAnalyticsScripts();
+    loadAnalyticsScripts()
   }
-  
+
   if (consent.advertising) {
     // 加载广告脚本
-    loadAdvertisingScripts();
+    loadAdvertisingScripts()
   }
 }
 
@@ -680,7 +674,7 @@ function loadAdvertisingScripts() {
 
 ```typescript
 // apps/frontend/composables/useCookieConsent.ts
-import { ref, computed } from 'vue';
+import { ref, computed } from 'vue'
 
 export enum CookieCategory {
   NECESSARY = 'necessary',
@@ -690,17 +684,17 @@ export enum CookieCategory {
 }
 
 export interface CookieConsent {
-  timestamp: Date;
-  version: string;
-  necessary: boolean;
-  functional: boolean;
-  analytics: boolean;
-  advertising: boolean;
+  timestamp: Date
+  version: string
+  necessary: boolean
+  functional: boolean
+  analytics: boolean
+  advertising: boolean
 }
 
-const CONSENT_COOKIE_NAME = 'cookie_consent';
-const CONSENT_VERSION = '1.0';
-const CONSENT_EXPIRY_DAYS = 365;
+const CONSENT_COOKIE_NAME = 'cookie_consent'
+const CONSENT_VERSION = '1.0'
+const CONSENT_EXPIRY_DAYS = 365
 
 export function useCookieConsent() {
   const categories = ref([
@@ -732,32 +726,32 @@ export function useCookieConsent() {
       required: false,
       enabled: false,
     },
-  ]);
+  ])
 
   /**
    * 检查是否已有Cookie同意记录
    */
   function hasConsent(): boolean {
-    const consent = getCookie(CONSENT_COOKIE_NAME);
-    return consent !== null;
+    const consent = getCookie(CONSENT_COOKIE_NAME)
+    return consent !== null
   }
 
   /**
    * 获取Cookie同意记录
    */
   function getConsent(): CookieConsent | null {
-    const consentStr = getCookie(CONSENT_COOKIE_NAME);
-    if (!consentStr) return null;
+    const consentStr = getCookie(CONSENT_COOKIE_NAME)
+    if (!consentStr) return null
 
     try {
-      const consent = JSON.parse(decodeURIComponent(consentStr));
+      const consent = JSON.parse(decodeURIComponent(consentStr))
       return {
         ...consent,
         timestamp: new Date(consent.timestamp),
-      };
+      }
     } catch (error) {
-      console.error('Failed to parse cookie consent:', error);
-      return null;
+      console.error('Failed to parse cookie consent:', error)
+      return null
     }
   }
 
@@ -769,39 +763,39 @@ export function useCookieConsent() {
       ...consent,
       timestamp: new Date(),
       version: CONSENT_VERSION,
-    };
+    }
 
-    const consentStr = encodeURIComponent(JSON.stringify(fullConsent));
-    setCookie(CONSENT_COOKIE_NAME, consentStr, CONSENT_EXPIRY_DAYS);
+    const consentStr = encodeURIComponent(JSON.stringify(fullConsent))
+    setCookie(CONSENT_COOKIE_NAME, consentStr, CONSENT_EXPIRY_DAYS)
 
     // 清除未同意类别的Cookie
-    clearNonConsentedCookies(fullConsent);
+    clearNonConsentedCookies(fullConsent)
 
     // 触发事件，通知其他组件
-    emitConsentChange(fullConsent);
+    emitConsentChange(fullConsent)
   }
 
   /**
    * 检查特定类别是否已同意
    */
   function hasConsentForCategory(category: CookieCategory): boolean {
-    const consent = getConsent();
-    if (!consent) return false;
+    const consent = getConsent()
+    if (!consent) return false
 
-    return consent[category] === true;
+    return consent[category] === true
   }
 
   /**
    * 撤回Cookie同意
    */
   function revokeConsent() {
-    deleteCookie(CONSENT_COOKIE_NAME);
+    deleteCookie(CONSENT_COOKIE_NAME)
     clearNonConsentedCookies({
       necessary: true,
       functional: false,
       analytics: false,
       advertising: false,
-    });
+    })
   }
 
   /**
@@ -810,20 +804,20 @@ export function useCookieConsent() {
   function clearNonConsentedCookies(consent: Omit<CookieConsent, 'timestamp' | 'version'>) {
     // 功能性Cookie
     if (!consent.functional) {
-      deleteCookie('lang');
-      deleteCookie('theme');
-      deleteCookie('font_size');
+      deleteCookie('lang')
+      deleteCookie('theme')
+      deleteCookie('font_size')
       // 添加其他功能性Cookie
     }
 
     // 分析Cookie
     if (!consent.analytics) {
       // 清除Google Analytics Cookie
-      deleteCookie('_ga');
-      deleteCookie('_gid');
-      deleteCookie('_gat');
+      deleteCookie('_ga')
+      deleteCookie('_gid')
+      deleteCookie('_gat')
       // 清除百度统计Cookie
-      deleteCookie('HMACCOUNT');
+      deleteCookie('HMACCOUNT')
       // 添加其他分析Cookie
     }
 
@@ -839,35 +833,33 @@ export function useCookieConsent() {
    */
   function emitConsentChange(consent: CookieConsent) {
     if (typeof window !== 'undefined') {
-      window.dispatchEvent(
-        new CustomEvent('cookie-consent-change', { detail: consent })
-      );
+      window.dispatchEvent(new CustomEvent('cookie-consent-change', { detail: consent }))
     }
   }
 
   // Cookie工具函数
   function getCookie(name: string): string | null {
-    if (typeof document === 'undefined') return null;
+    if (typeof document === 'undefined') return null
 
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
+    const value = `; ${document.cookie}`
+    const parts = value.split(`; ${name}=`)
     if (parts.length === 2) {
-      return parts.pop()?.split(';').shift() || null;
+      return parts.pop()?.split(';').shift() || null
     }
-    return null;
+    return null
   }
 
   function setCookie(name: string, value: string, days: number) {
-    if (typeof document === 'undefined') return;
+    if (typeof document === 'undefined') return
 
-    const expires = new Date();
-    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
-    document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax;Secure`;
+    const expires = new Date()
+    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000)
+    document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax;Secure`
   }
 
   function deleteCookie(name: string) {
-    if (typeof document === 'undefined') return;
-    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
+    if (typeof document === 'undefined') return
+    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`
   }
 
   return {
@@ -877,7 +869,7 @@ export function useCookieConsent() {
     setConsent,
     hasConsentForCategory,
     revokeConsent,
-  };
+  }
 }
 ```
 
@@ -890,37 +882,37 @@ export function useCookieConsent() {
 export default defineNuxtPlugin((nuxtApp) => {
   // 在应用启动时检查Cookie同意
   if (process.client) {
-    const { hasConsent, getConsent, hasConsentForCategory } = useCookieConsent();
+    const { hasConsent, getConsent, hasConsentForCategory } = useCookieConsent()
 
     // 如果已有同意记录，根据同意情况加载第三方脚本
     if (hasConsent()) {
-      const consent = getConsent();
-      
+      const consent = getConsent()
+
       if (consent?.analytics) {
         // 加载分析脚本
-        loadAnalytics();
+        loadAnalytics()
       }
-      
+
       if (consent?.advertising) {
         // 加载广告脚本
-        loadAdvertising();
+        loadAdvertising()
       }
     }
 
     // 监听Cookie同意变更事件
     window.addEventListener('cookie-consent-change', (event: any) => {
-      const consent = event.detail;
-      
+      const consent = event.detail
+
       if (consent.analytics) {
-        loadAnalytics();
+        loadAnalytics()
       }
-      
+
       if (consent.advertising) {
-        loadAdvertising();
+        loadAdvertising()
       }
-    });
+    })
   }
-});
+})
 
 function loadAnalytics() {
   // TODO: 加载Google Analytics或百度统计
@@ -959,11 +951,11 @@ function loadAdvertising() {
 
 ```vue
 <template>
-  <div class="container cookie-settings-page">
+  <div class="cookie-settings-page container">
     <h1>Cookie设置</h1>
-    
+
     <p>您可以随时更改您的Cookie偏好设置。</p>
-    
+
     <div class="cookie-categories">
       <div v-for="category in categories" :key="category.id" class="cookie-category-card">
         <div class="cookie-category-header">
@@ -984,16 +976,12 @@ function loadAdvertising() {
         <p class="cookie-category-description">{{ category.description }}</p>
       </div>
     </div>
-    
+
     <div class="actions">
-      <button type="button" class="btn btn-primary" @click="saveSettings">
-        保存设置
-      </button>
-      <button type="button" class="btn btn-secondary" @click="resetSettings">
-        重置为默认
-      </button>
+      <button type="button" class="btn btn-primary" @click="saveSettings">保存设置</button>
+      <button type="button" class="btn btn-secondary" @click="resetSettings">重置为默认</button>
     </div>
-    
+
     <div class="info-section">
       <h2>更多信息</h2>
       <p>

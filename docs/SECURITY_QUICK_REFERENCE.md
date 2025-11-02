@@ -19,6 +19,7 @@ NUXT_PUBLIC_SECURITY_CSP_IMG_SRC='self' data: https://cdn.yourdomain.com
 ```
 
 ### Files Created
+
 - `apps/frontend/server/middleware/security-headers.ts`
 - `apps/frontend/server/middleware/rate-limit.ts`
 
@@ -37,6 +38,7 @@ SECURITY_API_RATE_LIMIT_ENABLED=true
 ```
 
 ### Files Created
+
 - `apps/cms/config/env/production/middlewares.ts`
 - `apps/cms/src/middlewares/rate-limit.ts`
 - `apps/cms/src/middlewares/api-rate-limit.ts`

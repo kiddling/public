@@ -6,20 +6,13 @@
 <template>
   <div class="space-y-2">
     <!-- Label -->
-    <label
-      :for="inputId"
-      class="block text-sm font-medium text-gray-700 dark:text-gray-300"
-    >
+    <label :for="inputId" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
       {{ label }}
       <span v-if="required" class="text-red-600" aria-label="必填">*</span>
     </label>
 
     <!-- Help Text -->
-    <p
-      v-if="helpText"
-      :id="`${inputId}-help`"
-      class="text-sm text-gray-600 dark:text-gray-400"
-    >
+    <p v-if="helpText" :id="`${inputId}-help`" class="text-sm text-gray-600 dark:text-gray-400">
       {{ helpText }}
     </p>
 
@@ -36,11 +29,11 @@
       :aria-required="required ? 'true' : undefined"
       :aria-invalid="hasError ? 'true' : 'false'"
       :aria-describedby="describedBy"
-      class="block w-full rounded-lg border px-4 py-2 text-gray-900 transition focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-800 dark:text-gray-100"
+      class="focus:ring-primary-500 block w-full rounded-lg border px-4 py-2 text-gray-900 transition focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-800 dark:text-gray-100"
       :class="[
         hasError
           ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
-          : 'border-gray-300 focus:border-primary-500 dark:border-gray-600',
+          : 'focus:border-primary-500 border-gray-300 dark:border-gray-600',
       ]"
       @input="handleInput"
       @blur="handleBlur"

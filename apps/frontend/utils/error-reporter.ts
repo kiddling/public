@@ -43,7 +43,7 @@ class ErrorReporter {
     environment?: string
     release?: string
   }) {
-    this.enabled = config.enabled ?? (process.env.NODE_ENV === 'production')
+    this.enabled = config.enabled ?? process.env.NODE_ENV === 'production'
     this.endpoint = config.endpoint || '/api/error-reports'
     this.apiKey = config.apiKey || ''
     this.environment = config.environment || process.env.NODE_ENV || 'production'

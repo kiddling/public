@@ -9,6 +9,7 @@ This implementation adds comprehensive operational tooling for monitoring, backu
 ### 1. Backup Script (`scripts/ops/backup.sh`)
 
 **Features:**
+
 - ✅ PostgreSQL database backup using `pg_dump`
 - ✅ Automatic compression (gzip)
 - ✅ Strapi uploads directory backup (tar.gz)
@@ -20,6 +21,7 @@ This implementation adds comprehensive operational tooling for monitoring, backu
 - ✅ Executable permissions set (`chmod +x`)
 
 **Usage:**
+
 ```bash
 ./scripts/ops/backup.sh                    # Default backup
 ./scripts/ops/backup.sh --retention 30     # Keep 30 days
@@ -29,6 +31,7 @@ This implementation adds comprehensive operational tooling for monitoring, backu
 ### 2. Restore Script (`scripts/ops/restore.sh`)
 
 **Features:**
+
 - ✅ List available backups
 - ✅ Restore PostgreSQL database
 - ✅ Restore Strapi uploads
@@ -39,6 +42,7 @@ This implementation adds comprehensive operational tooling for monitoring, backu
 - ✅ Executable permissions set
 
 **Usage:**
+
 ```bash
 ./scripts/ops/restore.sh --list
 ./scripts/ops/restore.sh --postgres backup.sql.gz
@@ -48,6 +52,7 @@ This implementation adds comprehensive operational tooling for monitoring, backu
 ### 3. Health Check Script (`scripts/ops/healthcheck.sh`)
 
 **Features:**
+
 - ✅ Monitors `/api/health` (Frontend)
 - ✅ Monitors `/_health` (CMS)
 - ✅ Configurable timeout
@@ -60,6 +65,7 @@ This implementation adds comprehensive operational tooling for monitoring, backu
 - ✅ Executable permissions set
 
 **Usage:**
+
 ```bash
 ./scripts/ops/healthcheck.sh                          # Basic check
 ./scripts/ops/healthcheck.sh --silent                 # Cron mode
@@ -69,6 +75,7 @@ This implementation adds comprehensive operational tooling for monitoring, backu
 ### 4. PM2 Ecosystem Config (`config/pm2/ecosystem.config.cjs`)
 
 **Features:**
+
 - ✅ Separate process definitions for Nuxt and Strapi
 - ✅ Cluster mode for frontend (2 instances)
 - ✅ Fork mode for CMS (1 instance)
@@ -81,6 +88,7 @@ This implementation adds comprehensive operational tooling for monitoring, backu
 - ✅ Deployment configurations
 
 **Usage:**
+
 ```bash
 pm2 start config/pm2/ecosystem.config.cjs             # Start all
 pm2 start config/pm2/ecosystem.config.cjs --only frontend
@@ -91,6 +99,7 @@ pm2 reload config/pm2/ecosystem.config.cjs            # Zero-downtime reload
 ### 5. Documentation (`docs/MONITORING.md`)
 
 **Enhanced Sections Added (in Chinese):**
+
 - ✅ **PM2 进程管理** - Complete PM2 setup and usage
   - Installation instructions
   - Starting/stopping/reloading processes
@@ -123,6 +132,7 @@ pm2 reload config/pm2/ecosystem.config.cjs            # Zero-downtime reload
 ### 6. Operations README (`scripts/ops/README.md`)
 
 **Comprehensive Chinese documentation including:**
+
 - ✅ Tool prerequisites
 - ✅ Detailed usage examples for all scripts
 - ✅ Environment variable documentation
@@ -138,11 +148,13 @@ pm2 reload config/pm2/ecosystem.config.cjs            # Zero-downtime reload
 ### Completed Validations:
 
 1. ✅ **Shellcheck validation** - All scripts pass without warnings
+
    ```bash
    shellcheck scripts/ops/*.sh  # No issues
    ```
 
 2. ✅ **Bash syntax check** - All scripts have valid syntax
+
    ```bash
    bash -n backup.sh     # OK
    bash -n restore.sh    # OK
@@ -150,16 +162,19 @@ pm2 reload config/pm2/ecosystem.config.cjs            # Zero-downtime reload
    ```
 
 3. ✅ **PM2 config validation** - Config is valid JavaScript
+
    ```bash
    node -c config/pm2/ecosystem.config.cjs  # OK
    ```
 
 4. ✅ **Executable permissions** - All scripts are executable
+
    ```bash
    ls -la scripts/ops/*.sh  # All have +x
    ```
 
 5. ✅ **Help output verification** - All scripts display help correctly
+
    ```bash
    ./backup.sh --help
    ./restore.sh --help
@@ -167,6 +182,7 @@ pm2 reload config/pm2/ecosystem.config.cjs            # Zero-downtime reload
    ```
 
 6. ✅ **Error handling test** - healthcheck handles failures correctly
+
    ```bash
    ./healthcheck.sh --frontend http://invalid:9999 --timeout 2
    # Returns exit code 3 with proper error messages
@@ -190,6 +206,7 @@ pm2 reload config/pm2/ecosystem.config.cjs            # Zero-downtime reload
 ## 📦 Files Added/Modified
 
 ### New Files:
+
 - `scripts/ops/backup.sh` (8,166 bytes, executable)
 - `scripts/ops/restore.sh` (8,793 bytes, executable)
 - `scripts/ops/healthcheck.sh` (8,397 bytes, executable)
@@ -197,10 +214,12 @@ pm2 reload config/pm2/ecosystem.config.cjs            # Zero-downtime reload
 - `config/pm2/ecosystem.config.cjs` (6,960 bytes)
 
 ### Modified Files:
+
 - `.gitignore` (added backup file patterns)
 - `docs/MONITORING.md` (added ~400 lines of Chinese ops documentation)
 
 ### Total Addition:
+
 - **~500 lines of bash scripts**
 - **~200 lines of PM2 config**
 - **~500 lines of Chinese documentation**
@@ -217,11 +236,13 @@ pm2 reload config/pm2/ecosystem.config.cjs            # Zero-downtime reload
 ## 🎯 Acceptance Criteria Met
 
 ✅ **Ops scripts and PM2 config committed with clear usage instructions**
+
 - All scripts created with comprehensive documentation
 - README.md provides detailed usage examples
 - MONITORING.md updated with Chinese instructions
 
 ✅ **Monitoring doc updated to explain health checks, backups, log management, and alert setup in Chinese**
+
 - PM2 process management section added
 - Backup and restore procedures documented
 - Health check monitoring explained
@@ -229,6 +250,7 @@ pm2 reload config/pm2/ecosystem.config.cjs            # Zero-downtime reload
 - Alert integration examples (Aliyun, Tencent, DingTalk, WeChat)
 
 ✅ **Scripts verified to work against local stack or documented fallback instructions**
+
 - All scripts pass shellcheck validation
 - Syntax validation completed
 - Error handling tested

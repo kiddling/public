@@ -10,7 +10,7 @@ export interface PerformanceMetrics {
   lcp?: number // Largest Contentful Paint
   fid?: number // First Input Delay
   cls?: number // Cumulative Layout Shift
-  
+
   // Other metrics
   fcp?: number // First Contentful Paint
   ttfb?: number // Time to First Byte
@@ -37,13 +37,13 @@ export async function capturePerformanceMetrics(page: Page): Promise<Performance
   return await page.evaluate(() => {
     const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming
     const paint = performance.getEntriesByType('paint')
-    
-    const fcp = paint.find(p => p.name === 'first-contentful-paint')?.startTime
-    
+
+    const fcp = paint.find((p) => p.name === 'first-contentful-paint')?.startTime
+
     // Get LCP from PerformanceObserver if available
     const lcpEntry = performance.getEntriesByType('largest-contentful-paint').pop() as any
     const lcp = lcpEntry?.renderTime || lcpEntry?.loadTime
-    
+
     return {
       ttfb: navigation.responseStart - navigation.requestStart,
       domContentLoaded: navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart,
@@ -69,7 +69,7 @@ export async function measureWebVitals(page: Page): Promise<PerformanceMetrics> 
   // Inject web-vitals library if not already present
   await page.evaluate(() => {
     if (!(window as any).__WEB_VITALS__) {
-      (window as any).__WEB_VITALS__ = {}
+      ;(window as any).__WEB_VITALS__ = {}
     }
   })
 
@@ -132,24 +132,24 @@ export function assertPerformanceThresholds(
  * Default performance thresholds for desktop
  */
 export const DESKTOP_THRESHOLDS: PerformanceThresholds = {
-  lcp: 2500,  // Good: < 2.5s
-  fid: 100,   // Good: < 100ms
-  cls: 0.1,   // Good: < 0.1
-  fcp: 1800,  // Good: < 1.8s
-  ttfb: 600,  // Good: < 600ms
-  tti: 3800,  // Good: < 3.8s
+  lcp: 2500, // Good: < 2.5s
+  fid: 100, // Good: < 100ms
+  cls: 0.1, // Good: < 0.1
+  fcp: 1800, // Good: < 1.8s
+  ttfb: 600, // Good: < 600ms
+  tti: 3800, // Good: < 3.8s
 }
 
 /**
  * Default performance thresholds for mobile
  */
 export const MOBILE_THRESHOLDS: PerformanceThresholds = {
-  lcp: 4000,  // Acceptable on mobile
-  fid: 100,   // Same as desktop
-  cls: 0.1,   // Same as desktop
-  fcp: 3000,  // Acceptable on mobile
+  lcp: 4000, // Acceptable on mobile
+  fid: 100, // Same as desktop
+  cls: 0.1, // Same as desktop
+  fcp: 3000, // Acceptable on mobile
   ttfb: 1000, // Acceptable on mobile
-  tti: 5000,  // Acceptable on mobile
+  tti: 5000, // Acceptable on mobile
 }
 
 /**

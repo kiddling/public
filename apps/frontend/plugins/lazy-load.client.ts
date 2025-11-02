@@ -1,6 +1,6 @@
 /**
  * Lazy Load Plugin
- * 
+ *
  * Provides a v-lazy-load directive for deferring loading of non-critical media
  * using IntersectionObserver for optimal performance
  */

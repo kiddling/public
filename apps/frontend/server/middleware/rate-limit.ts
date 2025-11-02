@@ -21,10 +21,10 @@ setInterval(() => {
 
 export default defineEventHandler((event) => {
   const config = useRuntimeConfig()
-  
+
   // Get rate limiting configuration
   const rateLimitEnabled = config.public.securityRateLimitEnabled !== 'false'
-  
+
   if (!rateLimitEnabled) {
     return
   }
@@ -80,13 +80,13 @@ export default defineEventHandler((event) => {
   // Check if rate limit exceeded
   if (entry.count > maxRequests) {
     const retryAfter = Math.ceil((entry.resetTime - now) / 1000)
-    
+
     setResponseHeaders(event, {
       'Retry-After': retryAfter.toString(),
     })
-    
+
     setResponseStatus(event, 429)
-    
+
     return {
       error: 'Too Many Requests',
       message: '请求过于频繁，请稍后再试',

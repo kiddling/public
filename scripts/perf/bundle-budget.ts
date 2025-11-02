@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 /**
  * Bundle Budget Check Script
- * 
+ *
  * Analyzes build output and fails if chunk sizes exceed defined thresholds.
  * Suitable for CI/CD integration to enforce performance budgets.
- * 
+ *
  * Usage:
  *   pnpm bundle:check
  *   npm run bundle:check
  *   node scripts/perf/bundle-budget.ts
- * 
+ *
  * Environment Variables:
  *   BUILD_DIR - Path to build output (default: apps/frontend/.output/public)
  *   STRICT_MODE - Fail on any budget violation (default: true)
@@ -138,7 +138,7 @@ function findFiles(dir: string, fileList: FileInfo[] = []): FileInfo[] {
 
   const files = fs.readdirSync(dir)
 
-  files.forEach(file => {
+  files.forEach((file) => {
     const filePath = path.join(dir, file)
     const stat = fs.statSync(filePath)
 
@@ -149,7 +149,7 @@ function findFiles(dir: string, fileList: FileInfo[] = []): FileInfo[] {
       if (type === 'js' || type === 'css') {
         const size = getFileSize(filePath)
         const gzipSize = getGzipSize(filePath)
-        
+
         fileList.push({
           path: filePath,
           name: file,
@@ -173,12 +173,13 @@ function analyzeBundle(files: FileInfo[]) {
   log('='.repeat(70), 'bold')
 
   // Find entry file (usually the largest initial chunk)
-  const jsFiles = files.filter(f => f.type === 'js')
-  const cssFiles = files.filter(f => f.type === 'css')
+  const jsFiles = files.filter((f) => f.type === 'js')
+  const cssFiles = files.filter((f) => f.type === 'css')
 
   // Sort by size to find entry
   const sortedJS = [...jsFiles].sort((a, b) => b.gzipSize - a.gzipSize)
-  const entryFile = sortedJS.find(f => f.name.includes('entry') || f.name.includes('index')) || sortedJS[0]
+  const entryFile =
+    sortedJS.find((f) => f.name.includes('entry') || f.name.includes('index')) || sortedJS[0]
 
   // Calculate totals
   const totalJSSize = jsFiles.reduce((sum, f) => sum + f.gzipSize, 0) / 1024
@@ -207,7 +208,7 @@ function analyzeBundle(files: FileInfo[]) {
   // Check total JS budget
   const totalJSPassed = totalJSSize <= budgets.totalJS.limit * (1 + config.budgetMargin / 100)
   const totalJSPercentage = (totalJSSize / budgets.totalJS.limit) * 100
-  
+
   results.push({
     name: 'Total JS',
     description: budgets.totalJS.description,
@@ -223,7 +224,7 @@ function analyzeBundle(files: FileInfo[]) {
   // Check total CSS budget
   const totalCSSPassed = totalCSSSize <= budgets.totalCSS.limit * (1 + config.budgetMargin / 100)
   const totalCSSPercentage = (totalCSSSize / budgets.totalCSS.limit) * 100
-  
+
   results.push({
     name: 'Total CSS',
     description: budgets.totalCSS.description,
@@ -237,17 +238,17 @@ function analyzeBundle(files: FileInfo[]) {
   if (!totalCSSPassed) hasViolations = true
 
   // Check individual chunk sizes
-  const largeChunks = jsFiles.filter(f => {
+  const largeChunks = jsFiles.filter((f) => {
     const sizeKB = f.gzipSize / 1024
     return sizeKB > budgets.maxChunk.limit * (1 + config.budgetMargin / 100)
   })
 
   if (largeChunks.length > 0) {
     hasViolations = true
-    largeChunks.forEach(chunk => {
+    largeChunks.forEach((chunk) => {
       const sizeKB = chunk.gzipSize / 1024
       const percentage = (sizeKB / budgets.maxChunk.limit) * 100
-      
+
       results.push({
         name: `Chunk: ${chunk.name}`,
         description: '单个 chunk',
@@ -262,7 +263,7 @@ function analyzeBundle(files: FileInfo[]) {
 
   // Check vendor chunks
   Object.entries(budgets.vendorChunks).forEach(([vendorName, limit]) => {
-    const vendorFile = jsFiles.find(f => f.name.includes(vendorName))
+    const vendorFile = jsFiles.find((f) => f.name.includes(vendorName))
     if (vendorFile) {
       const sizeKB = vendorFile.gzipSize / 1024
       const adjustedLimit = limit * (1 + config.budgetMargin / 100)
@@ -285,12 +286,12 @@ function analyzeBundle(files: FileInfo[]) {
 
   // Print results
   log('\n📈 Budget Results:\n', 'cyan')
-  
-  results.forEach(result => {
+
+  results.forEach((result) => {
     const status = result.passed ? '✓' : '✗'
     const color = result.passed ? 'green' : 'red'
     const marginInfo = config.budgetMargin > 0 ? ` (margin: ${config.budgetMargin}%)` : ''
-    
+
     log(
       `${status} ${result.name}: ${result.actual.toFixed(2)} KB / ${result.limit} KB (${result.percentage.toFixed(1)}%)${marginInfo}`,
       color
@@ -300,9 +301,9 @@ function analyzeBundle(files: FileInfo[]) {
 
   // Print top 10 largest files
   log('\n📦 Top 10 Largest Files:\n', 'cyan')
-  
+
   const allFiles = [...jsFiles, ...cssFiles].sort((a, b) => b.gzipSize - a.gzipSize).slice(0, 10)
-  
+
   allFiles.forEach((file, index) => {
     const displaySize = file.type === 'js' ? formatSize(file.gzipSize) : formatSize(file.size)
     const gzipInfo = file.type === 'js' ? ' (gzipped)' : ''
@@ -318,7 +319,7 @@ function analyzeBundle(files: FileInfo[]) {
   log(`Total CSS: ${formatSize(totalCSSSize * 1024)}`)
   log(`Budget Margin: ${config.budgetMargin}%`)
   log(`Strict Mode: ${config.strictMode ? 'Enabled' : 'Disabled'}`)
-  
+
   if (hasViolations) {
     log('\n❌ Budget violations detected!', 'red')
     if (config.strictMode) {
@@ -338,7 +339,7 @@ function analyzeBundle(files: FileInfo[]) {
     timestamp: new Date().toISOString(),
     config,
     results,
-    files: allFiles.map(f => ({
+    files: allFiles.map((f) => ({
       name: f.name,
       size: f.size,
       gzipSize: f.gzipSize,

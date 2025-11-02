@@ -55,7 +55,10 @@ export const useDesignLogStore = defineStore('designLog', () => {
   })
 
   const wordCount = computed(() => {
-    return state.value.designProblem.trim().split(/\s+/).filter(word => word.length > 0).length
+    return state.value.designProblem
+      .trim()
+      .split(/\s+/)
+      .filter((word) => word.length > 0).length
   })
 
   const isValid = computed(() => {
@@ -88,7 +91,7 @@ export const useDesignLogStore = defineStore('designLog', () => {
   }
 
   function updateDecision(id: string, updates: Partial<DesignDecision>) {
-    const index = state.value.decisions.findIndex(d => d.id === id)
+    const index = state.value.decisions.findIndex((d) => d.id === id)
     if (index !== -1) {
       state.value.decisions[index] = { ...state.value.decisions[index], ...updates }
       state.value.isDirty = true
@@ -96,7 +99,7 @@ export const useDesignLogStore = defineStore('designLog', () => {
   }
 
   function removeDecision(id: string) {
-    state.value.decisions = state.value.decisions.filter(d => d.id !== id)
+    state.value.decisions = state.value.decisions.filter((d) => d.id !== id)
     state.value.isDirty = true
   }
 
@@ -110,7 +113,7 @@ export const useDesignLogStore = defineStore('designLog', () => {
   }
 
   function updateIteration(id: string, updates: Partial<IterationItem>) {
-    const index = state.value.iterations.findIndex(i => i.id === id)
+    const index = state.value.iterations.findIndex((i) => i.id === id)
     if (index !== -1) {
       state.value.iterations[index] = { ...state.value.iterations[index], ...updates }
       state.value.isDirty = true
@@ -118,7 +121,7 @@ export const useDesignLogStore = defineStore('designLog', () => {
   }
 
   function removeIteration(id: string) {
-    state.value.iterations = state.value.iterations.filter(i => i.id !== id)
+    state.value.iterations = state.value.iterations.filter((i) => i.id !== id)
     state.value.isDirty = true
   }
 
@@ -141,7 +144,7 @@ export const useDesignLogStore = defineStore('designLog', () => {
   }
 
   function removeAttachment(id: string) {
-    state.value.attachments = state.value.attachments.filter(a => a.id !== id)
+    state.value.attachments = state.value.attachments.filter((a) => a.id !== id)
     state.value.isDirty = true
   }
 
@@ -186,19 +189,19 @@ export const useDesignLogStore = defineStore('designLog', () => {
     }
 
     state.value.saveStatus = 'saving'
-    
+
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+
       state.value.saveStatus = 'saved'
       state.value.isDirty = false
-      
+
       setTimeout(() => {
         if (state.value.saveStatus === 'saved') {
           state.value.saveStatus = 'idle'
         }
       }, 3000)
-      
+
       return true
     } catch (error) {
       state.value.saveStatus = 'error'

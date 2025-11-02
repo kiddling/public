@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <div class="fixed top-4 right-4 z-50 space-y-4 max-w-sm w-full pointer-events-none">
+    <div class="pointer-events-none fixed right-4 top-4 z-50 w-full max-w-sm space-y-4">
       <TransitionGroup name="notification">
         <div
           v-for="notification in notifications"
@@ -8,19 +8,19 @@
           class="notification-item pointer-events-auto"
         >
           <div
-            class="rounded-lg shadow-lg p-4 backdrop-blur-sm"
+            class="rounded-lg p-4 shadow-lg backdrop-blur-sm"
             :class="notificationClasses(notification.type)"
             role="alert"
           >
             <div class="flex items-start gap-3">
               <!-- Icon -->
               <div class="flex-shrink-0">
-                <Icon :name="getIcon(notification.type)" class="w-6 h-6" />
+                <Icon :name="getIcon(notification.type)" class="h-6 w-6" />
               </div>
 
               <!-- Content -->
-              <div class="flex-1 min-w-0">
-                <h4 class="font-semibold text-sm mb-1">
+              <div class="min-w-0 flex-1">
+                <h4 class="mb-1 text-sm font-semibold">
                   {{ notification.title }}
                 </h4>
                 <p class="text-sm opacity-90">
@@ -40,10 +40,10 @@
               <!-- Close button -->
               <button
                 @click="removeNotification(notification.id)"
-                class="flex-shrink-0 opacity-70 hover:opacity-100 transition-opacity"
+                class="flex-shrink-0 opacity-70 transition-opacity hover:opacity-100"
                 aria-label="关闭"
               >
-                <Icon name="mdi:close" class="w-5 h-5" />
+                <Icon name="mdi:close" class="h-5 w-5" />
               </button>
             </div>
           </div>
@@ -60,7 +60,7 @@ const { notifications, remove } = useNotification()
 
 const notificationClasses = (type: NotificationType) => {
   const baseClasses = 'border'
-  
+
   switch (type) {
     case 'success':
       return `${baseClasses} bg-green-50 border-green-200 text-green-900 dark:bg-green-900/20 dark:border-green-800 dark:text-green-100`

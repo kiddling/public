@@ -41,7 +41,9 @@ export default [
     name: 'strapi::cors',
     config: {
       enabled: process.env.SECURITY_CORS_ENABLED !== 'false',
-      origin: (process.env.SECURITY_CORS_ORIGIN || 'http://localhost:3000').split(',').map(o => o.trim()),
+      origin: (process.env.SECURITY_CORS_ORIGIN || 'http://localhost:3000')
+        .split(',')
+        .map((o) => o.trim()),
       credentials: process.env.SECURITY_CORS_CREDENTIALS !== 'false',
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
       headers: ['Content-Type', 'Authorization', 'X-Frame-Options'],
@@ -80,4 +82,4 @@ export default [
       skipPaths: ['/admin', '/_health'],
     },
   },
-];
+]

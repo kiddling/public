@@ -66,11 +66,7 @@
 <img src="decoration.svg" alt="" aria-hidden="true" />
 
 <!-- ✅ 好：复杂图片 -->
-<img 
-  src="chart.png" 
-  alt="2023年课程报名趋势图"
-  aria-describedby="chart-description"
-/>
+<img src="chart.png" alt="2023年课程报名趋势图" aria-describedby="chart-description" />
 <p id="chart-description">
   图表显示报名人数从1月到12月逐步增长
 </p>
@@ -117,13 +113,7 @@
 ```vue
 <!-- ✅ 好：可访问的模态框 -->
 <template>
-  <div
-    v-if="isOpen"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="dialog-title"
-    ref="dialogRef"
-  >
+  <div v-if="isOpen" role="dialog" aria-modal="true" aria-labelledby="dialog-title" ref="dialogRef">
     <h2 id="dialog-title">确认删除</h2>
     <p>确定要删除这个项目吗？</p>
     <button @click="confirm">确认</button>
@@ -171,7 +161,9 @@ const handleSave = async () => {
 ## 🎨 ARIA 属性速查
 
 ### aria-label
+
 为没有可见文本的元素提供标签：
+
 ```vue
 <button aria-label="关闭">
   <Icon name="close" />
@@ -179,7 +171,9 @@ const handleSave = async () => {
 ```
 
 ### aria-labelledby
+
 引用其他元素作为标签：
+
 ```vue
 <div role="dialog" aria-labelledby="title">
   <h2 id="title">标题</h2>
@@ -187,17 +181,18 @@ const handleSave = async () => {
 ```
 
 ### aria-describedby
+
 提供额外说明：
+
 ```vue
-<input
-  id="password"
-  aria-describedby="password-requirements"
-/>
+<input id="password" aria-describedby="password-requirements" />
 <p id="password-requirements">至少8个字符</p>
 ```
 
 ### aria-live
+
 宣布动态内容：
+
 ```vue
 <div aria-live="polite" aria-atomic="true">
   {{ statusMessage }}
@@ -205,31 +200,34 @@ const handleSave = async () => {
 ```
 
 Politeness levels:
+
 - `polite` - 等待当前发言结束
 - `assertive` - 立即打断
 - `off` - 不宣布
 
 ### aria-expanded
+
 指示可展开元素状态：
+
 ```vue
-<button
-  aria-expanded="false"
-  aria-controls="menu"
-  @click="toggleMenu"
->
+<button aria-expanded="false" aria-controls="menu" @click="toggleMenu">
   菜单
 </button>
 <div id="menu" :hidden="!menuOpen">...</div>
 ```
 
 ### aria-hidden
+
 隐藏装饰性元素：
+
 ```vue
 <Icon name="decorative" aria-hidden="true" />
 ```
 
 ### aria-current
+
 指示当前项：
+
 ```vue
 <a :aria-current="isActive ? 'page' : undefined">
   当前页面
@@ -237,26 +235,25 @@ Politeness levels:
 ```
 
 ### aria-invalid
+
 指示表单错误：
+
 ```vue
-<input
-  :aria-invalid="hasError ? 'true' : 'false'"
-  aria-describedby="error"
-/>
+<input :aria-invalid="hasError ? 'true' : 'false'" aria-describedby="error" />
 ```
 
 ## ⌨️ 键盘交互模式
 
 ### 标准交互
 
-| 元素 | Tab | Enter/Space | Escape | 箭头键 |
-|------|-----|-------------|--------|--------|
-| 按钮 | 聚焦 | 激活 | - | - |
-| 链接 | 聚焦 | 激活 | - | - |
-| 输入框 | 聚焦 | - | - | - |
-| 模态框 | 循环焦点 | - | 关闭 | - |
-| 菜单 | 聚焦 | 选择 | 关闭 | 导航项目 |
-| 标签页 | 进入标签栏 | - | - | 切换标签 |
+| 元素   | Tab        | Enter/Space | Escape | 箭头键   |
+| ------ | ---------- | ----------- | ------ | -------- |
+| 按钮   | 聚焦       | 激活        | -      | -        |
+| 链接   | 聚焦       | 激活        | -      | -        |
+| 输入框 | 聚焦       | -           | -      | -        |
+| 模态框 | 循环焦点   | -           | 关闭   | -        |
+| 菜单   | 聚焦       | 选择        | 关闭   | 导航项目 |
+| 标签页 | 进入标签栏 | -           | -      | 切换标签 |
 
 ### 自定义组件键盘支持
 
@@ -290,32 +287,32 @@ Politeness levels:
 
 ### WCAG AA 要求
 
-| 内容类型 | 最小对比度 |
-|----------|-----------|
-| 正常文本（< 18pt） | 4.5:1 |
-| 大文本（≥ 18pt 或 14pt 粗体） | 3:1 |
-| UI 组件和图形对象 | 3:1 |
-| 焦点指示器 | 3:1 |
+| 内容类型                      | 最小对比度 |
+| ----------------------------- | ---------- |
+| 正常文本（< 18pt）            | 4.5:1      |
+| 大文本（≥ 18pt 或 14pt 粗体） | 3:1        |
+| UI 组件和图形对象             | 3:1        |
+| 焦点指示器                    | 3:1        |
 
 ### Tailwind 推荐组合
 
 ```vue
 <!-- 深色文本 + 白色背景 -->
-<div class="text-gray-900 bg-white">✅ 18.05:1</div>
-<div class="text-gray-700 bg-white">✅ 7.92:1</div>
-<div class="text-gray-600 bg-white">✅ 5.74:1</div>
+<div class="bg-white text-gray-900">✅ 18.05:1</div>
+<div class="bg-white text-gray-700">✅ 7.92:1</div>
+<div class="bg-white text-gray-600">✅ 5.74:1</div>
 
 <!-- 浅色文本 + 深色背景 -->
-<div class="text-white bg-gray-900">✅ 18.05:1</div>
-<div class="text-gray-100 bg-gray-900">✅ 15.89:1</div>
+<div class="bg-gray-900 text-white">✅ 18.05:1</div>
+<div class="bg-gray-900 text-gray-100">✅ 15.89:1</div>
 
 <!-- Primary 颜色 -->
 <div class="text-primary-600 bg-white">✅ 4.66:1</div>
 <div class="bg-primary-600 text-white">✅ 4.49:1</div>
 
 <!-- ❌ 避免低对比度 -->
-<div class="text-gray-400 bg-white">❌ 2.85:1</div>
-<div class="text-gray-500 bg-gray-100">❌ 3.02:1</div>
+<div class="bg-white text-gray-400">❌ 2.85:1</div>
+<div class="bg-gray-100 text-gray-500">❌ 3.02:1</div>
 ```
 
 ## 🧪 测试命令
@@ -375,13 +372,7 @@ import { useFormAccessibility, validationRules } from '~/composables/useFormAcce
 const email = ref('')
 const password = ref('')
 
-const {
-  errors,
-  hasErrors,
-  validateAll,
-  getFieldProps,
-  getErrorProps,
-} = useFormAccessibility({
+const { errors, hasErrors, validateAll, getFieldProps, getErrorProps } = useFormAccessibility({
   email: {
     value: email,
     label: '邮箱',

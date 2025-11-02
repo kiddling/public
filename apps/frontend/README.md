@@ -213,11 +213,11 @@ Create stores in the `stores/` directory:
 // stores/example.ts
 export const useExampleStore = defineStore('example', () => {
   const count = ref(0)
-  
+
   function increment() {
     count.value++
   }
-  
+
   return { count, increment }
 })
 ```
@@ -235,9 +235,7 @@ const exampleStore = useExampleStore()
 Place markdown files in the `content/` directory and query them:
 
 ```typescript
-const { data } = await useAsyncData('articles', () =>
-  queryContent('/articles').find()
-)
+const { data } = await useAsyncData('articles', () => queryContent('/articles').find())
 ```
 
 ## 🌙 Dark Mode
@@ -254,9 +252,7 @@ const toggleDark = () => {
 </script>
 
 <template>
-  <button @click="toggleDark">
-    Toggle Dark Mode
-  </button>
+  <button @click="toggleDark">Toggle Dark Mode</button>
 </template>
 ```
 
@@ -317,18 +313,13 @@ Replace standard `<img>` tags with `<NuxtImg>`:
 <template>
   <!-- Basic usage -->
   <NuxtImg src="/images/photo.jpg" alt="Description" />
-  
+
   <!-- With preset -->
-  <NuxtImg 
-    src="/images/photo.jpg" 
-    alt="Student work" 
-    preset="gallery"
-    loading="lazy"
-  />
-  
+  <NuxtImg src="/images/photo.jpg" alt="Student work" preset="gallery" loading="lazy" />
+
   <!-- With responsive sizes -->
-  <NuxtImg 
-    src="/images/photo.jpg" 
+  <NuxtImg
+    src="/images/photo.jpg"
     alt="Card image"
     preset="card"
     sizes="xs:280px sm:320px md:400px lg:500px"
@@ -348,6 +339,7 @@ Pre-configured image sizes for consistent usage:
 ### Image Formats
 
 Images are automatically converted to modern formats:
+
 - **WebP**: ~25-35% smaller than JPEG
 - **AVIF**: ~50% smaller than JPEG (where supported)
 - Original format as fallback
@@ -419,6 +411,7 @@ To use custom fonts like Source Han Sans CN:
 ### Font Display Strategy
 
 All fonts use `font-display: swap`:
+
 - Text appears immediately with fallback fonts
 - Custom fonts swap in when ready
 - No Flash of Invisible Text (FOIT)
@@ -426,12 +419,14 @@ All fonts use `font-display: swap`:
 ### Performance Considerations
 
 **System Fonts** (Current Default):
+
 - ✅ Zero network requests
 - ✅ Instant rendering
 - ✅ Platform-optimized
 - ✅ Great Chinese support
 
 **Self-Hosted Fonts**:
+
 - ⚠️ Requires network requests
 - ⚠️ Needs careful subsetting
 - ✅ Consistent branding
@@ -449,10 +444,10 @@ Long-term caching is configured for static assets:
 // In nuxt.config.ts
 nitro: {
   routeRules: {
-    '/fonts/**': { 
+    '/fonts/**': {
       headers: { 'Cache-Control': 'public, max-age=31536000, immutable' }
     },
-    '/images/**': { 
+    '/images/**': {
       headers: { 'Cache-Control': 'public, max-age=31536000, immutable' }
     },
     '/_ipx/**': { // Optimized images
@@ -465,6 +460,7 @@ nitro: {
 ### Compression
 
 Brotli and Gzip compression are enabled for all assets:
+
 - HTML, CSS, JS: Automatically compressed
 - Images: Pre-optimized by `@nuxt/image`
 - Fonts: Pre-compressed when using WOFF2
@@ -472,6 +468,7 @@ Brotli and Gzip compression are enabled for all assets:
 ### CDN-Ready
 
 The app is optimized for CDN deployment:
+
 - Immutable asset URLs with content hashing
 - Long-term browser caching
 - Efficient compression

@@ -19,11 +19,16 @@ export async function navigateAndWait(page: Page, url: string): Promise<void> {
  */
 export async function waitForHydration(page: Page): Promise<void> {
   // Wait for Vue to be ready
-  await page.waitForFunction(() => {
-    return (window as any).__NUXT__ !== undefined
-  }, { timeout: 5000 }).catch(() => {
-    // Hydration check is optional
-  })
+  await page
+    .waitForFunction(
+      () => {
+        return (window as any).__NUXT__ !== undefined
+      },
+      { timeout: 5000 }
+    )
+    .catch(() => {
+      // Hydration check is optional
+    })
 }
 
 /**

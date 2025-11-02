@@ -41,11 +41,8 @@ test('my page should be accessible', async ({ page }) => {
   await page.waitForLoadState('networkidle')
 
   const results = await runAxeCheck(page)
-  
-  expect(
-    results.violations.length,
-    formatAxeViolations(results.violations)
-  ).toBe(0)
+
+  expect(results.violations.length, formatAxeViolations(results.violations)).toBe(0)
 })
 ```
 
@@ -99,7 +96,7 @@ import MyComponent from './MyComponent.vue'
 
 test('should have proper ARIA labels', () => {
   const wrapper = mount(MyComponent)
-  
+
   const button = wrapper.find('button')
   expect(button.attributes('aria-label')).toBeTruthy()
 })
@@ -175,24 +172,25 @@ NVDA 是免费开源的屏幕阅读器。
 
 #### 基本操作
 
-| 操作 | 快捷键 |
-|------|--------|
-| 开始/停止阅读 | `NVDA + Down Arrow` |
-| 停止阅读 | `Ctrl` |
-| 下一行 | `Down Arrow` |
-| 上一行 | `Up Arrow` |
-| 下一个元素 | `Tab` |
-| 下一个标题 | `H` |
-| 下一个链接 | `K` |
-| 下一个按钮 | `B` |
-| 下一个表单字段 | `F` |
-| 元素列表 | `NVDA + F7` |
+| 操作           | 快捷键              |
+| -------------- | ------------------- |
+| 开始/停止阅读  | `NVDA + Down Arrow` |
+| 停止阅读       | `Ctrl`              |
+| 下一行         | `Down Arrow`        |
+| 上一行         | `Up Arrow`          |
+| 下一个元素     | `Tab`               |
+| 下一个标题     | `H`                 |
+| 下一个链接     | `K`                 |
+| 下一个按钮     | `B`                 |
+| 下一个表单字段 | `F`                 |
+| 元素列表       | `NVDA + F7`         |
 
 注：`NVDA` 键默认是 `Insert` 或 `Caps Lock`
 
 #### 测试步骤
 
 1. **启动 NVDA**
+
    ```
    启动 NVDA → 打开浏览器 → 访问应用
    ```
@@ -231,15 +229,15 @@ VoiceOver 是 macOS 内置的屏幕阅读器。
 
 注：`VO` = `Ctrl + Option`
 
-| 操作 | 快捷键 |
-|------|--------|
-| 开始/停止阅读 | `VO + A` |
-| 下一个项目 | `VO + Right Arrow` |
-| 上一个项目 | `VO + Left Arrow` |
-| 与项目交互 | `VO + Space` |
-| 停止交互 | `VO + Shift + Up Arrow` |
-| 下一个标题 | `VO + Cmd + H` |
-| Web Rotor | `VO + U` |
+| 操作          | 快捷键                  |
+| ------------- | ----------------------- |
+| 开始/停止阅读 | `VO + A`                |
+| 下一个项目    | `VO + Right Arrow`      |
+| 上一个项目    | `VO + Left Arrow`       |
+| 与项目交互    | `VO + Space`            |
+| 停止交互      | `VO + Shift + Up Arrow` |
+| 下一个标题    | `VO + Cmd + H`          |
+| Web Rotor     | `VO + U`                |
 
 #### 测试步骤
 
@@ -267,11 +265,13 @@ VoiceOver 是 macOS 内置的屏幕阅读器。
 #### 1. Tab 顺序
 
 **测试步骤：**
+
 1. 关闭鼠标或不使用鼠标
 2. 按 `Tab` 键浏览整个页面
 3. 记录焦点顺序
 
 **验收标准：**
+
 - [ ] 焦点顺序符合视觉顺序
 - [ ] 所有交互元素都能获得焦点
 - [ ] 隐藏的元素不在 Tab 顺序中
@@ -280,11 +280,13 @@ VoiceOver 是 macOS 内置的屏幕阅读器。
 #### 2. 跳转链接
 
 **测试步骤：**
+
 1. 刷新页面
 2. 立即按 `Tab` 键
 3. 应该看到"跳转到主内容"链接
 
 **验收标准：**
+
 - [ ] 跳转链接是第一个可聚焦元素
 - [ ] 按 `Enter` 后焦点移至主内容
 - [ ] 跳过导航栏和侧边栏
@@ -293,14 +295,15 @@ VoiceOver 是 macOS 内置的屏幕阅读器。
 
 **测试步骤：**
 
-| 快捷键 | 预期行为 |
-|--------|----------|
-| `Cmd/Ctrl + K` | 打开全局搜索 |
-| `/` | 聚焦搜索框（如果不在输入框中） |
-| `Escape` | 关闭模态框/菜单 |
-| `Cmd/Ctrl + H` | 返回首页 |
+| 快捷键         | 预期行为                       |
+| -------------- | ------------------------------ |
+| `Cmd/Ctrl + K` | 打开全局搜索                   |
+| `/`            | 聚焦搜索框（如果不在输入框中） |
+| `Escape`       | 关闭模态框/菜单                |
+| `Cmd/Ctrl + H` | 返回首页                       |
 
 **验收标准：**
+
 - [ ] 所有快捷键都能正常工作
 - [ ] 快捷键不与浏览器默认快捷键冲突
 - [ ] 在输入框中时，字母快捷键不触发
@@ -308,11 +311,13 @@ VoiceOver 是 macOS 内置的屏幕阅读器。
 #### 4. 模态框焦点管理
 
 **测试步骤：**
+
 1. 打开模态框
 2. 按 `Tab` 多次
 3. 观察焦点是否限制在模态框内
 
 **验收标准：**
+
 - [ ] 焦点限制在模态框内
 - [ ] 从最后一个元素 Tab 回到第一个
 - [ ] `Shift + Tab` 反向循环
@@ -343,10 +348,12 @@ VoiceOver 是 macOS 内置的屏幕阅读器。
 #### 2. 表格导航
 
 **测试步骤：**
+
 1. 使用 `Tab` 进入表格
 2. 尝试使用箭头键导航
 
 **验收标准：**
+
 - [ ] `Tab` 移动到表格内的交互元素
 - [ ] 表格标题清晰
 - [ ] 数据单元格与标题正确关联
@@ -356,11 +363,13 @@ VoiceOver 是 macOS 内置的屏幕阅读器。
 ### 在线工具
 
 #### WebAIM Contrast Checker
+
 - URL: https://webaim.org/resources/contrastchecker/
 - 输入前景色和背景色
 - 检查是否符合 WCAG AA/AAA
 
 #### Contrast Ratio
+
 - URL: https://contrast-ratio.com/
 - 实时计算对比度
 - 可视化结果
@@ -368,6 +377,7 @@ VoiceOver 是 macOS 内置的屏幕阅读器。
 ### 浏览器扩展
 
 #### Colour Contrast Analyser (Chrome/Firefox)
+
 1. 安装扩展
 2. 打开页面
 3. 点击扩展图标
@@ -376,12 +386,14 @@ VoiceOver 是 macOS 内置的屏幕阅读器。
 ### 开发工具
 
 #### Chrome DevTools
+
 1. 打开 DevTools (`F12`)
 2. 选择元素
 3. 在 Styles 面板查看颜色
 4. 点击颜色旁边的对比度信息
 
 #### Firefox 无障碍检查器
+
 1. 打开 DevTools (`F12`)
 2. 切换到 "无障碍性" 标签
 3. 选择元素
@@ -399,23 +411,25 @@ VoiceOver 是 macOS 内置的屏幕阅读器。
 
 我们的 Tailwind 配置使用的颜色组合：
 
-| 组合 | 对比度 | 符合标准 |
-|------|--------|----------|
-| `text-gray-900` / `bg-white` | 18.05:1 | ✅ AAA |
-| `text-gray-700` / `bg-white` | 7.92:1 | ✅ AAA |
-| `text-gray-600` / `bg-white` | 5.74:1 | ✅ AA |
-| `text-primary-600` / `bg-white` | 4.66:1 | ✅ AA |
+| 组合                            | 对比度  | 符合标准 |
+| ------------------------------- | ------- | -------- |
+| `text-gray-900` / `bg-white`    | 18.05:1 | ✅ AAA   |
+| `text-gray-700` / `bg-white`    | 7.92:1  | ✅ AAA   |
+| `text-gray-600` / `bg-white`    | 5.74:1  | ✅ AA    |
+| `text-primary-600` / `bg-white` | 4.66:1  | ✅ AA    |
 
 ## 测试清单
 
 ### 每次发布前测试
 
 #### 自动化测试
+
 - [ ] 运行 `pnpm test:a11y` 无错误
 - [ ] Lighthouse 无障碍分数 ≥ 95
 - [ ] axe-core 无违规
 
 #### 键盘导航
+
 - [ ] Tab 顺序正确
 - [ ] 跳转链接工作
 - [ ] 所有交互可用键盘完成
@@ -423,6 +437,7 @@ VoiceOver 是 macOS 内置的屏幕阅读器。
 - [ ] 无键盘陷阱
 
 #### 屏幕阅读器（至少用 NVDA 或 VoiceOver 测试一次）
+
 - [ ] 页面标题正确
 - [ ] 标题结构正确
 - [ ] 所有按钮和链接有标签
@@ -431,6 +446,7 @@ VoiceOver 是 macOS 内置的屏幕阅读器。
 - [ ] 动态内容被宣布
 
 #### 视觉检查
+
 - [ ] 对比度符合标准
 - [ ] 200% 缩放正常
 - [ ] 颜色不是唯一信息来源
@@ -469,11 +485,13 @@ VoiceOver 是 macOS 内置的屏幕阅读器。
 违反的 WCAG 标准（如：1.3.1 信息和关系）
 
 **严重程度**
+
 - [ ] 严重（阻止使用）
 - [ ] 中等（影响使用）
 - [ ] 轻微（可以绕过）
 
 **复现步骤**
+
 1. 打开页面 xxx
 2. 使用屏幕阅读器
 3. 导航到元素 xxx
@@ -488,6 +506,7 @@ VoiceOver 是 macOS 内置的屏幕阅读器。
 如果适用，添加截图或屏幕录制
 
 **辅助技术**
+
 - 屏幕阅读器：NVDA 2023.1
 - 浏览器：Chrome 120
 - 操作系统：Windows 11
@@ -499,20 +518,24 @@ VoiceOver 是 macOS 内置的屏幕阅读器。
 ## 学习资源
 
 ### 官方文档
+
 - [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
 - [ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/)
 - [MDN Web Docs - Accessibility](https://developer.mozilla.org/en-US/docs/Web/Accessibility)
 
 ### 在线课程
+
 - [Web Accessibility by Google](https://www.udacity.com/course/web-accessibility--ud891)
 - [Introduction to Web Accessibility](https://www.w3.org/WAI/fundamentals/accessibility-intro/)
 
 ### 工具和扩展
+
 - [axe DevTools](https://www.deque.com/axe/devtools/)
 - [WAVE Browser Extension](https://wave.webaim.org/extension/)
 - [NVDA Screen Reader](https://www.nvaccess.org/)
 
 ### 社区
+
 - [A11y Project](https://www.a11yproject.com/)
 - [WebAIM Community](https://webaim.org/community/)
 

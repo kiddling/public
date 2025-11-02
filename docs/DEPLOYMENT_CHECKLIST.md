@@ -7,6 +7,7 @@ This checklist ensures all necessary steps are completed for a successful produc
 ## Pre-Deployment (T-24 hours)
 
 ### Communication
+
 - [ ] Schedule deployment window and notify team
 - [ ] Communicate deployment to stakeholders
 - [ ] Update status page with scheduled maintenance
@@ -14,6 +15,7 @@ This checklist ensures all necessary steps are completed for a successful produc
 - [ ] Send deployment notification via Slack/email
 
 ### Preparation
+
 - [ ] Review all changes since last deployment
 - [ ] Verify all required approvals obtained
 - [ ] Review database migration scripts
@@ -22,6 +24,7 @@ This checklist ensures all necessary steps are completed for a successful produc
 - [ ] Verify backup systems are operational
 
 ### Environment
+
 - [ ] Confirm all required secrets are configured
 - [ ] Verify environment variables are up to date
 - [ ] Test SSH access to deployment servers (if applicable)
@@ -31,6 +34,7 @@ This checklist ensures all necessary steps are completed for a successful produc
 ## Pre-Flight Checks (T-1 hour)
 
 ### Code Quality
+
 - [ ] All CI/CD pipeline tests passing
 - [ ] Code review approved by tech lead
 - [ ] No critical security vulnerabilities
@@ -39,6 +43,7 @@ This checklist ensures all necessary steps are completed for a successful produc
 - [ ] Unit tests passing
 
 ### Infrastructure
+
 - [ ] Database backup completed successfully
 - [ ] Verify database backup is restorable
 - [ ] Check system resources (CPU, memory, disk)
@@ -46,6 +51,7 @@ This checklist ensures all necessary steps are completed for a successful produc
 - [ ] Confirm monitoring is capturing metrics
 
 ### Documentation
+
 - [ ] CHANGELOG.md updated with version changes
 - [ ] Deployment notes documented
 - [ ] Known issues documented
@@ -54,6 +60,7 @@ This checklist ensures all necessary steps are completed for a successful produc
 ## Deployment Execution (T-0)
 
 ### Phase 1: Preflight (10 minutes)
+
 - [ ] Run `pnpm deploy:preflight` or `./scripts/deploy/preflight.sh`
 - [ ] Review preflight check results
 - [ ] All checks passing (no critical failures)
@@ -61,6 +68,7 @@ This checklist ensures all necessary steps are completed for a successful produc
 - [ ] Environment validation passed
 
 ### Phase 2: Manual Approval Gate
+
 - [ ] Tech lead approval obtained
 - [ ] Deployment window confirmed
 - [ ] Team ready for monitoring
@@ -68,6 +76,7 @@ This checklist ensures all necessary steps are completed for a successful produc
 - [ ] Go/no-go decision: **GO** ☐ / **NO-GO** ☐
 
 ### Phase 3: Deployment (15-20 minutes)
+
 - [ ] Execute `pnpm deploy:blue-green` or `./scripts/deploy/blue-green-deploy.sh`
 - [ ] Idle stack deployed successfully
 - [ ] Database migrations applied
@@ -77,6 +86,7 @@ This checklist ensures all necessary steps are completed for a successful produc
 - [ ] Active deployment color: **BLUE** ☐ / **GREEN** ☐
 
 ### Phase 4: Verification (15 minutes)
+
 - [ ] Run `pnpm deploy:verify` or `./scripts/deploy/post-deploy-verify.sh`
 - [ ] Frontend health endpoint responding
 - [ ] CMS health endpoint responding
@@ -88,6 +98,7 @@ This checklist ensures all necessary steps are completed for a successful produc
 ## Post-Deployment (T+15 minutes)
 
 ### Monitoring
+
 - [ ] Error rates < 0.1%
 - [ ] Response times < 500ms p95
 - [ ] No critical alerts firing
@@ -96,6 +107,7 @@ This checklist ensures all necessary steps are completed for a successful produc
 - [ ] Database connections healthy
 
 ### Functional Testing
+
 - [ ] User authentication working
 - [ ] Content API responding correctly
 - [ ] CMS admin accessible
@@ -104,6 +116,7 @@ This checklist ensures all necessary steps are completed for a successful produc
 - [ ] Key user flows functioning
 
 ### Application Metrics
+
 - [ ] Active user sessions maintained
 - [ ] Request throughput normal
 - [ ] Cache hit rates normal
@@ -113,6 +126,7 @@ This checklist ensures all necessary steps are completed for a successful produc
 ## Extended Monitoring (T+1 hour)
 
 ### Stability Checks
+
 - [ ] No increase in error rates
 - [ ] Response times stable
 - [ ] Memory leaks absent
@@ -120,6 +134,7 @@ This checklist ensures all necessary steps are completed for a successful produc
 - [ ] Log patterns normal
 
 ### User Experience
+
 - [ ] No user-reported issues
 - [ ] Support ticket volume normal
 - [ ] User session metrics healthy
@@ -128,6 +143,7 @@ This checklist ensures all necessary steps are completed for a successful produc
 ## Cleanup (T+24 hours)
 
 ### Decommission Old Stack
+
 - [ ] New stack stable for 24 hours
 - [ ] No rollback needed
 - [ ] Stop old stack containers
@@ -135,6 +151,7 @@ This checklist ensures all necessary steps are completed for a successful produc
 - [ ] Archive old deployment logs
 
 ### Documentation
+
 - [ ] Update deployment log
 - [ ] Document any issues encountered
 - [ ] Update runbook if needed
@@ -144,6 +161,7 @@ This checklist ensures all necessary steps are completed for a successful produc
 ## Rollback Procedure (If Needed)
 
 ### Immediate Actions
+
 - [ ] Decision to rollback made
 - [ ] Team notified of rollback
 - [ ] Execute `pnpm deploy:rollback --force --skip-db`
@@ -151,6 +169,7 @@ This checklist ensures all necessary steps are completed for a successful produc
 - [ ] Confirm old stack healthy
 
 ### Verification
+
 - [ ] Health endpoints responding
 - [ ] Error rates returned to normal
 - [ ] User sessions maintained
@@ -158,6 +177,7 @@ This checklist ensures all necessary steps are completed for a successful produc
 - [ ] Monitoring shows stability
 
 ### Post-Rollback
+
 - [ ] Incident report created
 - [ ] Root cause analysis initiated
 - [ ] Fix plan developed
@@ -167,6 +187,7 @@ This checklist ensures all necessary steps are completed for a successful produc
 ## Communication Templates
 
 ### Pre-Deployment Notification
+
 ```
 🚀 Production Deployment Scheduled
 
@@ -186,6 +207,7 @@ Contact: [NAME] via [SLACK/PHONE]
 ```
 
 ### Deployment In Progress
+
 ```
 ⏳ Deployment in progress (T+[X]m)
 
@@ -197,6 +219,7 @@ Next Update: T+[X]m
 ```
 
 ### Deployment Success
+
 ```
 ✅ Deployment Completed Successfully
 
@@ -209,6 +232,7 @@ Monitoring: [Dashboard URL]
 ```
 
 ### Rollback Notification
+
 ```
 ⚠️ Deployment Rolled Back
 
@@ -226,13 +250,13 @@ Incident Report: [URL]
 
 ## Emergency Contacts
 
-| Role | Name | Contact |
-|------|------|---------|
-| Release Manager | [Name] | [Phone/Slack] |
-| DevOps Lead | [Name] | [Phone/Slack] |
-| Tech Lead | [Name] | [Phone/Slack] |
+| Role             | Name            | Contact          |
+| ---------------- | --------------- | ---------------- |
+| Release Manager  | [Name]          | [Phone/Slack]    |
+| DevOps Lead      | [Name]          | [Phone/Slack]    |
+| Tech Lead        | [Name]          | [Phone/Slack]    |
 | On-Call Engineer | Check PagerDuty | [PagerDuty Link] |
-| Database Admin | [Name] | [Phone/Slack] |
+| Database Admin   | [Name]          | [Phone/Slack]    |
 
 ## Key URLs
 
@@ -254,19 +278,20 @@ Incident Report: [URL]
 
 ## Version History
 
-| Version | Date | Changes | Author |
-|---------|------|---------|--------|
-| 1.0 | 2024-01-15 | Initial deployment checklist | DevOps Team |
+| Version | Date       | Changes                      | Author      |
+| ------- | ---------- | ---------------------------- | ----------- |
+| 1.0     | 2024-01-15 | Initial deployment checklist | DevOps Team |
 
 ---
 
-**Deployment Date:** _______________  
-**Deployment Lead:** _______________  
-**Version Deployed:** _______________  
+**Deployment Date:** ******\_\_\_******  
+**Deployment Lead:** ******\_\_\_******  
+**Version Deployed:** ******\_\_\_******  
 **Deployment Color:** BLUE ☐ / GREEN ☐  
-**Overall Status:** SUCCESS ☐ / ROLLBACK ☐  
+**Overall Status:** SUCCESS ☐ / ROLLBACK ☐
 
 **Signatures:**
-- Tech Lead: _______________
-- DevOps Lead: _______________
-- Release Manager: _______________
+
+- Tech Lead: ******\_\_\_******
+- DevOps Lead: ******\_\_\_******
+- Release Manager: ******\_\_\_******

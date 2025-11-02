@@ -41,18 +41,32 @@ export function normalizeLesson(
     stretch: null,
   }
 
-  const rawBlocks = toArray(attributes.difficultyBlocks ?? attributes.difficulty_blocks ?? attributes.difficulty_specific_fields)
+  const rawBlocks = toArray(
+    attributes.difficultyBlocks ??
+      attributes.difficulty_blocks ??
+      attributes.difficulty_specific_fields
+  )
   for (const rawBlock of rawBlocks) {
     const blockAttributes = rawBlock?.attributes ?? rawBlock
-    const level = normalizeLevel(blockAttributes?.level ?? blockAttributes?.difficulty ?? blockAttributes?.name ?? blockAttributes?.title)
+    const level = normalizeLevel(
+      blockAttributes?.level ??
+        blockAttributes?.difficulty ??
+        blockAttributes?.name ??
+        blockAttributes?.title
+    )
     if (!level) {
       continue
     }
 
     const bodyHtml = determineBodyContent(blockAttributes, assetBase)
-    const media = normalizeMediaList(blockAttributes?.media ?? blockAttributes?.images ?? blockAttributes?.videos, assetBase)
+    const media = normalizeMediaList(
+      blockAttributes?.media ?? blockAttributes?.images ?? blockAttributes?.videos,
+      assetBase
+    )
     const attachments = normalizeAttachments(blockAttributes?.attachments, assetBase)
-    const prompts = normalizePrompts(blockAttributes?.prompts ?? blockAttributes?.questions ?? blockAttributes?.extendedPrompts)
+    const prompts = normalizePrompts(
+      blockAttributes?.prompts ?? blockAttributes?.questions ?? blockAttributes?.extendedPrompts
+    )
 
     difficultyBlocks[level] = {
       level,
@@ -66,7 +80,10 @@ export function normalizeLesson(
     }
   }
 
-  const knowledgeCards = normalizeKnowledgeCards(attributes?.knowledgeCards ?? attributes?.knowledge_cards, assetBase)
+  const knowledgeCards = normalizeKnowledgeCards(
+    attributes?.knowledgeCards ?? attributes?.knowledge_cards,
+    assetBase
+  )
   const resources = normalizeResources(attributes?.resources, assetBase)
   const loop = normalizeLoop(attributes?.loop, assetBase)
 
@@ -77,7 +94,8 @@ export function normalizeLesson(
     title: attributes?.title ?? 'Untitled lesson',
     code: attributes?.code ?? fallbackCode,
     summary: attributes?.summary ?? attributes?.description ?? null,
-    body: lessonBody?.stringContent ?? renderRichTextToHtml(lessonBody?.richContent, assetBase) ?? null,
+    body:
+      lessonBody?.stringContent ?? renderRichTextToHtml(lessonBody?.richContent, assetBase) ?? null,
     loop,
     difficultyBlocks,
     knowledgeCards,
@@ -214,10 +232,15 @@ function normalizeKnowledgeCards(input: any, assetBase: string): LessonKnowledge
         return null
       }
 
-      const image = normalizeMediaList(data?.image ?? item?.image ?? data?.cover ?? data?.media, assetBase)[0] ?? null
+      const image =
+        normalizeMediaList(
+          data?.image ?? item?.image ?? data?.cover ?? data?.media,
+          assetBase
+        )[0] ?? null
 
       return {
-        id: item?.id ?? data?.id ?? data?.slug ?? data?.title ?? Math.random().toString(36).slice(2),
+        id:
+          item?.id ?? data?.id ?? data?.slug ?? data?.title ?? Math.random().toString(36).slice(2),
         title: data?.title ?? 'Knowledge Card',
         summary: data?.summary ?? null,
         description: data?.description ?? null,
@@ -260,10 +283,10 @@ function normalizeLoop(input: any, assetBase: string): LessonLoop | null {
     return null
   }
 
-  const data = Array.isArray(input?.data) 
-    ? input.data[0]?.attributes 
-    : input?.data?.attributes ?? input?.attributes ?? input
-  
+  const data = Array.isArray(input?.data)
+    ? input.data[0]?.attributes
+    : (input?.data?.attributes ?? input?.attributes ?? input)
+
   if (!data) {
     return null
   }
@@ -306,7 +329,7 @@ function renderRichTextToHtml(value: unknown, assetBase: string): string | null 
   }
 
   if (Array.isArray(value)) {
-    return value.map(node => renderRichTextNode(node, assetBase)).join('')
+    return value.map((node) => renderRichTextNode(node, assetBase)).join('')
   }
 
   if (typeof value === 'object') {

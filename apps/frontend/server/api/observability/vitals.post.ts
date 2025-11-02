@@ -85,11 +85,11 @@ async function forwardToStrapi(metrics: EnrichedMetric[], config: RuntimeConfig)
 
   try {
     const endpoint = `${strapiUrl}/api/web-vitals`
-    
+
     await $fetch(endpoint, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiToken}`,
+        Authorization: `Bearer ${apiToken}`,
         'Content-Type': 'application/json',
       },
       body: { data: { metrics } },
@@ -101,24 +101,26 @@ async function forwardToStrapi(metrics: EnrichedMetric[], config: RuntimeConfig)
 
 function logMetrics(metrics: EnrichedMetric[]) {
   for (const metric of metrics) {
-    console.log(JSON.stringify({
-      timestamp: new Date(metric.timestamp).toISOString(),
-      type: 'web-vitals',
-      metric: metric.name,
-      value: metric.value,
-      rating: metric.rating,
-      page: metric.page,
-      sessionId: metric.sessionId,
-      userAgent: metric.userAgent,
-      ip: metric.ip,
-      connectionType: metric.connectionType,
-    }))
+    console.log(
+      JSON.stringify({
+        timestamp: new Date(metric.timestamp).toISOString(),
+        type: 'web-vitals',
+        metric: metric.name,
+        value: metric.value,
+        rating: metric.rating,
+        page: metric.page,
+        sessionId: metric.sessionId,
+        userAgent: metric.userAgent,
+        ip: metric.ip,
+        connectionType: metric.connectionType,
+      })
+    )
   }
 }
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
-  
+
   // Check if telemetry is enabled
   const enabled = config.public.enableVitalsTelemetry !== false
   if (!enabled) {
@@ -138,10 +140,11 @@ export default defineEventHandler(async (event) => {
 
     // Get client info
     const userAgent = getRequestHeader(event, 'user-agent') || 'unknown'
-    const ip = getRequestHeader(event, 'x-forwarded-for')?.split(',')[0]?.trim()
-      || getRequestHeader(event, 'x-real-ip')
-      || event.node.req.socket.remoteAddress
-      || 'unknown'
+    const ip =
+      getRequestHeader(event, 'x-forwarded-for')?.split(',')[0]?.trim() ||
+      getRequestHeader(event, 'x-real-ip') ||
+      event.node.req.socket.remoteAddress ||
+      'unknown'
 
     // Rate limiting: 100 requests per session per hour
     const rateLimitKey = getRateLimitKey(ip, payload.sessionId)
@@ -162,7 +165,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Enrich metrics with metadata
-    const enrichedMetrics: EnrichedMetric[] = payload.metrics.map(metric => ({
+    const enrichedMetrics: EnrichedMetric[] = payload.metrics.map((metric) => ({
       ...metric,
       sessionId: payload.sessionId,
       timestamp: payload.timestamp,

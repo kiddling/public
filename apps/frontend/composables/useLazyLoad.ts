@@ -1,6 +1,6 @@
 /**
  * Lazy Load Composable
- * 
+ *
  * Provides utilities for implementing lazy loading patterns
  * for heavy media sections like galleries and timelines
  */
@@ -20,12 +20,7 @@ export function useLazyLoad() {
     callback: (entry: IntersectionObserverEntry) => void,
     options: LazyLoadOptions = {}
   ): IntersectionObserver {
-    const {
-      root = null,
-      rootMargin = '50px',
-      threshold = 0.01,
-      once = true,
-    } = options
+    const { root = null, rootMargin = '50px', threshold = 0.01, once = true } = options
 
     const observer = new IntersectionObserver(
       (entries) => {

@@ -124,7 +124,7 @@ describe('navigation utils', () => {
       expect(result.tree.lessons[0].code).toBe('P-00')
       expect(result.tree.lessons[0].title).toBe('Welcome to Foundations')
       expect(result.tree.lessons[0].part).toBe('foundation')
-      
+
       expect(result.maps.byCode['P-00']).toBeDefined()
       expect(result.maps.byPart.foundation.length).toBe(1)
     })

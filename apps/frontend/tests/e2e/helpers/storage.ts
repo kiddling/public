@@ -111,7 +111,7 @@ export async function waitForLocalStorageKey(
   timeout = 5000
 ): Promise<void> {
   const startTime = Date.now()
-  
+
   while (Date.now() - startTime < timeout) {
     const value = await getLocalStorageItem(page, key)
     if (value !== null) {
@@ -119,6 +119,6 @@ export async function waitForLocalStorageKey(
     }
     await page.waitForTimeout(100)
   }
-  
+
   throw new Error(`Timeout waiting for localStorage key: ${key}`)
 }

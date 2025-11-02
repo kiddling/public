@@ -5,7 +5,12 @@
 
 import { defineEventHandler, getQuery, setResponseHeaders, createError } from 'h3'
 import { fetchFromStrapi } from '~/server/utils/strapi'
-import type { Resource, StrapiResourceResponse, StrapiCollectionItem, ResourceAttributes } from '~/types/cms'
+import type {
+  Resource,
+  StrapiResourceResponse,
+  StrapiCollectionItem,
+  ResourceAttributes,
+} from '~/types/cms'
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
@@ -20,7 +25,7 @@ export default defineEventHandler(async (event) => {
 
   const strapiQuery: Record<string, any> = {
     'pagination[pageSize]': '1000',
-    'populate': '*',
+    populate: '*',
   }
 
   if (query.category) {
@@ -51,26 +56,31 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const response = await fetchFromStrapi('/api/resources', strapiQuery) as StrapiResourceResponse
+    const response = (await fetchFromStrapi(
+      '/api/resources',
+      strapiQuery
+    )) as StrapiResourceResponse
 
-    const resources: Resource[] = response.data.map((item: StrapiCollectionItem<ResourceAttributes>) => ({
-      id: item.id,
-      title: item.attributes.title,
-      category: item.attributes.category || null,
-      description: item.attributes.description || null,
-      url: item.attributes.url,
-      accessibilityFlag: item.attributes.accessibilityFlag ?? true,
-      lastChecked: item.attributes.lastChecked || null,
-      disciplines: item.attributes.disciplines || [],
-      mediaType: item.attributes.mediaType || 'link',
-      createdAt: item.attributes.createdAt,
-      updatedAt: item.attributes.updatedAt,
-      publishedAt: item.attributes.publishedAt,
-    }))
+    const resources: Resource[] = response.data.map(
+      (item: StrapiCollectionItem<ResourceAttributes>) => ({
+        id: item.id,
+        title: item.attributes.title,
+        category: item.attributes.category || null,
+        description: item.attributes.description || null,
+        url: item.attributes.url,
+        accessibilityFlag: item.attributes.accessibilityFlag ?? true,
+        lastChecked: item.attributes.lastChecked || null,
+        disciplines: item.attributes.disciplines || [],
+        mediaType: item.attributes.mediaType || 'link',
+        createdAt: item.attributes.createdAt,
+        updatedAt: item.attributes.updatedAt,
+        publishedAt: item.attributes.publishedAt,
+      })
+    )
 
     if (format === 'csv') {
       const csvContent = generateCSV(resources)
-      
+
       setResponseHeaders(event, {
         'Content-Type': 'text/csv',
         'Content-Disposition': `attachment; filename="resources-${Date.now()}.csv"`,
@@ -79,7 +89,7 @@ export default defineEventHandler(async (event) => {
       return csvContent
     } else {
       const pdfContent = generatePDFText(resources)
-      
+
       setResponseHeaders(event, {
         'Content-Type': 'text/plain',
         'Content-Disposition': `attachment; filename="resources-${Date.now()}.txt"`,
@@ -105,7 +115,10 @@ function escapeCSVField(value: string | null | undefined): string {
 }
 
 function stripHtml(html: string): string {
-  return html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()
+  return html
+    .replace(/<[^>]*>/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
 }
 
 function generateCSV(resources: Resource[]): string {
