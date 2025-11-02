@@ -3,6 +3,8 @@
 本文档提供 Nuxt 3 + Strapi CMS 单体仓库的完整部署指南。
 
 > **📘 Production Deployment:** For zero-downtime production deployments using blue/green strategy, see [DEPLOYMENT_STRATEGY.md](./DEPLOYMENT_STRATEGY.md)
+> 
+> **✅ Production Readiness:** For comprehensive go-live checklist covering security, performance, backups, and compliance, see [PRODUCTION_CHECKLIST.md](./PRODUCTION_CHECKLIST.md)
 
 ## 📋 目录
 
