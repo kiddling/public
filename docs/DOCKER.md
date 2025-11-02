@@ -239,11 +239,240 @@ FROM node:22-alpine AS runner
 
 ### CMS Dockerfile
 
-类似的多阶段构建策略：
+Strapi CMS 使用优化的两阶段构建策略：
 
-- 生产依赖与开发依赖分离
-- 最小化最终镜像
-- 健康检查集成
+#### 阶段 1: Builder（构建器）
+
+```dockerfile
+FROM node:20-alpine AS builder
+# 安装构建依赖和时区数据
+# 使用 npm ci 安装依赖（确保一致性）
+# 构建应用
+# 清理开发依赖（npm prune --production）
+# 清理 npm 缓存以减小镜像大小
+```
+
+#### 阶段 2: Runner（运行时）
+
+```dockerfile
+FROM node:20-alpine AS runner
+# 仅安装运行时依赖和时区数据
+# 设置时区为 Asia/Shanghai
+# 创建非 root 用户（strapi）
+# 复制生产依赖和构建产物
+# 创建运行时目录（uploads, logs, .cache）
+```
+
+**CMS 镜像优化特性 | CMS Image Optimization Features:**
+
+- ✅ **轻量级基础镜像** | Lightweight base: Node 20 Alpine
+- ✅ **时区支持** | Timezone support: Asia/Shanghai
+- ✅ **依赖优化** | Dependency optimization: npm ci + prune production
+- ✅ **中国镜像源支持** | China mirror support: Build args for faster builds
+- ✅ **最小化层数** | Minimized layers: Efficient caching strategy
+- ✅ **安全配置** | Security: Non-root strapi user
+- ✅ **缓存清理** | Cache cleanup: npm cache clean
+- ✅ **目标大小** | Target size: ≤ 450MB
+
+**构建 CMS 镜像 | Build CMS Image:**
+
+```bash
+# 标准构建 | Standard build
+docker build -t cms:latest apps/cms
+
+# 使用中国镜像源构建（推荐用于中国部署）| Build with China mirrors (recommended for China deployment)
+docker build \
+  --build-arg USE_CHINA_MIRROR=true \
+  --build-arg NODE_MIRROR=https://registry.npmmirror.com \
+  --build-arg ALPINE_MIRROR=mirrors.aliyun.com \
+  -t cms:latest apps/cms
+
+# 验证镜像大小 | Check image size
+docker images cms:latest
+```
+
+**镜像大小对比 | Image Size Comparison:**
+
+| 构建方式 Build Method | 镜像大小 Image Size | 备注 Notes |
+|---------------------|------------------|-----------|
+| 标准 Node 镜像 Standard Node | ~1.2GB | 未优化 Unoptimized |
+| Alpine + 单阶段 Alpine + Single-stage | ~600MB | 基础优化 Basic optimization |
+| **Alpine + 多阶段 + 优化 Alpine + Multi-stage + Optimized** | **≤450MB** | **推荐 Recommended** |
+
+## 🎛️ Strapi 环境变量配置详解
+
+### 必需的环境变量 | Required Environment Variables
+
+#### 数据库配置 | Database Configuration
+
+```bash
+# 数据库类型（postgres/mysql/sqlite）
+# Database type (postgres/mysql/sqlite)
+DATABASE_CLIENT=postgres
+
+# 数据库主机（在 Docker 网络中使用服务名）
+# Database host (use service name in Docker network)
+DATABASE_HOST=postgres
+
+# 数据库端口
+# Database port
+DATABASE_PORT=5432
+
+# 数据库名称
+# Database name
+DATABASE_NAME=strapi
+
+# 数据库用户名
+# Database username
+DATABASE_USERNAME=strapi
+
+# 数据库密码（⚠️ 生产环境必须修改）
+# Database password (⚠️ must change in production)
+DATABASE_PASSWORD=change_me_in_production
+
+# 是否使用 SSL 连接数据库
+# Whether to use SSL for database connection
+DATABASE_SSL=false
+```
+
+#### 安全密钥配置 | Security Keys Configuration
+
+**重要提示 | Important Notes:**
+- 🔒 所有密钥必须在生产环境中生成唯一值
+- 🔒 All keys must be generated with unique values in production
+- 🔒 切勿在代码仓库中提交真实密钥
+- 🔒 Never commit real keys to code repository
+- 🔒 使用至少 32 字节的强随机密钥
+- 🔒 Use strong random keys of at least 32 bytes
+
+```bash
+# 应用密钥数组（至少 4 个，用于会话加密）
+# Application keys array (at least 4, for session encryption)
+# 生成命令 | Generate command: 
+# echo "$(openssl rand -base64 32),$(openssl rand -base64 32),$(openssl rand -base64 32),$(openssl rand -base64 32)"
+APP_KEYS=key1,key2,key3,key4
+
+# API 令牌加密盐值
+# Salt for API token encryption
+# 生成命令 | Generate command: openssl rand -base64 32
+API_TOKEN_SALT=your_api_token_salt
+
+# 管理员 JWT 密钥
+# Admin JWT secret
+# 生成命令 | Generate command: openssl rand -base64 32
+ADMIN_JWT_SECRET=your_admin_jwt_secret
+
+# 传输令牌加密盐值
+# Transfer token salt
+# 生成命令 | Generate command: openssl rand -base64 32
+TRANSFER_TOKEN_SALT=your_transfer_token_salt
+
+# 用户 JWT 密钥
+# User JWT secret
+# 生成命令 | Generate command: openssl rand -base64 32
+JWT_SECRET=your_jwt_secret
+
+# 数据加密密钥
+# Data encryption key
+# 生成命令 | Generate command: openssl rand -base64 32
+ENCRYPTION_KEY=your_encryption_key
+```
+
+**快速生成所有密钥脚本 | Quick Generate All Keys Script:**
+
+```bash
+#!/bin/bash
+# 快速生成 Strapi 所有必需密钥 | Quick generate all required Strapi keys
+
+echo "# Strapi Security Keys - Generated $(date)"
+echo "# 将以下内容复制到 .env.docker 文件中 | Copy the following to your .env.docker file"
+echo ""
+echo "APP_KEYS=$(openssl rand -base64 32),$(openssl rand -base64 32),$(openssl rand -base64 32),$(openssl rand -base64 32)"
+echo "API_TOKEN_SALT=$(openssl rand -base64 32)"
+echo "ADMIN_JWT_SECRET=$(openssl rand -base64 32)"
+echo "TRANSFER_TOKEN_SALT=$(openssl rand -base64 32)"
+echo "JWT_SECRET=$(openssl rand -base64 32)"
+echo "ENCRYPTION_KEY=$(openssl rand -base64 32)"
+```
+
+#### 服务器配置 | Server Configuration
+
+```bash
+# 监听主机（0.0.0.0 允许外部访问）
+# Listen host (0.0.0.0 allows external access)
+HOST=0.0.0.0
+
+# 监听端口
+# Listen port
+PORT=1337
+
+# 节点环境
+# Node environment
+NODE_ENV=production
+
+# 时区配置（Docker 镜像默认已设置）
+# Timezone configuration (default in Docker image)
+TZ=Asia/Shanghai
+```
+
+### 可选的环境变量 | Optional Environment Variables
+
+#### URL 配置 | URL Configuration
+
+```bash
+# Strapi 公开访问 URL
+# Strapi public URL
+STRAPI_URL=http://localhost:1337
+
+# 管理面板 URL
+# Admin panel URL
+STRAPI_ADMIN_CLIENT_URL=http://localhost:1337/admin
+
+# 预览 URL
+# Preview URL
+STRAPI_ADMIN_CLIENT_PREVIEW_URL=http://localhost:3000
+```
+
+#### 文件上传配置 | File Upload Configuration
+
+```bash
+# 上传文件存储路径
+# Upload file storage path
+UPLOADS_PATH=/opt/app/public/uploads
+
+# 最大文件大小（字节）
+# Maximum file size (bytes)
+MAX_FILE_SIZE=52428800  # 50MB
+```
+
+#### 日志配置 | Logging Configuration
+
+```bash
+# 日志级别（fatal/error/warn/info/debug/trace）
+# Log level (fatal/error/warn/info/debug/trace)
+LOG_LEVEL=info
+
+# 日志输出目录
+# Log output directory
+LOG_DIR=/opt/app/logs
+```
+
+### 环境变量验证清单 | Environment Variables Checklist
+
+在部署前，请确保以下配置已完成 | Before deployment, ensure the following configurations are complete:
+
+- [ ] 已修改所有默认密钥为唯一的强随机值
+- [ ] Changed all default keys to unique strong random values
+- [ ] 已设置正确的数据库连接信息
+- [ ] Set correct database connection information
+- [ ] 已配置时区为 Asia/Shanghai
+- [ ] Configured timezone to Asia/Shanghai
+- [ ] 已设置正确的 HOST 和 PORT
+- [ ] Set correct HOST and PORT
+- [ ] 已配置生产环境的公开 URL
+- [ ] Configured production public URLs
+- [ ] 已准备数据持久化目录
+- [ ] Prepared data persistence directories
 
 ## 🔍 健康检查
 

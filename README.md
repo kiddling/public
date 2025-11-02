@@ -584,6 +584,30 @@ Visit `/downloads` to:
 - **[DEPLOYMENT_QUICK_REFERENCE.md](./docs/DEPLOYMENT_QUICK_REFERENCE.md)** - Quick command reference
 - **[DEPLOYMENT.md](./docs/DEPLOYMENT.md)** - General deployment guide (Chinese)
 
+### Docker & Containers (Docker 与容器)
+
+- **[DOCKER.md](./docs/DOCKER.md)** - Complete Docker deployment guide (multi-stage builds, health checks, resource limits, Chinese mirror support)
+- **[apps/cms/DOCKER_BUILD.md](./apps/cms/DOCKER_BUILD.md)** - CMS Docker build guide (optimized ≤450MB image with timezone support)
+
+#### Quick Docker Commands
+
+```bash
+# Generate Strapi security keys (生成 Strapi 安全密钥)
+pnpm generate:strapi-keys
+
+# Build CMS Docker image (构建 CMS Docker 镜像)
+pnpm docker:build:cms
+
+# Build with China mirrors (使用中国镜像源构建)
+pnpm docker:build:cms:china
+
+# Start full stack with Docker Compose
+pnpm docker:up
+
+# View logs
+pnpm docker:logs
+```
+
 ### Security (安全)
 
 - **[SECURITY_CN.md](./docs/SECURITY_CN.md)** - Production security configuration guide (security headers, CORS, rate limiting, HTTPS enforcement)
