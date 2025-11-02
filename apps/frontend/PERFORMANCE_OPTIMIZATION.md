@@ -836,9 +836,566 @@ cat apps/frontend/.output/bundle-budget-report.json
 
 所有基础设施和最佳实践已经就位，可以通过运行分析命令查看实际效果并进行进一步优化。
 
+## 13. Web Vitals 遥测管道 (Web Vitals Telemetry Pipeline)
+
+### 概述 (Overview)
+
+实现了完整的 Web Vitals 遥测系统，不依赖外部服务（如 Vercel Analytics），所有数据通过内部 API 处理和存储。
+
+### 架构 (Architecture)
+
+```
+浏览器 (Browser)
+  ↓
+Web Vitals 插件 (批处理、离线队列)
+  ↓
+内部 API: /api/observability/vitals
+  ↓
+验证、丰富、限流
+  ↓
+├─ 输出到 stdout (日志采集)
+└─ 转发到 Strapi (可选)
+```
+
+### 核心功能 (Core Features)
+
+#### 1. 客户端插件增强
+
+位置: `plugins/web-vitals.client.ts`
+
+**功能特性：**
+- ✅ **批处理** - 收集 5 个指标或 10 秒后发送
+- ✅ **离线处理** - 离线时保存到 localStorage
+- ✅ **自动重试** - 失败后最多重试 3 次
+- ✅ **会话跟踪** - 使用 sessionStorage 生成会话 ID
+- ✅ **连接感知** - 收集连接类型信息
+- ✅ **性能预算检查** - 实时警告超出预算的指标
+
+**监控指标：**
+- LCP (Largest Contentful Paint)
+- FID (First Input Delay)
+- CLS (Cumulative Layout Shift)
+- FCP (First Contentful Paint)
+- TTFB (Time to First Byte)
+- INP (Interaction to Next Paint)
+
+#### 2. API 端点
+
+位置: `server/api/observability/vitals.post.ts`
+
+**功能：**
+- ✅ **请求验证** - 验证 payload 格式和必需字段
+- ✅ **数据丰富** - 添加 IP、User Agent、时间戳等元数据
+- ✅ **速率限制** - 每个会话每小时最多 100 个请求
+- ✅ **采样** - 可配置的采样率（0.0-1.0）
+- ✅ **输出到日志** - JSON 格式输出到 stdout，便于日志采集
+- ✅ **转发到 Strapi** - 可选的 Strapi 集成
+
+#### 3. 性能标记工具
+
+位置: `utils/perf.ts`
+
+**工具类：**
+```typescript
+import { perfMark, perfMeasure, measureAsync } from '~/utils/perf'
+
+// 标记性能点
+perfMark('data-fetch-start')
+await fetchData()
+perfMark('data-fetch-end')
+
+// 测量持续时间
+const duration = perfMeasure('data-fetch', 'data-fetch-start', 'data-fetch-end')
+
+// 便捷包装器
+const result = await measureAsync('fetch-users', async () => {
+  return await $fetch('/api/users')
+})
+```
+
+**功能：**
+- ✅ 创建性能标记
+- ✅ 测量时间间隔
+- ✅ 同步/异步函数包装器
+- ✅ 导出性能数据
+- ✅ 开发环境日志
+
+#### 4. 监控 Composable
+
+位置: `composables/useMonitoring.ts`
+
+**用法示例：**
+```typescript
+const { trackDataFetch, trackInteraction, trackRouteChange } = useMonitoring()
+
+// 跟踪数据获取
+const lessons = await trackDataFetch('lessons', () => fetchLessons(), {
+  page: 'home',
+})
+
+// 跟踪用户交互
+trackInteraction('button-click', { button: 'download', file: 'lesson.pdf' })
+
+// 跟踪路由变化
+trackRouteChange('/home', '/lessons/123')
+```
+
+### 配置 (Configuration)
+
+#### 环境变量
+
+在 `.env` 文件中配置：
+
+```bash
+# 启用/禁用遥测
+NUXT_PUBLIC_ENABLE_VITALS_TELEMETRY=true
+
+# 采样率 (0.0-1.0)
+# 1.0 = 100% 采集，0.1 = 10% 采集
+NUXT_PUBLIC_VITALS_SAMPLING_RATE=1.0
+
+# 速率限制：每会话每小时最大请求数
+NUXT_PUBLIC_VITALS_RATE_LIMIT=100
+
+# 转发到 Strapi（需要 API token）
+NUXT_PUBLIC_ENABLE_VITALS_FORWARDING=false
+```
+
+#### 生产环境建议
+
+```bash
+# 生产环境配置示例
+NUXT_PUBLIC_ENABLE_VITALS_TELEMETRY=true
+NUXT_PUBLIC_VITALS_SAMPLING_RATE=0.1  # 采集 10% 的会话
+NUXT_PUBLIC_VITALS_RATE_LIMIT=50
+NUXT_PUBLIC_ENABLE_VITALS_FORWARDING=true
+```
+
+### 数据流 (Data Flow)
+
+#### 1. 客户端收集
+
+```javascript
+// Web Vitals 库触发指标
+onLCP((metric) => {
+  // 插件处理指标
+  handleMetric(metric)
+})
+
+// 转换为内部格式
+const vitalsMetric = {
+  id: metric.id,
+  name: metric.name,
+  value: metric.value,
+  rating: metric.rating,
+  page: window.location.pathname,
+}
+
+// 添加到批处理队列
+queueMetric(vitalsMetric)
+```
+
+#### 2. 批处理发送
+
+```javascript
+// 当达到批处理大小或超时时
+const payload = {
+  metrics: [/* 批量指标 */],
+  sessionId: 'session-123',
+  timestamp: Date.now(),
+  userAgent: navigator.userAgent,
+  connectionType: '4g',
+}
+
+// 发送到 API
+await fetch('/api/observability/vitals', {
+  method: 'POST',
+  body: JSON.stringify(payload),
+  keepalive: true,
+})
+```
+
+#### 3. 服务端处理
+
+```javascript
+// 验证 payload
+validatePayload(payload)
+
+// 速率限制检查
+checkRateLimit(ip, sessionId)
+
+// 采样
+if (Math.random() > samplingRate) return
+
+// 丰富数据
+const enrichedMetrics = metrics.map(m => ({
+  ...m,
+  userAgent: req.headers['user-agent'],
+  ip: getClientIP(req),
+  timestamp: Date.now(),
+}))
+
+// 输出到日志
+console.log(JSON.stringify(enrichedMetrics))
+
+// 转发到 Strapi (可选)
+await forwardToStrapi(enrichedMetrics)
+```
+
+### 在 Strapi 中查询指标 (Querying Metrics in Strapi)
+
+如果启用了 Strapi 转发，可以通过 Strapi API 查询指标：
+
+#### 创建 Strapi Collection Type
+
+在 Strapi 中创建 `web-vitals` Collection Type：
+
+```javascript
+// schema.json
+{
+  "attributes": {
+    "metrics": { "type": "json" },
+    "sessionId": { "type": "string" },
+    "timestamp": { "type": "biginteger" },
+    "userAgent": { "type": "text" },
+    "ip": { "type": "string" }
+  }
+}
+```
+
+#### 查询示例
+
+```bash
+# 获取最近的 Web Vitals 数据
+curl "http://localhost:1337/api/web-vitals?sort=timestamp:desc&pagination[limit]=100" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+
+# 按页面过滤
+curl "http://localhost:1337/api/web-vitals?filters[metrics][page][$eq]=/home" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+
+# 按时间范围过滤
+curl "http://localhost:1337/api/web-vitals?filters[timestamp][$gte]=1699000000000" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### 从日志中查询指标 (Querying Metrics from Logs)
+
+如果使用日志采集（推荐方式），可以使用 `jq` 或其他日志分析工具：
+
+#### 查看所有 Web Vitals 日志
+
+```bash
+# 从应用日志中提取 Web Vitals
+docker logs your-frontend-container | grep '"type":"web-vitals"' | jq '.'
+```
+
+#### 分析 LCP 指标
+
+```bash
+# 提取所有 LCP 值
+docker logs your-frontend-container | \
+  grep '"type":"web-vitals"' | \
+  jq 'select(.metric == "LCP") | .value'
+
+# 计算平均 LCP
+docker logs your-frontend-container | \
+  grep '"type":"web-vitals"' | \
+  jq 'select(.metric == "LCP") | .value' | \
+  awk '{ sum += $1; n++ } END { if (n > 0) print sum / n; }'
+```
+
+#### 按页面分组
+
+```bash
+# 统计各页面的 LCP
+docker logs your-frontend-container | \
+  grep '"type":"web-vitals"' | \
+  jq -r 'select(.metric == "LCP") | "\(.page) \(.value)"' | \
+  sort | uniq -c
+```
+
+#### 按评级统计
+
+```bash
+# 统计各评级数量
+docker logs your-frontend-container | \
+  grep '"type":"web-vitals"' | \
+  jq -r '.rating' | \
+  sort | uniq -c
+```
+
+### 日志采集集成 (Log Shipping Integration)
+
+#### 使用 Fluentd
+
+```conf
+# fluentd.conf
+<source>
+  @type tail
+  path /var/log/app/frontend.log
+  pos_file /var/log/app/frontend.log.pos
+  tag app.vitals
+  <parse>
+    @type json
+    time_key timestamp
+    time_format %iso8601
+  </parse>
+</source>
+
+<filter app.vitals>
+  @type grep
+  <regexp>
+    key type
+    pattern /^web-vitals$/
+  </regexp>
+</filter>
+
+<match app.vitals>
+  @type elasticsearch
+  host elasticsearch.example.com
+  port 9200
+  index_name web-vitals
+</match>
+```
+
+#### 使用 Promtail + Loki
+
+```yaml
+# promtail-config.yml
+scrape_configs:
+  - job_name: web-vitals
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: frontend
+          __path__: /var/log/app/frontend.log
+    
+    pipeline_stages:
+      - json:
+          expressions:
+            type: type
+            metric: metric
+            value: value
+            page: page
+      
+      - match:
+          selector: '{type="web-vitals"}'
+          stages:
+            - labels:
+                metric:
+                page:
+```
+
+### 性能仪表板 (Performance Dashboard)
+
+#### 使用 Grafana 可视化
+
+创建 Grafana Dashboard 显示 Web Vitals：
+
+```json
+{
+  "dashboard": {
+    "title": "Web Vitals Dashboard",
+    "panels": [
+      {
+        "title": "LCP over Time",
+        "targets": [
+          {
+            "expr": "avg(web_vitals_lcp) by (page)"
+          }
+        ]
+      },
+      {
+        "title": "Metrics by Rating",
+        "targets": [
+          {
+            "expr": "count(web_vitals) by (rating)"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+### 开发者使用指南 (Developer Guide)
+
+#### 1. 添加自定义性能标记
+
+```typescript
+// pages/lessons/[id].vue
+<script setup>
+import { perfMark, perfMeasure } from '~/utils/perf'
+
+const route = useRoute()
+
+// 标记开始
+perfMark('lesson-load-start')
+
+// 获取数据
+const { data: lesson } = await useFetch(`/api/lessons/${route.params.id}`)
+
+// 标记结束并测量
+perfMark('lesson-load-end')
+const duration = perfMeasure('lesson-load', 'lesson-load-start', 'lesson-load-end')
+
+console.log(`Lesson loaded in ${duration}ms`)
+</script>
+```
+
+#### 2. 跟踪组件性能
+
+```typescript
+// components/StudentGallery.vue
+<script setup>
+import { useMonitoring } from '~/composables/useMonitoring'
+
+const { trackComponentMount, trackInteraction } = useMonitoring()
+
+// 跟踪组件挂载时间
+trackComponentMount('StudentGallery')
+
+function handleImageClick(studentId: string) {
+  // 跟踪用户交互
+  trackInteraction('student-image-click', {
+    component: 'StudentGallery',
+    studentId,
+  })
+}
+</script>
+```
+
+#### 3. 跟踪数据获取性能
+
+```typescript
+// composables/useLessons.ts
+import { useMonitoring } from '~/composables/useMonitoring'
+
+export function useLessons() {
+  const { trackDataFetch } = useMonitoring()
+
+  async function fetchLessons() {
+    return await trackDataFetch(
+      'lessons-list',
+      () => $fetch('/api/lessons'),
+      { source: 'composable' }
+    )
+  }
+
+  return { fetchLessons }
+}
+```
+
+### 测试 (Testing)
+
+#### 单元测试
+
+```bash
+# 运行所有测试
+pnpm test
+
+# 运行特定测试
+pnpm test perf.spec
+pnpm test vitals-api.spec
+pnpm test useMonitoring.spec
+```
+
+#### 手动验证
+
+```bash
+# 1. 启动开发服务器
+pnpm dev:frontend
+
+# 2. 在浏览器控制台查看指标
+window.__webVitals       # 当前会话的指标
+window.__webVitalsQueue  # 待发送的队列
+window.__webVitalsOffline # 离线队列
+
+# 3. 检查网络请求
+# 打开 DevTools -> Network
+# 过滤: /api/observability/vitals
+# 应该看到批量 POST 请求
+```
+
+#### 生产模式验证
+
+```bash
+# 1. 构建应用
+pnpm build:frontend
+
+# 2. 启动预览服务器
+pnpm --filter frontend preview
+
+# 3. 访问应用并检查日志
+# 应该在终端看到 JSON 格式的 Web Vitals 日志
+
+# 4. 模拟离线场景
+# 在 DevTools -> Network 中设置 "Offline"
+# 触发一些操作
+# 恢复在线
+# 应该看到队列中的指标被发送
+```
+
+### 故障排查 (Troubleshooting)
+
+#### 问题：没有收到指标
+
+1. 检查遥测是否启用：
+   ```bash
+   # 确认环境变量
+   echo $NUXT_PUBLIC_ENABLE_VITALS_TELEMETRY
+   ```
+
+2. 检查采样率：
+   ```bash
+   # 如果采样率太低，可能不会收集指标
+   echo $NUXT_PUBLIC_VITALS_SAMPLING_RATE
+   ```
+
+3. 检查浏览器控制台是否有错误
+
+#### 问题：速率限制错误
+
+```bash
+# 增加速率限制
+NUXT_PUBLIC_VITALS_RATE_LIMIT=200
+```
+
+#### 问题：Strapi 转发失败
+
+1. 确认 Strapi API token 配置正确
+2. 检查 Strapi 是否有 `web-vitals` collection
+3. 验证 API 权限设置
+
+### 最佳实践 (Best Practices)
+
+#### 生产环境
+
+1. **使用采样** - 不需要收集 100% 的会话，10-20% 通常足够
+2. **启用速率限制** - 防止滥用和过多请求
+3. **日志采集** - 推荐使用 stdout 日志 + 日志采集系统（Fluentd/Promtail）
+4. **监控仪表板** - 设置 Grafana 或类似工具可视化指标
+
+#### 开发环境
+
+1. **完整采样** - 开发时使用 100% 采样率
+2. **查看实时指标** - 使用 `window.__webVitals`
+3. **添加自定义标记** - 使用 `perf.ts` 工具标记关键流程
+
+### 性能影响 (Performance Impact)
+
+Web Vitals 遥测系统的性能影响：
+
+- **客户端开销**: < 5KB gzipped (web-vitals 库)
+- **网络请求**: 批处理减少请求次数，每批约 1-2KB
+- **内存使用**: 最小，队列大小受限
+- **服务端开销**: 极小，异步处理
+
 ---
 
 **创建日期**: 2024-11-01  
 **更新日期**: 2024-11-02
-**版本**: 2.0.0  
+**版本**: 2.1.0  
 **维护者**: Frontend Team
