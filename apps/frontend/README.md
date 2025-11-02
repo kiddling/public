@@ -72,6 +72,128 @@ Preview the production build:
 pnpm preview
 ```
 
+## 🐳 Docker Deployment
+
+Build and run the application using Docker for production deployment.
+
+### Building the Docker Image
+
+Build the Docker image with the current git commit hash (from the repository root):
+
+```bash
+# Build from repository root (required for monorepo structure)
+cd /path/to/project/root
+docker build \
+  --build-arg GIT_COMMIT_HASH=$(git rev-parse HEAD) \
+  -t nuxt-frontend:latest \
+  -f apps/frontend/Dockerfile \
+  .
+```
+
+For faster builds in China, uncomment the registry mirror line in the Dockerfile:
+
+```dockerfile
+RUN pnpm config set registry https://registry.npmmirror.com
+```
+
+### Running the Container
+
+Run the container with environment variables:
+
+```bash
+docker run -d \
+  --name nuxt-app \
+  -p 3000:3000 \
+  -e NUXT_PUBLIC_API_BASE_URL=http://your-api-url:1337 \
+  -e NUXT_PUBLIC_STRAPI_URL=http://your-strapi-url:1337 \
+  -e NUXT_STRAPI_API_TOKEN=your-token-here \
+  -e NUXT_PUBLIC_CDN_URL=https://your-cdn-url \
+  nuxt-frontend:latest
+```
+
+### Health Check Endpoint
+
+The application exposes a health check endpoint at `/api/health` that returns:
+
+```json
+{
+  "status": "ok",
+  "timestamp": "2024-01-01T00:00:00.000Z",
+  "uptime": 120,
+  "commitHash": "5282e6b",
+  "environment": "production",
+  "responseTime": 1
+}
+```
+
+Access the health endpoint:
+
+```bash
+curl http://localhost:3000/api/health
+```
+
+### Docker Container Management
+
+```bash
+# View container logs
+docker logs nuxt-app
+
+# Check container health status
+docker inspect --format='{{.State.Health.Status}}' nuxt-app
+
+# Stop the container
+docker stop nuxt-app
+
+# Remove the container
+docker rm nuxt-app
+```
+
+### Environment Variables
+
+The following environment variables can be configured when running the container:
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `NUXT_PUBLIC_API_BASE_URL` | Base URL for API requests | `http://localhost:1337` |
+| `NUXT_PUBLIC_STRAPI_URL` | Strapi CMS URL | `http://localhost:1337` |
+| `NUXT_STRAPI_API_TOKEN` | Strapi API authentication token | `''` |
+| `NUXT_PUBLIC_CDN_URL` | CDN URL for static assets | `''` |
+| `PORT` | Port the app listens on (inside container) | `3000` |
+| `NODE_ENV` | Node environment | `production` |
+
+### Image Size Optimization
+
+The Docker image uses a multi-stage build to achieve a lean production image:
+
+- **Builder stage**: Installs all dependencies and builds the application
+- **Runtime stage**: Only includes production dependencies and built output
+- **Target size**: <200MB compressed
+
+Check the image size:
+
+```bash
+docker images nuxt-frontend:latest
+```
+
+### China Server Deployment
+
+For optimal performance in China:
+
+1. **Use Domestic Docker Registries:**
+   - Aliyun Container Registry: `registry.cn-hangzhou.aliyuncs.com`
+   - Tencent Cloud: `ccr.ccs.tencentyun.com`
+   - Huawei Cloud: `swr.cn-north-4.myhuaweicloud.com`
+
+2. **NPM Registry Mirrors:**
+   - Taobao NPM: `https://registry.npmmirror.com`
+   - Huawei Cloud: `https://mirrors.huaweicloud.com/repository/npm/`
+
+3. **Alpine Mirrors (if needed):**
+   Add to Dockerfile before package installation:
+   ```dockerfile
+   RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+   ```
+
 ## 🧹 Code Quality
 
 ### Linting
