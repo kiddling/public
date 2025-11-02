@@ -487,7 +487,8 @@ Visit `/downloads` to:
 
 ### Deployment
 - **[DEPLOYMENT_STRATEGY.md](./docs/DEPLOYMENT_STRATEGY.md)** - Blue/green deployment with zero-downtime
-- **[DEPLOYMENT_CHECKLIST.md](./docs/DEPLOYMENT_CHECKLIST.md)** - Deployment checklist
+- **[PRODUCTION_CHECKLIST.md](./docs/PRODUCTION_CHECKLIST.md)** - Production go-live readiness checklist (Chinese)
+- **[DEPLOYMENT_CHECKLIST.md](./docs/DEPLOYMENT_CHECKLIST.md)** - Deployment execution checklist
 - **[DEPLOYMENT_QUICK_REFERENCE.md](./docs/DEPLOYMENT_QUICK_REFERENCE.md)** - Quick command reference
 - **[DEPLOYMENT.md](./docs/DEPLOYMENT.md)** - General deployment guide (Chinese)
 

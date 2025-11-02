@@ -2,6 +2,8 @@
 
 This checklist ensures all necessary steps are completed for a successful production deployment using the blue/green strategy.
 
+> **🚀 Production Readiness**: For comprehensive go-live preparation including security, compliance, and performance baselines, see [PRODUCTION_CHECKLIST.md](./PRODUCTION_CHECKLIST.md)
+
 ## Pre-Deployment (T-24 hours)
 
 ### Communication
