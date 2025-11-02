@@ -50,6 +50,8 @@
         </main>
       </div>
     </div>
+
+    <AnalyticsConsent />
   </div>
 </template>
 

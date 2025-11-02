@@ -223,6 +223,13 @@ export const useSearchStore = defineStore('search', () => {
           addToHistory(searchQuery)
           clearTimeout(loadingTimer)
           isLoading.value = false
+
+          // Track analytics event
+          if (import.meta.client) {
+            const analytics = useAnalytics()
+            analytics.trackSearch(searchQuery, response.total)
+          }
+
           resolve()
         } catch (err: any) {
           clearTimeout(loadingTimer)

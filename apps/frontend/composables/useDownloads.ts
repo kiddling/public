@@ -173,6 +173,15 @@ export function useDownloadHistory() {
     } catch (e) {
       console.error('Failed to save download history:', e)
     }
+
+    // Track analytics event
+    const analytics = useAnalytics()
+    analytics.trackDownload(
+      item.itemId.toString(),
+      item.title,
+      'download',
+      item.version
+    )
   }
 
   const clearHistory = () => {
