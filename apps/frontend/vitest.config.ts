@@ -11,7 +11,31 @@ export default defineConfig({
     globals: true,
     environment: 'happy-dom',
     coverage: {
-      enabled: false,
+      provider: 'v8',
+      enabled: true,
+      reporter: ['text', 'html', 'json', 'lcov'],
+      include: [
+        'composables/**/*.ts',
+        'stores/**/*.ts',
+        'utils/**/*.ts',
+        'components/**/*.vue',
+      ],
+      exclude: [
+        'tests/**',
+        '**/*.spec.ts',
+        '**/*.test.ts',
+        '**/*.config.ts',
+        '**/types/**',
+        '**/*.d.ts',
+        'node_modules/**',
+        '.nuxt/**',
+      ],
+      thresholds: {
+        lines: 70,
+        functions: 70,
+        branches: 70,
+        statements: 70,
+      },
     },
   },
   resolve: {
