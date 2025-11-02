@@ -1,0 +1,94 @@
+# Docker Compose Override for China Network Optimization
+# 中国网络优化配置覆盖文件
+# 
+# Usage (使用方法):
+# docker-compose -f docker-compose.yml -f docker-compose.china.yml up -d
+#
+# This file provides optimizations for deploying in mainland China:
+# 本文件为在中国大陆部署提供优化：
+# - Uses Chinese mirror registries for faster image pulls
+#   使用中国镜像源以加快镜像拉取速度
+# - Configures npm/pnpm to use Chinese mirrors
+#   配置 npm/pnpm 使用中国镜像源
+# - Adds extra hosts for better connectivity
+#   添加额外的主机映射以提高连接性
+# - Uses local registry cache if available
+#   如果可用，使用本地镜像缓存
+
+version: '3.8'
+
+services:
+  postgres:
+    # Use Alibaba Cloud mirror for Docker Hub images
+    # 使用阿里云镜像加速 Docker Hub 镜像
+    image: registry.cn-hangzhou.aliyuncs.com/library/postgres:16-alpine
+    extra_hosts:
+      # Add custom hosts if needed for China network
+      # 根据需要添加自定义主机映射
+      - "dl-cdn.alpinelinux.org:mirrors.ustc.edu.cn"
+    environment:
+      # Ensure China timezone
+      TZ: Asia/Shanghai
+      PGTZ: Asia/Shanghai
+
+  cms:
+    build:
+      context: ./apps/cms
+      dockerfile: Dockerfile
+      args:
+        # Use Chinese npm mirror
+        # 使用淘宝 npm 镜像源
+        - NPM_REGISTRY=https://registry.npmmirror.com
+        - PNPM_REGISTRY=https://registry.npmmirror.com
+        # Use Chinese Alpine mirror
+        # 使用中国科技大学 Alpine 镜像源
+        - ALPINE_MIRROR=mirrors.ustc.edu.cn
+    extra_hosts:
+      - "registry.npmjs.org:104.16.19.35"
+      - "dl-cdn.alpinelinux.org:mirrors.ustc.edu.cn"
+    environment:
+      TZ: Asia/Shanghai
+      # China-specific locale
+      LANG: zh_CN.UTF-8
+      LC_ALL: zh_CN.UTF-8
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./apps/frontend/Dockerfile
+      args:
+        # Use Chinese npm mirror
+        # 使用淘宝 npm 镜像源
+        - NPM_REGISTRY=https://registry.npmmirror.com
+        - PNPM_REGISTRY=https://registry.npmmirror.com
+        # Use Chinese Alpine mirror
+        # 使用中国科技大学 Alpine 镜像源
+        - ALPINE_MIRROR=mirrors.ustc.edu.cn
+    extra_hosts:
+      - "registry.npmjs.org:104.16.19.35"
+      - "dl-cdn.alpinelinux.org:mirrors.ustc.edu.cn"
+    environment:
+      TZ: Asia/Shanghai
+      # China-specific locale
+      LANG: zh_CN.UTF-8
+      LC_ALL: zh_CN.UTF-8
+      # CDN optimization for China
+      NUXT_PUBLIC_CDN_URL: ${CDN_URL_CN:-}
+
+  redis:
+    # Use Alibaba Cloud mirror for Redis
+    # 使用阿里云镜像加速 Redis
+    image: registry.cn-hangzhou.aliyuncs.com/library/redis:7-alpine
+    extra_hosts:
+      - "dl-cdn.alpinelinux.org:mirrors.ustc.edu.cn"
+    environment:
+      TZ: Asia/Shanghai
+
+  nginx:
+    # Use Alibaba Cloud mirror for Nginx
+    # 使用阿里云镜像加速 Nginx
+    image: registry.cn-hangzhou.aliyuncs.com/library/nginx:alpine
+    extra_hosts:
+      - "dl-cdn.alpinelinux.org:mirrors.ustc.edu.cn"
+    environment:
+      TZ: Asia/Shanghai
