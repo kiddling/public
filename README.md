@@ -50,8 +50,19 @@ A Vue.js application implementing a comprehensive course navigation system with 
 ├── tests/
 │   ├── unit/            # Unit tests
 │   └── e2e/             # End-to-end tests
+├── DESIGN/              # Design documentation and resources
 └── package.json
 ```
+
+## Design Documentation
+
+Design documents and resources are available in the [DESIGN](./DESIGN) folder. This includes:
+
+- Course design methodology and structure
+- Digital design composition curriculum
+- Educational approach and teaching plans
+
+See [DESIGN/README.md](./DESIGN/README.md) for more details.
 
 ## Installation
 
