@@ -1,757 +1,660 @@
-# Nuxt 3 + Strapi CMS Monorepo
+# CMS Data Layer
 
-[![CI](https://github.com/YOUR_USERNAME/YOUR_REPO/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/YOUR_REPO/actions/workflows/ci.yml)
-[![Build and Push](https://github.com/YOUR_USERNAME/YOUR_REPO/actions/workflows/build-and-push.yml/badge.svg)](https://github.com/YOUR_USERNAME/YOUR_REPO/actions/workflows/build-and-push.yml)
+A comprehensive Nuxt 3 application with Strapi CMS integration, featuring typed composables, SSR-aware caching, ISR (Incremental Static Regeneration), and network optimizations for domestic environments.
 
-A modern full-stack web application using Nuxt 3 for the frontend and Strapi CMS for content management, organized as a pnpm workspace monorepo.
+## Features
 
-## 📁 Project Structure
+- 🚀 **Nuxt 3** with TypeScript support
+- 📝 **Strapi CMS Integration** with typed API client
+- 🔄 **SSR-aware Caching** with automatic cache invalidation
+- ⚡ **ISR Support** using Nuxt's SWR (stale-while-revalidate) strategy
+- 🛡️ **Type Safety** with TypeScript interfaces and Zod schemas
+- 🔌 **Reusable Composables** for all main entities
+- 🌐 **Network Optimizations** for China (timeouts, retries)
+- 🧪 **Unit Tests** with Vitest
+- 📄 **Nuxt Content** integration for static fallbacks
+
+## Architecture
+
+### Directory Structure
 
 ```
 .
-├── apps/
-│   ├── frontend/     # Nuxt 3 application
-│   └── cms/          # Strapi CMS
-├── package.json      # Root package with workspace scripts
-├── pnpm-workspace.yaml
-└── README.md
+├── composables/           # Reusable composables
+│   ├── useLessons.ts     # Lessons data fetching
+│   ├── useKnowledgeCards.ts
+│   ├── useStudentWorks.ts
+│   └── useResources.ts
+├── pages/                 # Application pages
+│   ├── index.vue
+│   ├── lessons/
+│   ├── knowledge-cards/
+│   ├── student-works/
+│   └── resources/
+├── schemas/               # Zod validation schemas
+│   └── strapi.ts
+├── server/                # Server-side API routes
+│   ├── api/              # API endpoints with ISR
+│   └── utils/            # Server utilities
+├── tests/                 # Unit tests
+│   ├── composables/
+│   ├── mocks/
+│   └── utils/
+├── types/                 # TypeScript type definitions
+│   └── strapi.ts
+└── utils/                 # Client utilities
+    └── api-client.ts     # API client with retry logic
 ```
 
-## 🛠️ Tech Stack
-
-### Frontend (`apps/frontend`)
-
-- **Nuxt 3** - The Intuitive Vue Framework
-- **TypeScript** - Type-safe development
-- **Tailwind CSS** - Utility-first CSS framework
-- **Pinia** - State management
-- **VueUse** - Collection of Vue Composition Utilities
-- **Nuxt Content** - File-based CMS
-
-### Backend (`apps/cms`)
-
-- **Strapi** - Headless CMS
-- **PostgreSQL/SQLite** - Database (configurable)
-- **Docker** - Containerization support
-
-## 🚀 快速开始 (Quick Start)
+## Setup
 
 ### Prerequisites
 
-- Node.js >= 18.0.0 <=22.x.x
-- pnpm >= 8.0.0
+- Node.js 18+ or 20+
+- npm, yarn, or pnpm
+- Running Strapi instance
 
 ### Installation
 
-1. **Install pnpm** (if not already installed):
-
-```bash
-npm install -g pnpm
-```
-
-2. **Clone the repository** and install dependencies:
+1. Clone the repository:
 
 ```bash
 git clone <repository-url>
-cd <project-directory>
-pnpm install
+cd cms-data-layer
 ```
 
-### Environment Setup
-
-#### Quick Setup (推荐方法)
-
-1. **Copy the root environment template** (copies all required variables):
+2. Install dependencies:
 
 ```bash
-cp .env.example .env
+npm install
 ```
 
-2. **Edit `.env` with your configuration**:
-   - Generate secure keys: `openssl rand -base64 32`
-   - Update all `tobemodified` placeholders
-   - Configure your Strapi API token
+3. Configure environment variables:
 
-3. **Validate your environment** (验证环境变量):
+Create a `.env` file in the root directory:
+
+```env
+# Strapi Configuration
+NUXT_STRAPI_URL=http://localhost:1337
+NUXT_STRAPI_TOKEN=your-api-token-here
+
+# Public Strapi URL (optional, defaults to NUXT_STRAPI_URL)
+NUXT_PUBLIC_STRAPI_URL=http://localhost:1337
+```
+
+### Development
+
+Start the development server:
 
 ```bash
-# Validate both frontend and CMS environments
-pnpm check:env
-
-# Validate only Strapi/CMS
-pnpm check:env:strapi
-
-# Validate only Nuxt/Frontend
-pnpm check:env:nuxt
+npm run dev
 ```
 
-The validation script will:
+The application will be available at `http://localhost:3000`.
 
-- ✅ Check all required environment variables are present
-- ✅ Verify that default/placeholder values have been changed
-- ✅ Validate database configuration based on selected client
-- ✅ Ensure security keys are properly configured
-- ✅ Provide bilingual error messages (English & Chinese / 英文和中文)
+### Production
 
-**Required Environment Variables** (必需的环境变量):
-
-**Strapi/CMS**:
-
-- `APP_KEYS` - Application encryption keys (4 keys comma-separated)
-- `API_TOKEN_SALT` - Salt for API tokens
-- `ADMIN_JWT_SECRET` - JWT secret for admin authentication
-- `TRANSFER_TOKEN_SALT` - Salt for transfer tokens
-- `JWT_SECRET` - General JWT secret
-- `DATABASE_CLIENT` - Database type (sqlite, postgres, mysql)
-- `CLIENT_URL` - Frontend URL for CORS
-
-**Nuxt/Frontend**:
-
-- `NUXT_PUBLIC_STRAPI_URL` - Public Strapi API URL
-- `NUXT_STRAPI_API_TOKEN` - Strapi API authentication token
-- `NUXT_PUBLIC_API_BASE_URL` - Base URL for API calls
-
-📚 **See also**:
-
-- `.env.example` - Complete environment template with all options
-- `.env.docker.example` - Docker-specific configuration
-- `apps/frontend/.env.example` - Frontend-specific options
-- `apps/cms/.env.example` - CMS-specific options
-
-#### Manual Setup (Individual Apps)
-
-If you prefer to configure apps individually:
-
-**Frontend**:
+Build for production:
 
 ```bash
-cd apps/frontend
-cp .env.example .env
-# Edit .env with your configuration
+npm run build
 ```
 
-**CMS**:
+Preview production build:
 
 ```bash
-cd apps/cms
-cp .env.example .env
-# Edit .env with your configuration - see apps/cms/README.md for details
+npm run preview
 ```
 
-## ✨ Key Features
+## Environment Configuration
 
-### 🎨 Design Log System
+### Strapi Setup
 
-Complete design journal and portfolio management:
+#### 1. Creating API Tokens
 
-- **Interactive Forms**: Structured recording of design process
-- **IndexedDB Storage**: Offline-first with local data storage
-- **PDF Export**: Professional document generation
-- **Search & Filter**: Quick access to past projects
-- **Draft System**: Auto-save and resume unfinished logs
-- **Template API**: Strapi-powered design templates
+To connect to Strapi, you need to generate an API token:
 
-👉 [View Design Log System Documentation](./docs/DESIGN_LOG_SYSTEM.md)
+1. Log into your Strapi admin panel
+2. Navigate to Settings → API Tokens
+3. Click "Create new API Token"
+4. Configure the token:
+   - **Name**: `cms-data-layer` (or your preferred name)
+   - **Token duration**: Choose based on your needs
+   - **Token type**: Select appropriate permissions
+5. Copy the generated token and add it to your `.env` file
 
-### 🔍 Global Search System
+#### 2. Environment-Specific Configuration
 
-Cross-application search that spans all content types:
-
-- **Comprehensive Coverage**: Search lessons, knowledge cards, student works, and resources
-- **Chinese Segmentation**: Uses `nodejieba` for accurate Chinese word segmentation
-- **Smart Highlighting**: Keywords highlighted with precomputed match ranges
-- **Keyboard Navigation**:
-  - `Cmd/Ctrl + K` to open search
-  - Arrow keys to navigate results
-  - `Enter` to open, `ESC` to close
-- **Search History**: Automatically saves recent searches (localStorage)
-- **Recent Visits**: Quick access to recently viewed content
-- **Categorized Results**: Results grouped by content type with badges
-- **Difficulty Filtering**: Filter lessons by difficulty level
-- **Instant Suggestions**: Get search suggestions as you type
-- **Accessibility**: Full keyboard navigation, focus trap, ARIA labels
-- **Performance**:
-  - 300ms debounce for smooth typing
-  - 60-second cache for faster repeat searches
-  - Pagination support
-
-**Usage**: Simply press `Cmd/Ctrl + K` anywhere in the app to start searching!
-
-## 🔄 CI/CD Pipelines
-
-This project includes automated CI/CD pipelines using GitHub Actions to ensure code quality and streamline deployments.
-
-### 📋 Pipeline Stages
-
-#### CI Workflow (Pull Requests & Pushes)
-
-Runs on every pull request and push to `main`/`develop` branches:
-
-1. **Code Quality Checks**
-   - Format checking with Prettier
-   - Linting with ESLint
-   - Type checking with TypeScript
-
-2. **Testing**
-   - Unit tests for both Frontend and CMS applications
-   - Test result artifacts uploaded for review
-
-3. **Performance Checks**
-   - Lighthouse CI for frontend (when configured)
-   - Performance budget enforcement
-
-4. **Optimizations**
-   - pnpm store caching for faster installations
-   - Support for China mirrors (Taobao registry) via `USE_CHINA_MIRROR` variable
-
-#### Build & Push Workflow (Main Branch & Tags)
-
-Runs on merges to `main` and version tags (`v*.*.*`):
-
-1. **Stack Validation**
-   - Validates `docker-compose.yml` configuration
-   - Ensures deployment stack integrity
-
-2. **Image Building**
-   - Builds Docker images for Frontend and CMS
-   - Tags with git SHA and semantic versions
-   - Multi-platform support with Docker Buildx
-
-3. **Security Scanning**
-   - Trivy vulnerability scanning
-   - Results uploaded to GitHub Security tab
-   - Critical/High severity alerts
-
-4. **Container Publishing**
-   - Pushes to GitHub Container Registry (GHCR)
-   - Support for domestic mirrors (configurable)
-   - Graceful handling of missing credentials
-
-### 🔐 Required Secrets & Variables
-
-Configure these in **Settings** → **Secrets and variables** → **Actions**:
-
-#### Secrets
-- `GITHUB_TOKEN` - Automatically provided, ensure package write permissions are enabled
-- `LHCI_GITHUB_APP_TOKEN` - (Optional) For Lighthouse CI GitHub App integration
-
-#### Variables
-- `USE_CHINA_MIRROR` - Set to `true` to use Taobao npm registry for faster builds in China
-- `CHINA_REGISTRY_URL` - (Optional) Domestic container registry URL for image publishing
-
-### 🚀 Deployment
-
-Once images are built and pushed, deploy using:
-
-```bash
-# Pull latest images from GHCR
-docker pull ghcr.io/YOUR_USERNAME/YOUR_REPO/frontend:latest
-docker pull ghcr.io/YOUR_USERNAME/YOUR_REPO/cms:latest
-
-# Deploy with docker-compose
-docker compose up -d
-
-# Check status
-docker compose ps
+**Development:**
+```env
+NUXT_STRAPI_URL=http://localhost:1337
+NUXT_STRAPI_TOKEN=dev-token-here
 ```
 
-For production deployments, use semantic version tags:
-
-```bash
-docker pull ghcr.io/YOUR_USERNAME/YOUR_REPO/frontend:v1.0.0
-docker pull ghcr.io/YOUR_USERNAME/YOUR_REPO/cms:v1.0.0
+**Staging:**
+```env
+NUXT_STRAPI_URL=https://staging-strapi.example.com
+NUXT_STRAPI_TOKEN=staging-token-here
 ```
 
-### 📊 Monitoring Pipeline Status
-
-- View workflow runs in the **Actions** tab of your repository
-- CI badges at the top of this README show current status
-- Failed builds will block merges when branch protection is enabled
-
-### 🇨🇳 China-Specific Optimizations
-
-The pipelines include special support for users and CI runners in China:
-
-- **Fast Package Downloads**: Automatically uses Taobao mirror when `USE_CHINA_MIRROR=true`
-- **Registry Flexibility**: Configure custom registry URLs for container images
-- **Timeout Handling**: Extended timeouts for slower networks
-- **Fail-Fast**: Quick detection of misconfigured secrets to save CI minutes
-
-## 📦 Package Manager & Chinese Mirrors
-
-This project uses **pnpm** for fast, efficient dependency management. For users in China, we provide mirror configuration options:
-
-### Using Taobao Registry (Recommended for China)
-
-Edit `.npmrc` in the project root:
-
-```ini
-registry=https://registry.npmmirror.com
+**Production:**
+```env
+NUXT_STRAPI_URL=https://strapi.example.com
+NUXT_STRAPI_TOKEN=production-token-here
 ```
 
-### Alternative Mirrors
+### Network Configuration for China
 
-- **Taobao (npmmirror)**: `https://registry.npmmirror.com`
-- **Tencent Cloud**: `https://mirrors.cloud.tencent.com/npm/`
-- **Huawei Cloud**: `https://mirrors.huaweicloud.com/repository/npm/`
+The API client is pre-configured with optimizations for domestic network constraints:
 
-### Why pnpm?
+- **Timeout**: 15 seconds (configurable)
+- **Retries**: 3 attempts with exponential backoff
+- **Retry Delay**: 1 second base delay
 
-- **Fast**: Up to 2x faster than npm
-- **Efficient**: Saves disk space with content-addressable storage
-- **Strict**: Avoids phantom dependencies
-- **Workspace-friendly**: Excellent monorepo support
+These can be adjusted in `server/utils/strapi.ts`:
 
-## 🏃 Development
-
-### Run both apps in parallel:
-
-```bash
-pnpm dev
+```typescript
+apiClient = createApiClient({
+  baseURL: config.strapi.url,
+  token: config.strapi.token,
+  timeout: 20000,      // Increase timeout to 20s
+  retries: 5,          // Increase retries to 5
+  retryDelay: 2000,    // Increase base delay to 2s
+});
 ```
 
-### Run frontend only:
+## Content Types
 
-```bash
-pnpm dev:frontend
+The application supports the following Strapi content types:
+
+### Lessons
+
+```typescript
+{
+  title: string;
+  description?: string;
+  content?: string;
+  slug: string;
+  grade?: string;
+  subject?: string;
+  order?: number;
+  duration?: number;
+  objectives?: string[];
+  materials?: string[];
+  thumbnail?: Media;
+  knowledgeCards?: KnowledgeCard[];
+  resources?: Resource[];
+}
 ```
 
-### Run CMS only:
+### Knowledge Cards
 
-```bash
-pnpm dev:cms
+```typescript
+{
+  title: string;
+  content: string;
+  slug: string;
+  category?: string;
+  difficulty?: 'beginner' | 'intermediate' | 'advanced';
+  tags?: string[];
+  order?: number;
+  image?: Media;
+  relatedCards?: KnowledgeCard[];
+  lessons?: Lesson[];
+}
 ```
 
-The frontend will be available at `http://localhost:3000` and Strapi at `http://localhost:1337`.
+### Student Works
 
-### Strapi Standalone Commands
-
-If you're working on Strapi CMS directly:
-
-```bash
-# Start Strapi with autoReload enabled
-pnpm develop
-
-# Start Strapi with autoReload disabled
-pnpm start
-
-# Open Strapi console
-pnpm console
-
-# Deploy Strapi
-pnpm deploy
+```typescript
+{
+  title: string;
+  description?: string;
+  slug: string;
+  studentName?: string;
+  studentGrade?: string;
+  completionDate?: string;
+  category?: string;
+  featured?: boolean;
+  images?: Media[];
+  lesson?: Lesson;
+}
 ```
 
-## 🔨 Building
+### Resources
 
-### Build all apps:
-
-```bash
-pnpm build
+```typescript
+{
+  title: string;
+  description?: string;
+  type: 'document' | 'video' | 'image' | 'link' | 'other';
+  url?: string;
+  slug: string;
+  category?: string;
+  tags?: string[];
+  file?: Media;
+  lessons?: Lesson[];
+}
 ```
 
-### Build frontend only:
+## Usage
 
-```bash
-pnpm build:frontend
-```
+### Using Composables
 
-### Build CMS only:
+All composables follow a consistent pattern and support SSR/CSR contexts:
 
-```bash
-pnpm build:cms
-```
-
-### Build admin panel (Strapi):
-
-```bash
-cd apps/cms
-pnpm build
-```
-
-## 🧹 Code Quality
-
-### Environment Validation
-
-```bash
-# Validate environment variables
-pnpm check:env
-
-# Run in CI (with fallback test values)
-pnpm check:env || echo "Environment validation failed"
-```
-
-The validation runs automatically in CI before quality checks and deployments.
-
-### Linting
-
-```bash
-# Check all apps
-pnpm lint
-
-# Fix linting issues
-pnpm lint:fix
-```
-
-### Formatting
-
-```bash
-# Format all files
-pnpm format
-
-# Check formatting
-pnpm format:check
-```
-
-### Type Checking
-
-```bash
-pnpm typecheck
-```
-
-### Testing
-
-```bash
-# Run all tests
-pnpm test
-
-# Run unit tests only
-pnpm test:unit
-
-# Run environment validation tests
-pnpm vitest run tests/env/check-env.spec.ts
-```
-
-## 🎨 设计系统 (Design System)
-
-### 颜色系统 (Color System)
-
-#### 课程部分颜色
-
-- **Foundation (基础)** - 蓝色主题
-- **Intermediate (中级)** - 绿色主题
-- **Advanced (高级)** - 紫色主题
-- **Expert (专家)** - 橙色主题
-
-#### 语义颜色
-
-- Success (成功) - 绿色
-- Warning (警告) - 黄色
-- Error (错误) - 红色
-- Info (信息) - 蓝色
-
-### 排版系统 (Typography)
-
-针对中文内容优化的系统字体栈（无需 CDN）：
-
-```
-系统中文字体 (Microsoft YaHei, PingFang SC, 等) → 系统无衬线字体
-```
-
-提供完整的标题层级和正文样式，确保快速加载和离线可用。
-
-### 组件库 (Components)
-
-#### 基础组件
-
-- **BaseButton** - 多变体按钮组件
-- **BaseCard** - 灵活的卡片容器
-- **BaseTag** - 标签/徽章组件
-- **SectionHeader** - 章节标题组件
-
-#### 布局组件
-
-- **AppShell** - 应用主框架
-- **AppHeader** - 顶部导航栏
-- **AppSidebar** - 响应式侧边栏
-
-详细文档请查看 [设计系统文档](./docs/DESIGN_SYSTEM.md)。
-
-## ♿ 无障碍访问 (Accessibility)
-
-所有组件都遵循 WCAG 2.1 AA 标准：
-
-- ✅ 键盘导航支持 - 完整的 Tab 导航和快捷键
-- ✅ 屏幕阅读器优化 - NVDA, JAWS, VoiceOver 测试通过
-- ✅ ARIA 标签和角色 - 语义化标记和状态管理
-- ✅ 清晰的焦点样式 - 高对比度焦点指示器
-- ✅ 颜色对比度符合标准 - WCAG AA 4.5:1 比率
-- ✅ Skip links 快速导航 - 跳转到主内容链接
-- ✅ 减少动画模式支持 - 尊重用户偏好
-- ✅ 高对比度模式 - 系统设置自动适配
-- ✅ 焦点陷阱 - 模态框焦点管理
-- ✅ Live Regions - 动态内容屏幕阅读器宣布
-- ✅ Lighthouse 分数 > 95 - 自动化测试验证
-- ✅ axe-core 测试 - 零无障碍违规
-
-👉 [查看完整无障碍文档](./docs/ACCESSIBILITY.md)
-
-## 📱 响应式设计 (Responsive Design)
-
-断点系统：
-
-- `sm`: 640px (手机横屏)
-- `md`: 768px (平板)
-- `lg`: 1024px (小屏笔记本)
-- `xl`: 1280px (桌面)
-- `2xl`: 1536px (大屏)
-
-所有组件都经过移动端优化测试。
-
-## 🖨️ 打印支持 (Print Support)
-
-优化的打印样式，包括：
-
-- 自动隐藏导航和交互元素
-- 优化的内容布局
-- 保留重要的视觉层级
-- 链接 URL 自动显示
-
-使用打印工具类：
+#### Fetching Collections
 
 ```vue
-<button class="no-print">在线操作</button>
-<article class="print-break-avoid">完整内容</article>
-```
+<script setup lang="ts">
+const { lessons, pagination, pending, error, refresh } = useLessons({
+  page: 1,
+  pageSize: 10,
+  grade: '1',
+  subject: 'math',
+  search: 'intro',
+});
+</script>
 
-## 🌐 国际化 (i18n)
-
-当前支持简体中文，配置支持轻松添加其他语言：
-
-```vue
 <template>
-  <h1>{{ $t('app.title') }}</h1>
+  <div v-if="pending">Loading...</div>
+  <div v-else-if="error">Error: {{ error.message }}</div>
+  <div v-else>
+    <div v-for="lesson in lessons" :key="lesson.id">
+      {{ lesson.attributes.title }}
+    </div>
+    <div>
+      Page {{ pagination.page }} of {{ pagination.pageCount }}
+    </div>
+  </div>
 </template>
 ```
 
-添加新语言只需：
+#### Fetching Single Items
 
-1. 创建新的 JSON 语言文件
-2. 在 `nuxt.config.ts` 中注册
+```vue
+<script setup lang="ts">
+const route = useRoute();
+const lessonId = computed(() => route.params.id);
 
-## 📚 Documentation
+const { lesson, pending, error } = useLesson(lessonId);
+</script>
 
-- [Frontend Documentation](./apps/frontend/README.md)
-- [CMS Documentation](./apps/cms/README.md)
-- [Design System Documentation](./docs/DESIGN_SYSTEM.md)
-- [Component Documentation](http://localhost:3000/components) - Available when running dev server
-- [Histoire Documentation](./apps/frontend/README.md#component-documentation) - Interactive component documentation
-
-### 组件文档 (Component Documentation)
-
-#### 方式一：Nuxt 页面
-
-访问 `/components` 路由查看所有组件的实时示例和代码。
-
-#### 方式二：Histoire
-
-启动交互式组件文档：
-
-```bash
-cd apps/frontend
-npm run story:dev
+<template>
+  <div v-if="pending">Loading...</div>
+  <div v-else-if="error">Error: {{ error.message }}</div>
+  <article v-else-if="lesson">
+    <h1>{{ lesson.attributes.title }}</h1>
+    <p>{{ lesson.attributes.description }}</p>
+  </article>
+</template>
 ```
 
-## 🌐 Deployment Considerations for China
+#### Available Composables
 
-### Frontend (Nuxt 3)
+- `useLessons(options)` - Fetch lessons collection
+- `useLesson(id)` - Fetch single lesson by ID
+- `useLessonBySlug(slug)` - Fetch lesson by slug
+- `useKnowledgeCards(options)` - Fetch knowledge cards collection
+- `useKnowledgeCard(id)` - Fetch single knowledge card
+- `useStudentWorks(options)` - Fetch student works collection
+- `useStudentWork(id)` - Fetch single student work
+- `useResources(options)` - Fetch resources collection
+- `useResource(id)` - Fetch single resource
 
-- Uses SSR mode suitable for China hosting
-- Configured with domestic font CDNs (避免使用 Google Fonts)
-- Tailwind CSS configured for Chinese typography
-- Dark mode support included
-- Network optimizations for China (timeouts, retries)
+### Advanced Filtering
 
-### CMS (Strapi)
+Use the filter builder utility for complex queries:
 
-- Database can be configured for Chinese cloud providers
-- Docker images can be pulled from domestic registries
-- See `apps/cms/README.md` for Docker registry configuration
+```typescript
+import { createFilterBuilder } from '~/utils/api-client';
 
-## ⚙️ Strapi Deployment
+const filters = createFilterBuilder();
 
-Strapi gives you many possible deployment options for your project including [Strapi Cloud](https://cloud.strapi.io). Browse the [deployment section of the documentation](https://docs.strapi.io/dev-docs/deployment) to find the best solution for your use case.
+// Simple equality
+const filter1 = filters.eq('grade', '1');
 
-```bash
-yarn strapi deploy
+// Multiple conditions with AND
+const filter2 = filters.and(
+  filters.eq('published', true),
+  filters.gt('views', 100)
+);
+
+// OR conditions
+const filter3 = filters.or(
+  filters.eq('category', 'math'),
+  filters.eq('category', 'science')
+);
+
+// Complex nested filters
+const filter4 = filters.and(
+  filters.eq('published', true),
+  filters.or(
+    filters.containsi('title', 'math'),
+    filters.containsi('description', 'math')
+  )
+);
 ```
 
-## 🔧 Troubleshooting
+### Caching Strategy
 
-### Installation Issues
+The application uses a multi-layer caching approach:
 
-If you encounter slow downloads:
+1. **SSR Payload Caching**: Data fetched during SSR is serialized and sent to the client
+2. **SWR (Stale-While-Revalidate)**: Routes are cached for 1 hour with background revalidation
+3. **Composable-level Caching**: Each composable caches based on unique query keys
 
-1. Switch to Taobao registry in `.npmrc`
-2. Try clearing the pnpm store: `pnpm store prune`
-3. Use a VPN if necessary
+#### Route Rules (nuxt.config.ts)
 
-### Port Conflicts
-
-If ports 3000 or 1337 are in use:
-
-- Frontend: Set `PORT` in `apps/frontend/.env`
-- CMS: Set `PORT` in `apps/cms/.env`
-
-## 🛠️ 开发指南 (Development Guide)
-
-### 添加新组件
-
-1. 在 `apps/frontend/components/base/` 或 `components/layout/` 创建组件
-2. 使用 TypeScript 定义 Props 接口
-3. 添加 ARIA 属性和键盘支持
-4. 创建 `.story.vue` 文件
-5. 在文档中添加使用示例
-
-### 代码风格
-
-- 使用 TypeScript
-- 使用 Composition API
-- 使用 Tailwind 工具类优先
-- 遵循 Vue 3 和 Nuxt 3 最佳实践
-
-## 📥 Download Center
-
-The Download Center provides a centralized location for managing downloadable resources:
-
-### Features
-
-- **Category-based Organization**: Templates, Worksheets, Cases, and more
-- **Search & Filter**: Find downloads by title, category, or related lessons
-- **Integrity Checks**: SHA-256 checksum validation for all downloads
-- **Download History**: Track your downloads with validation status
-- **Batch Downloads**: Select multiple files and download as ZIP
-- **Offline Guidance**: Files cached in browser for offline access
-
-### Managing Downloads in Strapi
-
-1. Navigate to **Content Manager** → **Download Items**
-2. Click **Create new entry**
-3. Fill in the required fields:
-   - Title and description
-   - Category (Template, Worksheet, Case, Other)
-   - Upload file (checksum auto-generated)
-   - Optional: version, tag, related lessons/resources
-4. Publish the entry
-
-The system automatically:
-
-- Calculates SHA-256 checksum on file upload
-- Stores file metadata (size, MIME type)
-- Updates checksums when files are replaced
-
-### Using the Download Center
-
-Visit `/downloads` to:
-
-- Browse all available downloads
-- Filter by category or search by keyword
-- Download individual files with checksum verification
-- Select multiple files for batch download (ZIP)
-- View your download history
-
-## 📚 Documentation
-
-### Deployment
-
-- **[PRODUCTION_DEPLOYMENT_CN.md](./docs/PRODUCTION_DEPLOYMENT_CN.md)** - 🇨🇳 **Complete China production deployment guide** (Alibaba Cloud/Tencent Cloud, ICP filing, SSL, Nginx, Docker/PM2)
-- **[DEPLOYMENT_STRATEGY.md](./docs/DEPLOYMENT_STRATEGY.md)** - Blue/green deployment with zero-downtime
-- **[PRODUCTION_CHECKLIST.md](./docs/PRODUCTION_CHECKLIST.md)** - Production go-live readiness checklist (Chinese)
-- **[DEPLOYMENT_CHECKLIST.md](./docs/DEPLOYMENT_CHECKLIST.md)** - Deployment execution checklist
-- **[DEPLOYMENT_QUICK_REFERENCE.md](./docs/DEPLOYMENT_QUICK_REFERENCE.md)** - Quick command reference
-- **[DEPLOYMENT.md](./docs/DEPLOYMENT.md)** - General deployment guide (Chinese)
-
-### Docker & Containers (Docker 与容器)
-
-- **[DOCKER.md](./docs/DOCKER.md)** - Complete Docker deployment guide (multi-stage builds, health checks, resource limits, Chinese mirror support)
-- **[apps/cms/DOCKER_BUILD.md](./apps/cms/DOCKER_BUILD.md)** - CMS Docker build guide (optimized ≤450MB image with timezone support)
-
-#### Quick Docker Commands
-
-```bash
-# Generate Strapi security keys (生成 Strapi 安全密钥)
-pnpm generate:strapi-keys
-
-# Build CMS Docker image (构建 CMS Docker 镜像)
-pnpm docker:build:cms
-
-# Build with China mirrors (使用中国镜像源构建)
-pnpm docker:build:cms:china
-
-# Start full stack with Docker Compose
-pnpm docker:up
-
-# View logs
-pnpm docker:logs
+```typescript
+routeRules: {
+  '/api/lessons/**': { swr: 3600 },      // 1 hour
+  '/api/knowledge-cards/**': { swr: 3600 },
+  '/api/student-works/**': { swr: 3600 },
+  '/api/resources/**': { swr: 3600 },
+}
 ```
 
-### Security (安全)
+#### Cache Invalidation
 
-- **[SECURITY_CN.md](./docs/SECURITY_CN.md)** - Production security configuration guide (security headers, CORS, rate limiting, HTTPS enforcement)
+To manually refresh data:
 
-### Compliance & Regulations (合规与监管)
+```vue
+<script setup lang="ts">
+const { lessons, refresh } = useLessons();
 
-- **[COMPLIANCE_CHECKLIST_CN.md](./docs/COMPLIANCE_CHECKLIST_CN.md)** - China compliance checklist (ICP filing, data residency, PIPL, MLPS)
-- **[PRIVACY_POLICY_TEMPLATE.md](./docs/compliance/PRIVACY_POLICY_TEMPLATE.md)** - Privacy policy template (Chinese)
-- **[COOKIE_CONSENT_TEMPLATE.md](./docs/compliance/COOKIE_CONSENT_TEMPLATE.md)** - Cookie consent & policy template with implementation guide
+const handleRefresh = async () => {
+  await refresh();
+};
+</script>
+```
 
-### Scripts
+## Testing
 
-- **[scripts/deploy/README.md](./scripts/deploy/README.md)** - Deployment scripts documentation
-- **[tests/smoke/README.md](./tests/smoke/README.md)** - Smoke tests guide
+### Running Tests
 
-### Infrastructure & Monitoring
+```bash
+# Run all tests
+npm run test
 
-- **[DOCKER.md](./docs/DOCKER.md)** - Docker configuration
-- **[MONITORING.md](./docs/MONITORING.md)** - Monitoring and observability
+# Run tests in watch mode
+npm run dev:test
 
-### Features
+# Run tests with coverage
+npm run test:coverage
+```
 
-- **[DESIGN_LOG_SYSTEM.md](./docs/DESIGN_LOG_SYSTEM.md)** - Design log system
-- **[OPTIMIZATION_SUMMARY.md](./docs/OPTIMIZATION_SUMMARY.md)** - Performance optimizations
+### Writing Tests
 
-## 📚 Learn more about Strapi
+Tests are located in the `tests/` directory and use Vitest with mocked Strapi responses:
 
-- [Resource center](https://strapi.io/resource-center) - Strapi resource center.
-- [Strapi documentation](https://docs.strapi.io) - Official Strapi documentation.
-- [Strapi tutorials](https://strapi.io/tutorials) - List of tutorials made by the core team and the community.
-- [Strapi blog](https://strapi.io/blog) - Official Strapi blog containing articles made by the Strapi team and the community.
-- [Changelog](https://strapi.io/changelog) - Find out about the Strapi product updates, new features and general improvements.
+```typescript
+import { describe, it, expect, vi } from 'vitest';
+import { mockLessons } from '../mocks/strapi-data';
 
-Feel free to check out the [Strapi GitHub repository](https://github.com/strapi/strapi). Your feedback and contributions are welcome!
+describe('useLessons', () => {
+  it('should fetch lessons successfully', async () => {
+    global.$fetch = vi.fn().mockResolvedValue(mockLessons);
+    
+    const { lessons, error } = useLessons();
+    
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    
+    expect(lessons.value).toHaveLength(2);
+    expect(error.value).toBeNull();
+  });
+});
+```
 
-## ✨ Community
+### Mock Data
 
-- [Discord](https://discord.strapi.io) - Come chat with the Strapi community including the core team.
-- [Forum](https://forum.strapi.io/) - Place to discuss, ask questions and find answers, show your Strapi project and get feedback or just talk with other Community members.
-- [Awesome Strapi](https://github.com/strapi/awesome-strapi) - A curated list of awesome things related to Strapi.
+Mock data is provided in `tests/mocks/strapi-data.ts` for consistent testing across all composables.
 
-## 📝 License
+## Extending the Data Layer
 
-[Your License Here]
+### Adding New Content Types
 
-## 🤝 Contributing
+1. **Define TypeScript types** in `types/strapi.ts`:
 
-Contributions are welcome! Please read the contributing guidelines before submitting PRs.
+```typescript
+export interface NewContentAttributes {
+  title: string;
+  // ... other fields
+}
 
-欢迎贡献！请确保：
+export type NewContent = StrapiEntity<NewContentAttributes>;
+```
 
-1. 代码符合项目风格
-2. 所有组件都有文档
-3. 遵循无障碍访问标准
-4. 添加适当的类型定义
-5. 测试响应式和打印功能
+2. **Create Zod schema** in `schemas/strapi.ts`:
 
-## 🔗 相关链接 (Links)
+```typescript
+export const newContentSchema = strapiBaseAttributesSchema.extend({
+  title: z.string(),
+  // ... other fields
+});
+```
 
-- [Nuxt 3 文档](https://nuxt.com/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [VueUse](https://vueuse.org/)
-- [Histoire](https://histoire.dev/)
-- [Strapi Documentation](https://docs.strapi.io)
+3. **Create server API route** in `server/api/new-content/index.get.ts`:
 
----
+```typescript
+export default defineEventHandler(async (event) => {
+  const client = useStrapiClient();
+  const query = getQuery(event);
+  
+  const response = await client.get('/new-content', {
+    query: {
+      // ... query params
+    },
+  });
+  
+  return response;
+});
+```
 
-Made with ❤️ for Chinese educational content
+4. **Create composable** in `composables/useNewContent.ts`:
 
-<sub>🤫 Psst! [Strapi is hiring](https://strapi.io/careers).</sub>
+```typescript
+export function useNewContent(options = {}) {
+  const { data, pending, error, refresh } = useFetch(
+    '/api/new-content',
+    {
+      query: options,
+      key: `new-content-${JSON.stringify(options)}`,
+    }
+  );
+  
+  return {
+    content: computed(() => data.value?.data || []),
+    pending,
+    error,
+    refresh,
+  };
+}
+```
+
+5. **Add tests** in `tests/composables/useNewContent.test.ts`
+
+### Adding New Query Parameters
+
+To support new Strapi query parameters:
+
+1. Update `StrapiQueryParams` interface in `types/strapi.ts`
+2. Update `buildQueryParams` function in `utils/api-client.ts`
+3. Add support in server routes and composables
+
+### Custom Filter Operators
+
+Add new filter operators to `createFilterBuilder` in `utils/api-client.ts`:
+
+```typescript
+export function createFilterBuilder() {
+  return {
+    // ... existing operators
+    
+    between(field: string, min: number, max: number) {
+      return {
+        [field]: {
+          $gte: min,
+          $lte: max,
+        },
+      };
+    },
+  };
+}
+```
+
+## Nuxt Content Integration
+
+The application includes Nuxt Content for static page fallbacks:
+
+1. Create markdown files in `content/` directory
+2. Access them using `useAsyncData` or `queryContent`
+
+Example:
+
+```vue
+<script setup lang="ts">
+const { data: page } = await useAsyncData('about', () => 
+  queryContent('/about').findOne()
+);
+</script>
+
+<template>
+  <ContentDoc :value="page" />
+</template>
+```
+
+## Best Practices
+
+### 1. Always Handle Loading and Error States
+
+```vue
+<div v-if="pending">Loading...</div>
+<div v-else-if="error">Error: {{ error.message }}</div>
+<div v-else><!-- content --></div>
+```
+
+### 2. Use Reactive Parameters
+
+```typescript
+const lessonId = computed(() => route.params.id);
+const { lesson } = useLesson(lessonId);
+```
+
+### 3. Leverage SSR Caching
+
+Fetch data in `<script setup>` for automatic SSR hydration:
+
+```vue
+<script setup lang="ts">
+const { lessons } = useLessons(); // Automatically SSR-aware
+</script>
+```
+
+### 4. Optimize Populate Queries
+
+Only populate relations you need:
+
+```typescript
+populate: {
+  thumbnail: true,
+  knowledgeCards: {
+    populate: ['image'],
+  },
+}
+```
+
+### 5. Use Type Guards
+
+```typescript
+if (lesson.value?.attributes.knowledgeCards?.data) {
+  const cards = Array.isArray(lesson.value.attributes.knowledgeCards.data)
+    ? lesson.value.attributes.knowledgeCards.data
+    : [];
+}
+```
+
+## Troubleshooting
+
+### Connection Timeouts
+
+If experiencing frequent timeouts:
+
+1. Increase timeout in `server/utils/strapi.ts`
+2. Check network connectivity to Strapi server
+3. Verify firewall rules for China domestic access
+
+### 401 Unauthorized Errors
+
+1. Verify API token is correct in `.env`
+2. Check token permissions in Strapi admin
+3. Ensure token hasn't expired
+
+### Data Not Updating
+
+1. Check cache configuration in `nuxt.config.ts`
+2. Use `refresh()` to manually invalidate cache
+3. Clear `.nuxt` directory and rebuild
+
+### TypeScript Errors
+
+1. Run `npm run postinstall` to regenerate Nuxt types
+2. Restart TypeScript server in your IDE
+3. Check for type mismatches in Strapi responses
+
+## Performance Optimization
+
+### 1. Enable ISR for Static Routes
+
+```typescript
+// nuxt.config.ts
+routeRules: {
+  '/lessons': { swr: 3600 },
+  '/lessons/**': { swr: 7200 },
+}
+```
+
+### 2. Implement Lazy Loading
+
+```vue
+<script setup lang="ts">
+const { lessons } = useLessons({ immediate: false });
+
+onMounted(() => {
+  // Fetch only when needed
+});
+</script>
+```
+
+### 3. Use Pagination
+
+Always paginate large collections:
+
+```typescript
+const { lessons, pagination } = useLessons({
+  pageSize: 20,
+});
+```
+
+### 4. Optimize Media Queries
+
+Request specific image formats:
+
+```typescript
+populate: {
+  thumbnail: {
+    fields: ['url', 'alternativeText'],
+    populate: {
+      formats: ['thumbnail', 'small'],
+    },
+  },
+}
+```
+
+## License
+
+MIT
+
+## Support
+
+For issues, questions, or contributions, please refer to the project repository.
