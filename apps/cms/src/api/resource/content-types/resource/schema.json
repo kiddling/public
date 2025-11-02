@@ -16,13 +16,7 @@
     },
     "category": {
       "type": "enumeration",
-      "enum": [
-        "Video Tutorials",
-        "Tool Links",
-        "Case Databases",
-        "Readings",
-        "PBR Libraries"
-      ]
+      "enum": ["Video Tutorials", "Tool Links", "Case Databases", "Readings", "PBR Libraries"]
     },
     "description": {
       "type": "richtext"
@@ -46,12 +40,7 @@
     },
     "mediaType": {
       "type": "enumeration",
-      "enum": [
-        "video",
-        "pdf",
-        "link",
-        "dataset"
-      ],
+      "enum": ["video", "pdf", "link", "dataset"],
       "default": "link"
     },
     "qrAsset": {

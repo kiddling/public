@@ -3,17 +3,17 @@
     <Transition name="modal">
       <div
         v-if="show"
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 no-print"
+        class="no-print fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
         @click.self="close"
       >
         <div
-          class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6"
+          class="w-full max-w-md rounded-lg bg-white p-6 shadow-xl dark:bg-gray-800"
           role="dialog"
           aria-modal="true"
           :aria-labelledby="`qr-modal-title-${card?.id}`"
         >
           <!-- Header -->
-          <div class="flex justify-between items-start mb-4">
+          <div class="mb-4 flex items-start justify-between">
             <h3
               :id="`qr-modal-title-${card?.id}`"
               class="text-lg font-semibold text-gray-900 dark:text-gray-100"
@@ -21,10 +21,10 @@
               QR Code
             </h3>
             <button
-              class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              class="text-gray-400 transition-colors hover:text-gray-600 dark:hover:text-gray-300"
               @click="close"
             >
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -36,37 +36,37 @@
           </div>
 
           <!-- Card Title -->
-          <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+          <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">
             {{ card?.title }}
           </p>
 
           <!-- QR Code -->
-          <div class="flex justify-center mb-4">
+          <div class="mb-4 flex justify-center">
             <div
               ref="qrCodeContainer"
-              class="bg-white p-4 rounded-lg border-2 border-gray-200"
+              class="rounded-lg border-2 border-gray-200 bg-white p-4"
             ></div>
           </div>
 
           <!-- Link -->
           <div v-if="qrUrl" class="mb-4">
-            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label class="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-300">
               Link:
             </label>
             <div class="flex items-center space-x-2">
               <input
                 :value="qrUrl"
                 readonly
-                class="flex-1 px-3 py-2 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded text-gray-900 dark:text-gray-100 focus:outline-none"
+                class="flex-1 rounded border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-900 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
               />
               <button
-                class="px-3 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500"
+                class="bg-primary-600 hover:bg-primary-700 focus:ring-primary-500 rounded px-3 py-2 text-white transition-colors focus:outline-none focus:ring-2"
                 :title="copied ? 'Copied!' : 'Copy link'"
                 @click="copyLink"
               >
                 <svg
                   v-if="!copied"
-                  class="w-5 h-5"
+                  class="h-5 w-5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -78,8 +78,13 @@
                     d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
                   />
                 </svg>
-                <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                <svg v-else class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
                 </svg>
               </button>
             </div>
@@ -88,13 +93,13 @@
           <!-- Actions -->
           <div class="flex justify-end space-x-3">
             <button
-              class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              class="focus:ring-primary-500 rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
               @click="close"
             >
               Close
             </button>
             <button
-              class="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              class="bg-primary-600 hover:bg-primary-700 focus:ring-primary-500 rounded-lg px-4 py-2 text-sm font-medium text-white focus:outline-none focus:ring-2"
               @click="downloadQr"
             >
               Download QR

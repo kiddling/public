@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     const dataURI = await generateQRCodeDataURI(data, { width: size })
-    
+
     return {
       dataURI,
       url: data,

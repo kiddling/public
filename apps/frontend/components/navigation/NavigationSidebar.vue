@@ -8,16 +8,16 @@
         <p class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
           Course Navigation
         </p>
-        <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100">
-          Course Outline
-        </h2>
+        <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100">Course Outline</h2>
       </div>
       <slot name="actions" />
     </header>
 
     <div class="flex-1 overflow-y-auto pr-2">
       <div class="space-y-5 pb-6">
-        <div class="rounded-lg border border-gray-200 bg-gray-50/50 p-3 dark:border-gray-700 dark:bg-gray-800/50">
+        <div
+          class="rounded-lg border border-gray-200 bg-gray-50/50 p-3 dark:border-gray-700 dark:bg-gray-800/50"
+        >
           <NuxtLink
             to="/downloads"
             class="flex items-center gap-2 text-sm font-medium text-gray-700 transition hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400"

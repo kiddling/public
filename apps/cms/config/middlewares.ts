@@ -1,6 +1,10 @@
 export default [
   'strapi::logger',
   'strapi::errors',
+  {
+    name: 'global::health',
+    config: {},
+  },
   'strapi::security',
   'strapi::cors',
   'strapi::poweredBy',
@@ -9,4 +13,4 @@ export default [
   'strapi::session',
   'strapi::favicon',
   'strapi::public',
-];
+]

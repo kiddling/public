@@ -26,10 +26,7 @@ describe('transformNavigationData', () => {
     expect(foundation?.color).toBe('#0EA5E9')
     expect(foundation?.lessons.map((lesson) => lesson.code)).toEqual(['P-00', 'P-01'])
     expect(foundation?.loops).toHaveLength(1)
-    expect(foundation?.loops[0].lessons.map((lesson) => lesson.code)).toEqual([
-      'P-00',
-      'P-01',
-    ])
+    expect(foundation?.loops[0].lessons.map((lesson) => lesson.code)).toEqual(['P-00', 'P-01'])
 
     const coreBlocks = tree.parts.find((part) => part.type === 'core-blocks')
     expect(coreBlocks).toBeDefined()

@@ -1,30 +1,28 @@
 <template>
   <div class="knowledge-cards-page min-h-screen bg-gray-50 dark:bg-gray-900">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <!-- Header -->
       <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-          Knowledge Cards
-        </h1>
+        <h1 class="mb-2 text-3xl font-bold text-gray-900 dark:text-gray-100">Knowledge Cards</h1>
         <p class="text-gray-600 dark:text-gray-400">
           Explore curated educational content across different formats and topics
         </p>
       </div>
 
       <!-- View Toggle -->
-      <div class="flex justify-between items-center mb-6">
-        <div class="flex items-center space-x-2 bg-white dark:bg-gray-800 rounded-lg p-1 shadow-sm">
+      <div class="mb-6 flex items-center justify-between">
+        <div class="flex items-center space-x-2 rounded-lg bg-white p-1 shadow-sm dark:bg-gray-800">
           <button
             :class="[
-              'px-4 py-2 rounded-md text-sm font-medium transition-colors',
+              'rounded-md px-4 py-2 text-sm font-medium transition-colors',
               viewMode === 'grid'
                 ? 'bg-primary-600 text-white'
-                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
+                : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700',
             ]"
             @click="viewMode = 'grid'"
           >
             <span class="flex items-center space-x-2">
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
                 />
@@ -34,15 +32,15 @@
           </button>
           <button
             :class="[
-              'px-4 py-2 rounded-md text-sm font-medium transition-colors',
+              'rounded-md px-4 py-2 text-sm font-medium transition-colors',
               viewMode === 'list'
                 ? 'bg-primary-600 text-white'
-                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
+                : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700',
             ]"
             @click="viewMode = 'list'"
           >
             <span class="flex items-center space-x-2">
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fill-rule="evenodd"
                   d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
@@ -56,11 +54,11 @@
 
         <!-- Print Button -->
         <button
-          class="no-print px-4 py-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
+          class="no-print focus:ring-primary-500 rounded-lg bg-white px-4 py-2 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
           @click="handlePrint"
         >
           <span class="flex items-center space-x-2">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -97,7 +95,7 @@
       >
         <template #empty-action>
           <button
-            class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+            class="bg-primary-600 hover:bg-primary-700 rounded-lg px-4 py-2 text-white transition-colors"
             @click="clearAllFilters"
           >
             Clear All Filters
@@ -117,7 +115,7 @@
       >
         <template #empty-action>
           <button
-            class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+            class="bg-primary-600 hover:bg-primary-700 rounded-lg px-4 py-2 text-white transition-colors"
             @click="clearAllFilters"
           >
             Clear All Filters
@@ -127,11 +125,7 @@
     </div>
 
     <!-- QR Code Modal -->
-    <KnowledgeCardQrModal
-      :show="showQr"
-      :card="selectedCard"
-      @close="closeQrModal"
-    />
+    <KnowledgeCardQrModal :show="showQr" :card="selectedCard" @close="closeQrModal" />
   </div>
 </template>
 
@@ -236,7 +230,7 @@ function navigateToCard(card: KnowledgeCard) {
 // Share
 async function shareCard(card: KnowledgeCard) {
   const url = `${window.location.origin}/knowledge-cards/${card.slug || card.id}`
-  
+
   if (navigator.share) {
     try {
       await navigator.share({

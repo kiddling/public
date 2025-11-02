@@ -53,7 +53,7 @@ describe('StudentGalleryFilters', () => {
 
     const select = wrapper.findAll('select')[0]
     const options = select.findAll('option')
-    
+
     expect(options.length).toBe(6) // 1 "全部" + 5 disciplines
     expect(options[0].text()).toBe('全部专业')
     expect(options[1].text()).toBe('环艺')
@@ -73,7 +73,7 @@ describe('StudentGalleryFilters', () => {
 
     const select = wrapper.findAll('select')[1]
     const options = select.findAll('option')
-    
+
     expect(options.length).toBe(4) // 1 "全部" + 3 loops
     expect(options[0].text()).toBe('全部循环')
     expect(options[1].text()).toBe('Loop 1')
@@ -149,7 +149,7 @@ describe('StudentGalleryFilters', () => {
     })
 
     const buttons = wrapper.findAll('button')
-    const clearButton = buttons.find(b => b.text().includes('清除'))
+    const clearButton = buttons.find((b) => b.text().includes('清除'))
     expect(clearButton).toBeUndefined()
   })
 
@@ -164,7 +164,7 @@ describe('StudentGalleryFilters', () => {
       },
     })
 
-    const clearButton = wrapper.findAll('button').find(b => b.text().includes('清除'))
+    const clearButton = wrapper.findAll('button').find((b) => b.text().includes('清除'))
     await clearButton?.trigger('click')
 
     expect(wrapper.emitted('update:search')).toBeTruthy()
@@ -181,9 +181,9 @@ describe('StudentGalleryFilters', () => {
       },
     })
 
-    const searchClearButtons = wrapper.findAll('button').filter(b => 
-      b.classes().includes('absolute')
-    )
+    const searchClearButtons = wrapper
+      .findAll('button')
+      .filter((b) => b.classes().includes('absolute'))
     expect(searchClearButtons.length).toBeGreaterThan(0)
   })
 
@@ -195,9 +195,9 @@ describe('StudentGalleryFilters', () => {
       },
     })
 
-    const searchClearButton = wrapper.findAll('button').find(b => 
-      b.classes().includes('absolute')
-    )
+    const searchClearButton = wrapper
+      .findAll('button')
+      .find((b) => b.classes().includes('absolute'))
     await searchClearButton?.trigger('click')
 
     expect(wrapper.emitted('update:search')?.[0]).toEqual([''])

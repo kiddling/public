@@ -1,6 +1,6 @@
 /**
  * Composable for fetching student works from the CMS
- * 
+ *
  * Supports filtering by discipline, loop, grade, and searching.
  */
 
@@ -176,9 +176,9 @@ export function useStudentWorks(options: UseStudentWorksOptions = {}) {
       queryParams.populate = {
         assets: '*',
         beforeAfterMedia: {
-          populate: ['beforeMedia', 'afterMedia']
+          populate: ['beforeMedia', 'afterMedia'],
         },
-        relatedLesson: '*'
+        relatedLesson: '*',
       }
     } else if (Array.isArray(populate)) {
       queryParams.populate = populate
@@ -196,7 +196,7 @@ export function useStudentWorks(options: UseStudentWorksOptions = {}) {
  */
 export function useStudentWorksByDiscipline(
   discipline: StudentWorkDiscipline,
-  options: UseCmsDataOptions = {},
+  options: UseCmsDataOptions = {}
 ) {
   return useStudentWorks({
     discipline,
@@ -275,6 +275,6 @@ export function useStudentWorksGroupedByDiscipline(options: UseCmsDataOptions = 
     useStudentWorksByDiscipline(discipline, {
       ...options,
       pagination: { pageSize: 20 },
-    }),
+    })
   )
 }

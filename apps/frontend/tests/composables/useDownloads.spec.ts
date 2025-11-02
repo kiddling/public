@@ -1,5 +1,10 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
-import { useDownloads, useDownloadHistory, verifyChecksum, formatFileSize } from '~/composables/useDownloads'
+import {
+  useDownloads,
+  useDownloadHistory,
+  verifyChecksum,
+  formatFileSize,
+} from '~/composables/useDownloads'
 
 global.fetch = vi.fn()
 
@@ -11,7 +16,7 @@ describe('useDownloads', () => {
   describe('useDownloads composable', () => {
     it('should initialize with empty items', () => {
       const { items, loading, error } = useDownloads()
-      
+
       expect(items.value).toEqual([])
       expect(loading.value).toBe(false)
       expect(error.value).toBeNull()
@@ -108,7 +113,7 @@ describe('useDownloads', () => {
 
     it('should add items to history', () => {
       const { addToHistory, getHistory } = useDownloadHistory()
-      
+
       addToHistory({
         itemId: 1,
         title: 'Test Item',
@@ -124,7 +129,7 @@ describe('useDownloads', () => {
 
     it('should limit history to MAX_HISTORY_ITEMS', () => {
       const { addToHistory, getHistory } = useDownloadHistory()
-      
+
       for (let i = 0; i < 60; i++) {
         addToHistory({
           itemId: i,
@@ -138,21 +143,21 @@ describe('useDownloads', () => {
 
     it('should clear history', () => {
       const { addToHistory, clearHistory, getHistory } = useDownloadHistory()
-      
+
       addToHistory({
         itemId: 1,
         title: 'Test Item',
       })
 
       expect(getHistory()).toHaveLength(1)
-      
+
       clearHistory()
       expect(getHistory()).toEqual([])
     })
 
     it('should handle duplicate items by updating', () => {
       const { addToHistory, getHistory } = useDownloadHistory()
-      
+
       addToHistory({
         itemId: 1,
         title: 'Test Item',

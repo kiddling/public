@@ -51,7 +51,7 @@ describe('GlobalSearch', () => {
         page: 1,
         pageSize: 20,
       }
-      
+
       global.$fetch = vi.fn().mockResolvedValue(mockResponse)
 
       // Trigger multiple searches quickly
@@ -60,7 +60,7 @@ describe('GlobalSearch', () => {
       await store.search('test3')
 
       // Should only call once due to debouncing
-      await new Promise(resolve => setTimeout(resolve, 400))
+      await new Promise((resolve) => setTimeout(resolve, 400))
       expect(global.$fetch).toHaveBeenCalledTimes(1)
     })
 
@@ -74,11 +74,11 @@ describe('GlobalSearch', () => {
         page: 1,
         pageSize: 20,
       }
-      
+
       global.$fetch = vi.fn().mockResolvedValue(mockResponse)
 
       await store.search('design thinking')
-      await new Promise(resolve => setTimeout(resolve, 400))
+      await new Promise((resolve) => setTimeout(resolve, 400))
 
       expect(store.searchHistory.length).toBeGreaterThan(0)
       expect(store.searchHistory[0].query).toBe('design thinking')
@@ -343,7 +343,7 @@ describe('GlobalSearch', () => {
       global.$fetch = vi.fn().mockResolvedValue(mockResponse)
 
       await store.search('设计思维')
-      await new Promise(resolve => setTimeout(resolve, 400))
+      await new Promise((resolve) => setTimeout(resolve, 400))
 
       expect(global.$fetch).toHaveBeenCalled()
     })

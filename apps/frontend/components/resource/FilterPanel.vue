@@ -71,7 +71,7 @@ const hasActiveFilters = computed(() => {
 </script>
 
 <template>
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 space-y-6">
+  <div class="space-y-6 rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">
     <div class="flex items-center justify-between">
       <h2 class="text-xl font-bold text-gray-900 dark:text-white">筛选</h2>
       <button
@@ -86,7 +86,10 @@ const hasActiveFilters = computed(() => {
 
     <div class="space-y-4">
       <div>
-        <label for="search-input" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label
+          for="search-input"
+          class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+        >
           关键词搜索
         </label>
         <input
@@ -94,18 +97,21 @@ const hasActiveFilters = computed(() => {
           v-model="searchQuery"
           type="text"
           placeholder="搜索标题或描述..."
-          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+          class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
         />
       </div>
 
       <div>
-        <label for="category-select" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label
+          for="category-select"
+          class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+        >
           分类
         </label>
         <select
           id="category-select"
           v-model="selectedCategory"
-          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+          class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
         >
           <option :value="null">全部分类</option>
           <option v-for="category in categories" :key="category" :value="category">
@@ -115,20 +121,18 @@ const hasActiveFilters = computed(() => {
       </div>
 
       <div>
-        <span class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          专业
-        </span>
+        <span class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"> 专业 </span>
         <div class="space-y-2">
           <label
             v-for="discipline in disciplines"
             :key="discipline"
-            class="flex items-center space-x-2 cursor-pointer"
+            class="flex cursor-pointer items-center space-x-2"
           >
             <input
               type="checkbox"
               :checked="selectedDisciplines.includes(discipline)"
               @change="toggleDiscipline(discipline)"
-              class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
             />
             <span class="text-sm text-gray-700 dark:text-gray-300">{{ discipline }}</span>
           </label>
@@ -136,20 +140,20 @@ const hasActiveFilters = computed(() => {
       </div>
 
       <div>
-        <span class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <span class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
           媒体类型
         </span>
         <div class="space-y-2">
           <label
             v-for="mediaType in mediaTypes"
             :key="mediaType"
-            class="flex items-center space-x-2 cursor-pointer"
+            class="flex cursor-pointer items-center space-x-2"
           >
             <input
               type="checkbox"
               :checked="selectedMediaTypes.includes(mediaType)"
               @change="toggleMediaType(mediaType)"
-              class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
             />
             <span class="text-sm text-gray-700 dark:text-gray-300">{{ mediaType }}</span>
           </label>
@@ -157,11 +161,11 @@ const hasActiveFilters = computed(() => {
       </div>
 
       <div>
-        <label class="flex items-center space-x-2 cursor-pointer">
+        <label class="flex cursor-pointer items-center space-x-2">
           <input
             v-model="accessibleOnly"
             type="checkbox"
-            class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+            class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
           />
           <span class="text-sm text-gray-700 dark:text-gray-300">仅显示可访问的资源</span>
         </label>

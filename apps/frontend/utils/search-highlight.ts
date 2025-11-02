@@ -24,9 +24,12 @@ export function highlightSearchTerm(text: string, searchTerm: string): string {
 
   const escapedTerm = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
   const regex = new RegExp(`(${escapedTerm})`, 'gi')
-  
+
   const escapedText = escapeHtml(text)
-  return escapedText.replace(regex, '<mark class="bg-yellow-200 dark:bg-yellow-700 px-1 rounded">$1</mark>')
+  return escapedText.replace(
+    regex,
+    '<mark class="bg-yellow-200 dark:bg-yellow-700 px-1 rounded">$1</mark>'
+  )
 }
 
 /**
@@ -51,9 +54,13 @@ export function truncateText(text: string, maxLength: number): string {
 /**
  * Extract plain text excerpt from HTML with search term context
  */
-export function getSearchExcerpt(html: string, searchTerm: string, maxLength: number = 150): string {
+export function getSearchExcerpt(
+  html: string,
+  searchTerm: string,
+  maxLength: number = 150
+): string {
   const plainText = stripHtml(html)
-  
+
   if (!searchTerm || searchTerm.trim().length === 0) {
     return truncateText(plainText, maxLength)
   }
@@ -68,9 +75,9 @@ export function getSearchExcerpt(html: string, searchTerm: string, maxLength: nu
 
   const start = Math.max(0, index - Math.floor(maxLength / 2))
   const end = Math.min(plainText.length, start + maxLength)
-  
+
   let excerpt = plainText.slice(start, end)
-  
+
   if (start > 0) {
     excerpt = '...' + excerpt
   }

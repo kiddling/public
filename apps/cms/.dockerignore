@@ -1,13 +1,68 @@
+# Git and version control
 .git
+.gitignore
+.github
+
+# Build artifacts (will be built in Docker)
 .cache
 .tmp
-.strapi
 build
-node_modules
-.env
-.env.local
-*.log
 dist
 .output
+.strapi
+
+# Dependencies (will be installed in Docker)
+node_modules
+
+# Environment files (should be passed at runtime)
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing
 coverage
+.nyc_output
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+jest.config.js
+
+# Development files
+.vscode
+.idea
+*.swp
+*.swo
+*~
 .DS_Store
+Thumbs.db
+
+# Documentation (not needed in container)
+README.md
+*.md
+!README.production.md
+
+# Docker files (except docker-entrypoint.sh which is needed)
+docker-compose.yml
+Dockerfile
+.dockerignore
+
+# Database files (should be external)
+database/*.db
+database/*.sqlite
+*.db
+*.sqlite
+
+# Uploads (should be external storage)
+public/uploads/*
+!public/uploads/.gitkeep
+
+# TypeScript source maps (not needed in production)
+*.map
