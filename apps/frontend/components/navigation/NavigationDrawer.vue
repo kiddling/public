@@ -9,21 +9,22 @@
         ></div>
 
         <section
+          id="navigation-drawer"
           ref="panelRef"
           class="drawer-panel relative z-[61] flex h-full w-[min(90vw,22rem)] flex-col overflow-hidden border-r border-gray-200 bg-white/95 shadow-xl backdrop-blur-lg dark:border-gray-800 dark:bg-gray-900"
           role="dialog"
           aria-modal="true"
-          aria-label="Course navigation"
+          aria-label="课程导航"
           tabindex="-1"
           @keydown="handleKeydown"
         >
           <header class="flex items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-gray-800">
-            <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">Course Outline</p>
+            <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">课程大纲</p>
             <button
               ref="closeButtonRef"
               type="button"
               class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition hover:border-gray-300 hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-600 dark:hover:text-white dark:focus-visible:ring-offset-gray-900"
-              aria-label="Close course navigation"
+              aria-label="关闭课程导航"
               @click="close"
             >
               <Icon name="i-heroicons-x-mark-20-solid" class="h-5 w-5" aria-hidden="true" />

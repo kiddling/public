@@ -124,6 +124,9 @@ export default defineNuxtConfig({
       charset: 'utf-8',
       viewport: 'width=device-width, initial-scale=1',
       title: 'Nuxt + Strapi App',
+      htmlAttrs: {
+        lang: 'zh-CN',
+      },
       meta: [
         { name: 'description', content: 'A modern web application built with Nuxt 3 and Strapi' },
       ],
