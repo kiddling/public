@@ -5,6 +5,8 @@
 > **📘 Production Deployment:** For zero-downtime production deployments using blue/green strategy, see [DEPLOYMENT_STRATEGY.md](./DEPLOYMENT_STRATEGY.md)
 > 
 > **✅ Production Readiness:** For comprehensive go-live checklist covering security, performance, backups, and compliance, see [PRODUCTION_CHECKLIST.md](./PRODUCTION_CHECKLIST.md)
+> 
+> **🇨🇳 China Compliance:** For ICP filing, data residency, privacy protection, and regulatory requirements for operating in China, see [COMPLIANCE_CHECKLIST_CN.md](./COMPLIANCE_CHECKLIST_CN.md)
 
 ## 📋 目录
 
@@ -578,7 +580,13 @@ docker-compose up -d redis
 ### Production Deployment
 - **[DEPLOYMENT_STRATEGY.md](./DEPLOYMENT_STRATEGY.md)** - Blue/green deployment strategy with zero-downtime
 - **[DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md)** - Pre/post-deployment checklist
+- **[PRODUCTION_CHECKLIST.md](./PRODUCTION_CHECKLIST.md)** - Production go-live readiness checklist
 - **[scripts/deploy/README.md](../scripts/deploy/README.md)** - Deployment scripts documentation
+
+### Compliance and Regulations
+- **[COMPLIANCE_CHECKLIST_CN.md](./COMPLIANCE_CHECKLIST_CN.md)** - China compliance requirements (ICP filing, data residency, PIPL)
+- **[compliance/PRIVACY_POLICY_TEMPLATE.md](./compliance/PRIVACY_POLICY_TEMPLATE.md)** - Privacy policy template
+- **[compliance/COOKIE_CONSENT_TEMPLATE.md](./compliance/COOKIE_CONSENT_TEMPLATE.md)** - Cookie consent implementation guide
 
 ### Testing and Monitoring
 - **[tests/smoke/README.md](../tests/smoke/README.md)** - Smoke tests for deployment verification

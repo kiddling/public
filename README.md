@@ -492,6 +492,11 @@ Visit `/downloads` to:
 - **[DEPLOYMENT_QUICK_REFERENCE.md](./docs/DEPLOYMENT_QUICK_REFERENCE.md)** - Quick command reference
 - **[DEPLOYMENT.md](./docs/DEPLOYMENT.md)** - General deployment guide (Chinese)
 
+### Compliance & Regulations (合规与监管)
+- **[COMPLIANCE_CHECKLIST_CN.md](./docs/COMPLIANCE_CHECKLIST_CN.md)** - China compliance checklist (ICP filing, data residency, PIPL, MLPS)
+- **[PRIVACY_POLICY_TEMPLATE.md](./docs/compliance/PRIVACY_POLICY_TEMPLATE.md)** - Privacy policy template (Chinese)
+- **[COOKIE_CONSENT_TEMPLATE.md](./docs/compliance/COOKIE_CONSENT_TEMPLATE.md)** - Cookie consent & policy template with implementation guide
+
 ### Scripts
 - **[scripts/deploy/README.md](./scripts/deploy/README.md)** - Deployment scripts documentation
 - **[tests/smoke/README.md](./tests/smoke/README.md)** - Smoke tests guide
