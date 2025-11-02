@@ -215,27 +215,146 @@ pnpm docker:down
 
 ## 📦 多阶段构建详解
 
-### Frontend Dockerfile
+### Frontend Dockerfile (Nuxt 3)
+
+Nuxt 3 前端使用优化的三阶段构建策略，支持中国镜像源加速。
+
+Nuxt 3 frontend uses an optimized three-stage build strategy with China mirror support.
+
+#### 阶段 1: Dependencies（依赖阶段）
 
 ```dockerfile
-# 阶段 1: 依赖安装
-FROM node:22-alpine AS deps
-# 只安装生产依赖
-
-# 阶段 2: 构建
-FROM node:22-alpine AS builder
-# 安装所有依赖并构建应用
-
-# 阶段 3: 运行
-FROM node:22-alpine AS runner
-# 只复制必要的文件，使用非 root 用户
+FROM node:20-alpine AS deps
+# 安装 pnpm 并配置镜像源
+# Install pnpm and configure registry mirrors
+# 使用 pnpm fetch 实现确定性安装
+# Use pnpm fetch for deterministic installs
+# 安装所有依赖（包括构建所需的开发依赖）
+# Install all dependencies (including dev dependencies for build)
 ```
 
-**优势:**
+**特点 | Features:**
+- 使用 Node 20 Alpine 基础镜像（轻量级）
+- 支持通过构建参数配置 npm/pnpm/Alpine 镜像源
+- 使用 pnpm fetch + install 确保确定性安装
+- 复制并使用 .npmrc 配置
 
-- 大幅减小最终镜像大小
-- 提高安全性（非 root 用户）
-- 构建缓存优化
+#### 阶段 2: Builder（构建阶段）
+
+```dockerfile
+FROM node:20-alpine AS builder
+# 安装 pnpm
+# Install pnpm
+# 从依赖阶段复制 node_modules
+# Copy node_modules from deps stage
+# 复制源代码并构建 Nuxt 应用
+# Copy source code and build Nuxt application
+```
+
+**特点 | Features:**
+- 重用依赖阶段的 node_modules（优化构建缓存）
+- 执行 pnpm build 生成 .output 目录
+- 支持镜像源配置
+
+#### 阶段 3: Runtime（运行阶段）
+
+```dockerfile
+FROM node:20-alpine AS runtime
+# 安装运行时依赖：tini、curl、tzdata
+# Install runtime dependencies: tini, curl, tzdata
+# 设置时区为 Asia/Shanghai
+# Set timezone to Asia/Shanghai
+# 创建非 root 用户（nuxtjs:nodejs）
+# Create non-root user (nuxtjs:nodejs)
+# 仅复制 .output 构建产物
+# Copy only .output build artifact
+# 使用 tini 作为 init 系统
+# Use tini as init system
+```
+
+**特点 | Features:**
+- 最小化镜像大小（目标 ≤ 200MB）
+- 安装 tini 用于正确的进程信号处理
+- 安装 curl 用于健康检查
+- 设置中国时区（Asia/Shanghai）
+- 使用非 root 用户运行（提高安全性）
+- 仅包含运行时必需文件
+
+**Frontend 镜像优化特性 | Frontend Image Optimization Features:**
+
+- ✅ **轻量级基础镜像** | Lightweight base: Node 20 Alpine
+- ✅ **多阶段构建** | Multi-stage build: deps → builder → runtime
+- ✅ **确定性安装** | Deterministic installs: pnpm fetch + install
+- ✅ **时区支持** | Timezone support: Asia/Shanghai
+- ✅ **中国镜像源支持** | China mirror support: Build args for NPM/pnpm/Alpine
+- ✅ **进程管理** | Process management: tini init system
+- ✅ **健康检查** | Health check: curl-based check at /api/health
+- ✅ **安全配置** | Security: Non-root nuxtjs user
+- ✅ **最小化体积** | Minimized size: Only .output directory in runtime
+- ✅ **目标大小** | Target size: ≤ 200MB
+
+**构建 Frontend 镜像 | Build Frontend Image:**
+
+```bash
+# 标准构建 | Standard build
+docker build -f apps/frontend/Dockerfile -t frontend:latest .
+
+# 使用中国镜像源构建（推荐用于中国部署）| Build with China mirrors (recommended for China deployment)
+docker build \
+  --build-arg NPM_REGISTRY=https://registry.npmmirror.com \
+  --build-arg PNPM_REGISTRY=https://registry.npmmirror.com \
+  --build-arg ALPINE_MIRROR=mirrors.ustc.edu.cn \
+  -f apps/frontend/Dockerfile \
+  -t frontend:latest .
+
+# 验证镜像大小 | Check image size
+docker images frontend:latest
+
+# 验证镜像大小详情 | Check detailed image size
+docker image inspect frontend:latest --format='{{.Size}}' | numfmt --to=iec-i
+
+# 预期大小 | Expected size: ≤ 200MB
+```
+
+**镜像大小对比 | Image Size Comparison:**
+
+| 构建方式 Build Method | 镜像大小 Image Size | 备注 Notes |
+|---------------------|------------------|-----------|
+| 标准 Node 镜像 Standard Node | ~900MB | 未优化 Unoptimized |
+| Alpine + 单阶段 Alpine + Single-stage | ~400MB | 基础优化 Basic optimization |
+| **Alpine + 三阶段 + 优化 Alpine + Three-stage + Optimized** | **≤200MB** | **推荐 Recommended** |
+
+**构建参数说明 | Build Arguments Explanation:**
+
+| 参数 Argument | 默认值 Default | 中国镜像源 China Mirror | 说明 Description |
+|--------------|--------------|---------------------|------------------|
+| NPM_REGISTRY | https://registry.npmjs.org/ | https://registry.npmmirror.com | npm 包镜像源 npm package registry |
+| PNPM_REGISTRY | https://registry.npmjs.org/ | https://registry.npmmirror.com | pnpm 包镜像源 pnpm package registry |
+| ALPINE_MIRROR | (empty) | mirrors.ustc.edu.cn or mirrors.aliyun.com | Alpine 软件包镜像源 Alpine package mirror |
+
+**使用 Docker Compose 构建（支持中国镜像源）| Build with Docker Compose (China Mirror Support):**
+
+```bash
+# 在 .env.docker 中配置 | Configure in .env.docker:
+NPM_REGISTRY=https://registry.npmmirror.com
+PNPM_REGISTRY=https://registry.npmmirror.com
+ALPINE_MIRROR=mirrors.ustc.edu.cn
+
+# 使用 docker-compose 构建 | Build with docker-compose:
+docker-compose build frontend
+
+# 或使用 China 覆盖配置 | Or use China overlay:
+docker-compose -f docker-compose.yml -f docker-compose.china.yml build frontend
+```
+
+**优势 | Advantages:**
+
+- 大幅减小最终镜像大小（≤ 200MB）
+- 提高安全性（非 root 用户 + tini init）
+- 构建缓存优化（多阶段分离）
+- 确定性安装（pnpm fetch）
+- 中国网络优化（镜像源支持）
+- 健康检查集成（curl）
 
 ### CMS Dockerfile
 
@@ -474,26 +593,274 @@ LOG_DIR=/opt/app/logs
 - [ ] 已准备数据持久化目录
 - [ ] Prepared data persistence directories
 
+## 🎯 Nuxt 前端环境变量配置详解
+
+### 必需的环境变量 | Required Environment Variables
+
+#### 基础配置 | Basic Configuration
+
+```bash
+# Node 环境 | Node Environment
+# 必须设置为 production 以启用生产优化
+# Must be set to production for production optimizations
+NODE_ENV=production
+
+# 服务器监听配置 | Server Listen Configuration
+# 0.0.0.0 允许容器外部访问
+# 0.0.0.0 allows external access to container
+HOST=0.0.0.0
+PORT=3000
+
+# 时区配置 | Timezone Configuration
+# 设置为中国时区
+# Set to China timezone
+TZ=Asia/Shanghai
+```
+
+#### Strapi API 连接配置 | Strapi API Connection Configuration
+
+```bash
+# 内部服务间通信 URL（使用 Docker 服务名）
+# Internal service-to-service URL (using Docker service name)
+# Nuxt 服务器端使用此 URL 与 Strapi 通信
+# Used by Nuxt server-side to communicate with Strapi
+NUXT_STRAPI_URL=http://cms:1337
+NUXT_PUBLIC_API_BASE_URL=http://cms:1337
+
+# 公开访问 URL（浏览器使用）
+# Public-facing URL (used by browser)
+# 浏览器端使用此 URL 访问 Strapi API
+# Used by browser to access Strapi API
+NUXT_PUBLIC_STRAPI_URL=http://localhost:1337
+
+# 或生产环境域名 | Or production domain:
+# NUXT_PUBLIC_STRAPI_URL=https://api.yourdomain.com
+
+# Strapi API 访问令牌 | Strapi API Access Token
+# 在 Strapi 管理面板生成: 设置 > API 令牌
+# Generate in Strapi admin: Settings > API Tokens
+# ⚠️ 生产环境必须更改！| Must change in production!
+NUXT_STRAPI_API_TOKEN=your_strapi_api_token
+```
+
+**重要说明 | Important Notes:**
+
+- **NUXT_STRAPI_URL**: 仅服务器端使用，Docker 网络内部通信
+- **NUXT_STRAPI_URL**: Server-side only, Docker internal network communication
+- **NUXT_PUBLIC_STRAPI_URL**: 浏览器端使用，必须是公开可访问的 URL
+- **NUXT_PUBLIC_STRAPI_URL**: Browser-side, must be publicly accessible URL
+
+### 可选的环境变量 | Optional Environment Variables
+
+#### 安全配置 | Security Configuration
+
+```bash
+# HSTS (HTTP Strict Transport Security)
+# 启用 HTTPS 严格传输安全
+# Enable HTTPS Strict Transport Security
+SECURITY_HSTS_ENABLED=true
+SECURITY_HSTS_MAX_AGE=31536000  # 1 year in seconds
+
+# CSP (Content Security Policy)
+# 内容安全策略
+# Content Security Policy
+SECURITY_CSP_ENABLED=true
+
+# CORS 配置 | CORS Configuration
+# 允许的跨域来源
+# Allowed cross-origin sources
+SECURITY_CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:1337
+
+# Cookie 安全 | Cookie Security
+# 生产环境应设置为 true（需要 HTTPS）
+# Should be true in production (requires HTTPS)
+SECURITY_SECURE_COOKIES=false
+SECURITY_SAME_SITE=lax
+```
+
+#### 合规配置 | Compliance Configuration
+
+```bash
+# ICP 备案号 | ICP Filing Number
+# 中国大陆部署必需
+# Required for China mainland deployment
+ICP_FILING_NUMBER=京ICP备12345678号-1
+PUBLIC_SECURITY_FILING_NUMBER=京公网安备11010502012345号
+
+# 数据驻留 | Data Residency
+# 数据存储地区
+# Data storage region
+DATA_RESIDENCY=CN
+
+# Cookie 同意 | Cookie Consent
+# 启用 Cookie 同意横幅
+# Enable cookie consent banner
+COOKIE_CONSENT_ENABLED=true
+```
+
+#### CDN 配置 | CDN Configuration
+
+```bash
+# CDN URL（用于静态资源加速）
+# CDN URL (for static asset acceleration)
+# 中国境内部署推荐使用国内 CDN
+# Recommended to use domestic CDN for China deployment
+NUXT_PUBLIC_CDN_URL=https://cdn.yourdomain.com
+
+# 或使用阿里云 OSS | Or use Aliyun OSS:
+# NUXT_PUBLIC_CDN_URL=https://your-bucket.oss-cn-beijing.aliyuncs.com
+```
+
+#### 日志配置 | Logging Configuration
+
+```bash
+# 日志级别 | Log Level
+# 可选: fatal, error, warn, info, debug, trace
+# Options: fatal, error, warn, info, debug, trace
+LOG_LEVEL=info
+
+# 启用详细日志 | Enable Detailed Logging
+# 仅在调试时启用
+# Enable only for debugging
+ENABLE_DETAILED_LOGGING=false
+```
+
+### 环境变量优先级 | Environment Variable Priority
+
+Nuxt 环境变量按以下优先级加载：
+
+Environment variables are loaded in the following priority order:
+
+1. **运行时环境变量** | Runtime Environment Variables
+   - Docker Compose 中设置的环境变量
+   - Environment variables set in Docker Compose
+   
+2. **.env.docker 文件** | .env.docker File
+   - Docker Compose 的 env_file 配置
+   - Docker Compose env_file configuration
+   
+3. **构建时环境变量** | Build-time Environment Variables
+   - Dockerfile 中的 ENV 指令
+   - ENV directives in Dockerfile
+
+### Nuxt 环境变量命名规范 | Nuxt Environment Variable Naming Convention
+
+- **NUXT_*** - Nuxt 框架使用的变量
+- **NUXT_*** - Variables used by Nuxt framework
+- **NUXT_PUBLIC_*** - 暴露给客户端的公开变量
+- **NUXT_PUBLIC_*** - Public variables exposed to client-side
+- **其他变量** - 仅在服务器端可用
+- **Other variables** - Server-side only
+
+**示例 | Examples:**
+
+```bash
+# 仅服务器端 | Server-side only
+NUXT_STRAPI_URL=http://cms:1337
+DATABASE_PASSWORD=secret
+
+# 客户端和服务器端都可访问 | Accessible on both client and server
+NUXT_PUBLIC_API_BASE_URL=http://localhost:1337
+NUXT_PUBLIC_STRAPI_URL=http://localhost:1337
+```
+
+### Docker 构建参数 | Docker Build Arguments
+
+Frontend Dockerfile 支持以下构建参数用于中国网络优化：
+
+Frontend Dockerfile supports the following build arguments for China network optimization:
+
+```bash
+# npm 镜像源 | npm Registry Mirror
+NPM_REGISTRY=https://registry.npmjs.org/
+# 中国镜像 | China mirror: https://registry.npmmirror.com
+
+# pnpm 镜像源 | pnpm Registry Mirror  
+PNPM_REGISTRY=https://registry.npmjs.org/
+# 中国镜像 | China mirror: https://registry.npmmirror.com
+
+# Alpine 软件包镜像源 | Alpine Package Mirror
+ALPINE_MIRROR=
+# 中国镜像 | China mirror: mirrors.ustc.edu.cn or mirrors.aliyun.com
+```
+
+**使用示例 | Usage Example:**
+
+```bash
+# 使用中国镜像源构建 | Build with China mirrors
+docker build \
+  --build-arg NPM_REGISTRY=https://registry.npmmirror.com \
+  --build-arg PNPM_REGISTRY=https://registry.npmmirror.com \
+  --build-arg ALPINE_MIRROR=mirrors.ustc.edu.cn \
+  -f apps/frontend/Dockerfile \
+  -t frontend:latest .
+```
+
+### 环境变量验证清单（Nuxt）| Environment Variables Checklist (Nuxt)
+
+部署 Nuxt 前端前，请确保以下配置已完成：
+
+Before deploying Nuxt frontend, ensure the following configurations are complete:
+
+- [ ] NODE_ENV 设置为 production
+- [ ] NODE_ENV set to production
+- [ ] HOST 和 PORT 正确配置
+- [ ] HOST and PORT correctly configured
+- [ ] NUXT_STRAPI_URL 指向内部 Strapi 服务
+- [ ] NUXT_STRAPI_URL points to internal Strapi service
+- [ ] NUXT_PUBLIC_STRAPI_URL 指向公开可访问的 Strapi URL
+- [ ] NUXT_PUBLIC_STRAPI_URL points to publicly accessible Strapi URL
+- [ ] NUXT_STRAPI_API_TOKEN 已生成并配置
+- [ ] NUXT_STRAPI_API_TOKEN generated and configured
+- [ ] 时区设置为 Asia/Shanghai
+- [ ] Timezone set to Asia/Shanghai
+- [ ] （可选）ICP 备案号已配置（中国部署）
+- [ ] (Optional) ICP filing number configured (China deployment)
+- [ ] （可选）CDN URL 已配置
+- [ ] (Optional) CDN URL configured
+- [ ] 镜像构建参数已根据部署区域配置
+- [ ] Build arguments configured based on deployment region
+
 ## 🔍 健康检查
 
 ### Frontend 健康检查
 
+Frontend 容器使用 curl 进行健康检查，确保应用正常运行。
+
+Frontend container uses curl for health checks to ensure the application is running properly.
+
+**Docker Compose 配置 | Docker Compose Configuration:**
+
 ```yaml
 healthcheck:
-  test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:3000/api/health']
-  interval: 30s
-  timeout: 10s
-  retries: 3
-  start_period: 40s
+  test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+  interval: 30s        # 检查间隔 | Check interval
+  timeout: 10s         # 超时时间 | Timeout
+  retries: 3           # 重试次数 | Retries
+  start_period: 40s    # 启动宽限期 | Start grace period
 ```
 
-测试健康端点：
+**Dockerfile 配置 | Dockerfile Configuration:**
+
+```dockerfile
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD curl -f http://localhost:3000/api/health || exit 1
+```
+
+**测试健康端点 | Test Health Endpoint:**
 
 ```bash
+# 从容器外部测试 | Test from outside container
 curl http://localhost:3000/api/health
+
+# 从容器内部测试 | Test from inside container
+docker exec nuxt-strapi-frontend curl -f http://localhost:3000/api/health
+
+# 查看健康状态 | Check health status
+docker inspect --format='{{json .State.Health}}' nuxt-strapi-frontend | jq
 ```
 
-响应：
+**预期响应 | Expected Response:**
 
 ```json
 {
@@ -502,6 +869,34 @@ curl http://localhost:3000/api/health
   "uptime": 12345.67,
   "environment": "production"
 }
+```
+
+**健康检查说明 | Health Check Explanation:**
+
+- **interval**: 每 30 秒检查一次 | Check every 30 seconds
+- **timeout**: 单次检查超时 10 秒 | Single check timeout 10 seconds  
+- **retries**: 连续失败 3 次后标记为不健康 | Mark unhealthy after 3 consecutive failures
+- **start_period**: 启动后 40 秒内不计入失败次数 | Don't count failures in first 40 seconds after start
+
+**健康检查状态 | Health Check Status:**
+
+| 状态 Status | 说明 Description |
+|------------|------------------|
+| starting | 容器启动中，处于宽限期 Container starting, in grace period |
+| healthy | 健康检查通过 Health check passed |
+| unhealthy | 健康检查失败（连续 3 次）Health check failed (3 consecutive times) |
+
+**故障排查 | Troubleshooting:**
+
+```bash
+# 查看健康检查日志 | View health check logs
+docker inspect nuxt-strapi-frontend | jq '.[0].State.Health'
+
+# 查看容器日志 | View container logs
+docker logs nuxt-strapi-frontend
+
+# 手动运行健康检查命令 | Manually run health check command
+docker exec nuxt-strapi-frontend curl -f http://localhost:3000/api/health
 ```
 
 ### CMS 健康检查
@@ -1492,12 +1887,330 @@ PUBLIC_SECURITY_FILING_NUMBER=京公网安备XXXXXXXXXXXXX号
    - HTML 文件缓存 5 分钟 | HTML files cache 5 minutes
    - API 不缓存 | API no cache
 
+## ✅ 测试与验证 | Testing & Validation
+
+### Frontend 镜像构建测试 | Frontend Image Build Testing
+
+#### 1. 构建镜像 | Build Image
+
+```bash
+# 标准构建（国际网络）| Standard build (international network)
+docker build -f apps/frontend/Dockerfile -t frontend:test .
+
+# 或使用 pnpm 脚本 | Or use pnpm script
+pnpm docker:build:frontend
+
+# 中国网络构建 | Build for China network
+docker build \
+  --build-arg NPM_REGISTRY=https://registry.npmmirror.com \
+  --build-arg PNPM_REGISTRY=https://registry.npmmirror.com \
+  --build-arg ALPINE_MIRROR=mirrors.ustc.edu.cn \
+  -f apps/frontend/Dockerfile \
+  -t frontend:test .
+
+# 或使用 pnpm 脚本 | Or use pnpm script
+pnpm docker:build:frontend:china
+```
+
+#### 2. 验证镜像大小 | Verify Image Size
+
+**要求 | Requirements:**
+- 镜像大小必须 ≤ 200MB
+- Image size must be ≤ 200MB
+
+```bash
+# 查看镜像大小 | Check image size
+docker images frontend:test
+
+# 详细大小信息（字节）| Detailed size in bytes
+docker image inspect frontend:test --format='{{.Size}}'
+
+# 人类可读格式 | Human-readable format
+docker image inspect frontend:test --format='{{.Size}}' | numfmt --to=iec-i
+
+# 查看镜像层信息 | View image layers
+docker history frontend:test
+
+# 分析镜像内容 | Analyze image contents
+docker run --rm -it frontend:test sh -c "du -sh /app/* 2>/dev/null || echo 'Size check'"
+```
+
+**预期输出示例 | Expected Output Example:**
+
+```bash
+REPOSITORY    TAG    IMAGE ID       CREATED         SIZE
+frontend      test   abc123def456   2 minutes ago   185MB  ✅
+```
+
+#### 3. 验证镜像安全性 | Verify Image Security
+
+```bash
+# 检查是否以非 root 用户运行 | Check non-root user
+docker run --rm frontend:test id
+# 预期输出 | Expected: uid=1001(nuxtjs) gid=1001(nodejs)
+
+# 检查已安装的包 | Check installed packages
+docker run --rm frontend:test apk list | grep -E "tini|curl"
+# 预期输出 | Expected: tini and curl packages
+
+# 检查时区设置 | Check timezone
+docker run --rm frontend:test date
+# 预期输出 | Expected: CST/China time
+
+# 验证 ENTRYPOINT | Verify ENTRYPOINT
+docker image inspect frontend:test --format='{{.Config.Entrypoint}}'
+# 预期输出 | Expected: [/sbin/tini --]
+```
+
+#### 4. 测试容器运行 | Test Container Runtime
+
+```bash
+# 启动测试容器 | Start test container
+docker run -d --name frontend-test \
+  -p 3001:3000 \
+  -e NODE_ENV=production \
+  -e NUXT_PUBLIC_STRAPI_URL=http://localhost:1337 \
+  frontend:test
+
+# 等待容器启动 | Wait for container to start
+sleep 10
+
+# 检查容器状态 | Check container status
+docker ps -f name=frontend-test
+
+# 查看容器日志 | View container logs
+docker logs frontend-test
+
+# 测试健康检查端点 | Test health check endpoint
+curl http://localhost:3001/api/health
+
+# 预期响应 | Expected response:
+# {
+#   "status": "healthy",
+#   "timestamp": "2024-01-01T00:00:00.000Z",
+#   "uptime": 123.45,
+#   ...
+# }
+
+# 检查健康状态 | Check health status
+docker inspect --format='{{.State.Health.Status}}' frontend-test
+# 预期输出 | Expected: healthy
+
+# 停止并删除测试容器 | Stop and remove test container
+docker stop frontend-test
+docker rm frontend-test
+```
+
+#### 5. 性能测试 | Performance Testing
+
+```bash
+# 测试响应时间 | Test response time
+time curl -s http://localhost:3001/api/health > /dev/null
+
+# 并发测试（需要 ab 工具）| Concurrent testing (requires ab tool)
+ab -n 100 -c 10 http://localhost:3001/api/health
+
+# 内存使用监控 | Memory usage monitoring
+docker stats frontend-test --no-stream
+
+# 预期内存使用 | Expected memory usage: < 256MB
+```
+
+### 完整部署测试 | Full Deployment Testing
+
+#### 1. 使用 Docker Compose 测试 | Test with Docker Compose
+
+```bash
+# 构建所有服务 | Build all services
+docker-compose build
+
+# 启动服务 | Start services
+docker-compose up -d
+
+# 等待所有服务健康 | Wait for all services to be healthy
+timeout 180 bash -c 'until docker-compose ps | grep -q "healthy"; do sleep 5; done'
+
+# 检查所有服务状态 | Check all service status
+docker-compose ps
+
+# 预期输出 | Expected output:
+# All services should show "healthy" status
+```
+
+#### 2. 端到端健康检查 | End-to-End Health Check
+
+```bash
+# 测试 Frontend 健康检查 | Test Frontend health check
+curl http://localhost:3000/api/health
+echo ""
+
+# 测试 CMS 健康检查 | Test CMS health check
+curl http://localhost:1337/_health
+echo ""
+
+# 测试 Frontend 页面加载 | Test Frontend page load
+curl -I http://localhost:3000/
+
+# 测试 CMS API | Test CMS API
+curl http://localhost:1337/api
+```
+
+#### 3. 验证 China 镜像构建 | Verify China Mirror Build
+
+```bash
+# 使用 China 配置构建 | Build with China configuration
+docker-compose -f docker-compose.yml -f docker-compose.china.yml build frontend
+
+# 检查构建时间（应该更快）| Check build time (should be faster)
+time docker-compose -f docker-compose.yml -f docker-compose.china.yml build --no-cache frontend
+
+# 验证镜像大小 | Verify image size
+docker images | grep frontend
+```
+
+### 验证清单 | Verification Checklist
+
+在部署到生产环境前，请确认以下所有项 | Before deploying to production, confirm all items:
+
+- [ ] **镜像大小** | Image Size
+  - [ ] Frontend 镜像 ≤ 200MB
+  - [ ] Frontend image ≤ 200MB
+  
+- [ ] **安全性** | Security
+  - [ ] 以非 root 用户运行 (nuxtjs:nodejs)
+  - [ ] Running as non-root user (nuxtjs:nodejs)
+  - [ ] tini 已安装并配置为 ENTRYPOINT
+  - [ ] tini installed and configured as ENTRYPOINT
+  - [ ] 不包含敏感文件（.env, secrets）
+  - [ ] No sensitive files included (.env, secrets)
+  
+- [ ] **运行时** | Runtime
+  - [ ] curl 已安装用于健康检查
+  - [ ] curl installed for health checks
+  - [ ] 时区设置为 Asia/Shanghai
+  - [ ] Timezone set to Asia/Shanghai
+  - [ ] 仅包含 .output 目录
+  - [ ] Only .output directory included
+  
+- [ ] **健康检查** | Health Check
+  - [ ] /api/health 端点返回 HTTP 200
+  - [ ] /api/health endpoint returns HTTP 200
+  - [ ] 健康检查在 40 秒内变为 healthy
+  - [ ] Health check becomes healthy within 40 seconds
+  - [ ] 容器能够重启并恢复健康
+  - [ ] Container can restart and recover health
+  
+- [ ] **中国镜像源** | China Mirrors
+  - [ ] 支持 NPM_REGISTRY 构建参数
+  - [ ] Supports NPM_REGISTRY build arg
+  - [ ] 支持 PNPM_REGISTRY 构建参数
+  - [ ] Supports PNPM_REGISTRY build arg
+  - [ ] 支持 ALPINE_MIRROR 构建参数
+  - [ ] Supports ALPINE_MIRROR build arg
+  - [ ] .npmrc 正确配置
+  - [ ] .npmrc correctly configured
+  
+- [ ] **性能** | Performance
+  - [ ] 内存使用 < 256MB（正常负载）
+  - [ ] Memory usage < 256MB (normal load)
+  - [ ] 启动时间 < 40 秒
+  - [ ] Startup time < 40 seconds
+  - [ ] 健康检查响应时间 < 100ms
+  - [ ] Health check response time < 100ms
+
+### 自动化测试脚本 | Automated Testing Script
+
+创建测试脚本 `scripts/test-docker-frontend.sh`:
+
+Create test script `scripts/test-docker-frontend.sh`:
+
+```bash
+#!/bin/bash
+# Frontend Docker 镜像测试脚本
+# Frontend Docker image test script
+
+set -e
+
+echo "🧪 Testing Frontend Docker Image..."
+echo "=================================="
+
+# 1. 构建镜像 | Build image
+echo "📦 Building image..."
+docker build -f apps/frontend/Dockerfile -t frontend:test .
+
+# 2. 检查镜像大小 | Check image size
+echo "📏 Checking image size..."
+SIZE=$(docker image inspect frontend:test --format='{{.Size}}')
+SIZE_MB=$((SIZE / 1024 / 1024))
+echo "Image size: ${SIZE_MB}MB"
+
+if [ "$SIZE_MB" -gt 200 ]; then
+  echo "❌ FAIL: Image size ${SIZE_MB}MB exceeds 200MB limit"
+  exit 1
+fi
+echo "✅ PASS: Image size is within limit"
+
+# 3. 验证用户 | Verify user
+echo "👤 Checking non-root user..."
+USER_INFO=$(docker run --rm frontend:test id)
+if [[ "$USER_INFO" != *"uid=1001(nuxtjs)"* ]]; then
+  echo "❌ FAIL: Not running as nuxtjs user"
+  exit 1
+fi
+echo "✅ PASS: Running as non-root user"
+
+# 4. 验证依赖 | Verify dependencies
+echo "📦 Checking dependencies..."
+docker run --rm frontend:test apk list | grep -q tini && echo "✅ tini installed" || (echo "❌ tini missing" && exit 1)
+docker run --rm frontend:test apk list | grep -q curl && echo "✅ curl installed" || (echo "❌ curl missing" && exit 1)
+
+# 5. 启动测试容器 | Start test container
+echo "🚀 Starting test container..."
+docker run -d --name frontend-test -p 3001:3000 -e NODE_ENV=production frontend:test
+sleep 15
+
+# 6. 健康检查 | Health check
+echo "🏥 Testing health endpoint..."
+HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3001/api/health)
+if [ "$HTTP_CODE" != "200" ]; then
+  echo "❌ FAIL: Health check returned $HTTP_CODE"
+  docker logs frontend-test
+  docker stop frontend-test && docker rm frontend-test
+  exit 1
+fi
+echo "✅ PASS: Health check returned 200"
+
+# 7. 清理 | Cleanup
+echo "🧹 Cleaning up..."
+docker stop frontend-test
+docker rm frontend-test
+
+echo ""
+echo "=================================="
+echo "✅ All tests passed!"
+echo "Image: frontend:test"
+echo "Size: ${SIZE_MB}MB"
+echo "Ready for production deployment"
+```
+
+**使用方法 | Usage:**
+
+```bash
+# 赋予执行权限 | Make executable
+chmod +x scripts/test-docker-frontend.sh
+
+# 运行测试 | Run tests
+./scripts/test-docker-frontend.sh
+```
+
 ## 🔗 相关资源
 
 - [Docker 官方文档](https://docs.docker.com/)
 - [Docker Compose 文档](https://docs.docker.com/compose/)
 - [Multi-stage Builds](https://docs.docker.com/build/building/multi-stage/)
 - [Health Checks](https://docs.docker.com/engine/reference/builder/#healthcheck)
+- [Node.js Docker Best Practices](https://github.com/nodejs/docker-node/blob/main/docs/BestPractices.md)
+- [Nuxt Deployment](https://nuxt.com/docs/getting-started/deployment)
 
 ---
 
