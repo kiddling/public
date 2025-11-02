@@ -42,7 +42,7 @@ describe('useKnowledgeCards composables', () => {
         expect.objectContaining({
           immediate: true,
           server: true,
-        }),
+        })
       )
     })
 
@@ -61,7 +61,7 @@ describe('useKnowledgeCards composables', () => {
         expect.objectContaining({
           immediate: false,
           lazy: true,
-        }),
+        })
       )
     })
 
@@ -142,7 +142,7 @@ describe('useKnowledgeCards composables', () => {
       expect(useAsyncData).toHaveBeenCalledWith(
         'knowledge-card-design-thinking-basics',
         expect.any(Function),
-        expect.any(Object),
+        expect.any(Object)
       )
     })
 
@@ -151,11 +151,7 @@ describe('useKnowledgeCards composables', () => {
 
       useKnowledgeCard('design-thinking-basics', { key: 'my-card' })
 
-      expect(useAsyncData).toHaveBeenCalledWith(
-        'my-card',
-        expect.any(Function),
-        expect.any(Object),
-      )
+      expect(useAsyncData).toHaveBeenCalledWith('my-card', expect.any(Function), expect.any(Object))
     })
   })
 
@@ -168,7 +164,7 @@ describe('useKnowledgeCards composables', () => {
       expect(useAsyncData).toHaveBeenCalledWith(
         'knowledge-cards-type-AI Prompt',
         expect.any(Function),
-        expect.any(Object),
+        expect.any(Object)
       )
     })
 
@@ -180,7 +176,7 @@ describe('useKnowledgeCards composables', () => {
       expect(useAsyncData).toHaveBeenCalledWith(
         'knowledge-cards-type-Extended Thinking',
         expect.any(Function),
-        expect.any(Object),
+        expect.any(Object)
       )
     })
   })
@@ -194,7 +190,7 @@ describe('useKnowledgeCards composables', () => {
       expect(useAsyncData).toHaveBeenCalledWith(
         'knowledge-cards-search-design thinking',
         expect.any(Function),
-        expect.any(Object),
+        expect.any(Object)
       )
     })
 
@@ -208,7 +204,7 @@ describe('useKnowledgeCards composables', () => {
         expect.any(Function),
         expect.objectContaining({
           immediate: false,
-        }),
+        })
       )
     })
 
@@ -222,7 +218,7 @@ describe('useKnowledgeCards composables', () => {
         expect.any(Function),
         expect.objectContaining({
           immediate: false,
-        }),
+        })
       )
     })
   })
@@ -236,7 +232,7 @@ describe('useKnowledgeCards composables', () => {
       expect(useAsyncData).toHaveBeenCalledWith(
         'knowledge-cards-tags-design,thinking',
         expect.any(Function),
-        expect.any(Object),
+        expect.any(Object)
       )
     })
 
@@ -248,7 +244,7 @@ describe('useKnowledgeCards composables', () => {
       expect(useAsyncData).toHaveBeenCalledWith(
         'knowledge-cards-tags-design',
         expect.any(Function),
-        expect.any(Object),
+        expect.any(Object)
       )
     })
   })
@@ -262,7 +258,7 @@ describe('useKnowledgeCards composables', () => {
       expect(useAsyncData).toHaveBeenCalledWith(
         'knowledge-cards-featured',
         expect.any(Function),
-        expect.any(Object),
+        expect.any(Object)
       )
     })
 
@@ -276,7 +272,7 @@ describe('useKnowledgeCards composables', () => {
       expect(useAsyncData).toHaveBeenCalledWith(
         'custom-featured',
         expect.any(Function),
-        expect.any(Object),
+        expect.any(Object)
       )
     })
   })

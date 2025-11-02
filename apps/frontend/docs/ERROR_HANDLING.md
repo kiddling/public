@@ -56,12 +56,7 @@ logger.addBreadcrumb('用户点击了登录按钮')
 import { ErrorCode, createError, getErrorMessage } from '~/types/error'
 
 // 创建自定义错误
-const error = createError(
-  ErrorCode.NOT_FOUND,
-  '用户不存在',
-  originalError,
-  { userId: '123' }
-)
+const error = createError(ErrorCode.NOT_FOUND, '用户不存在', originalError, { userId: '123' })
 
 // 获取错误消息
 const message = getErrorMessage(error)
@@ -127,12 +122,9 @@ const { errorState, handleError, withErrorHandling } = useErrorHandling({
 })
 
 // 使用错误处理包装异步操作
-const result = await withErrorHandling(
-  async () => {
-    return await fetchData()
-  },
-  '获取数据失败'
-)
+const result = await withErrorHandling(async () => {
+  return await fetchData()
+}, '获取数据失败')
 ```
 
 #### useCacheFallback
@@ -147,10 +139,10 @@ const { fetchWithFallback } = useCacheFallback({
 })
 
 // 使用缓存回退
-const data = await fetchWithFallback(
-  () => apiClient.get('/api/user'),
-  { useCache: true, updateCache: true }
-)
+const data = await fetchWithFallback(() => apiClient.get('/api/user'), {
+  useCache: true,
+  updateCache: true,
+})
 ```
 
 #### useMonitoring
@@ -220,7 +212,7 @@ export default defineEventHandler(async (event) => {
     return users
   } catch (error) {
     console.error('Failed to fetch users:', error)
-    
+
     throw createError({
       statusCode: 500,
       statusMessage: '获取用户列表失败',
@@ -239,12 +231,9 @@ export default defineEventHandler(async (event) => {
 <template>
   <div>
     <h1>我的页面</h1>
-    
+
     <!-- 保护可能出错的组件 -->
-    <ErrorBoundary
-      error-title="侧边栏加载失败"
-      :show-reset="true"
-    >
+    <ErrorBoundary error-title="侧边栏加载失败" :show-reset="true">
       <Sidebar />
     </ErrorBoundary>
 
@@ -275,11 +264,15 @@ const forceRefresh = () => refresh(true)
 
 ```typescript
 // ✅ 好的做法
-logger.error('保存用户数据失败', {
-  userId: user.id,
-  action: 'update_profile',
-  timestamp: new Date().toISOString(),
-}, error)
+logger.error(
+  '保存用户数据失败',
+  {
+    userId: user.id,
+    action: 'update_profile',
+    timestamp: new Date().toISOString(),
+  },
+  error
+)
 
 // ❌ 不好的做法
 logger.error('保存失败')
@@ -322,7 +315,7 @@ notification.error(
   0, // 不自动关闭
   {
     label: '了解更多',
-    onClick: () => router.push('/help/file-upload')
+    onClick: () => router.push('/help/file-upload'),
   }
 )
 
@@ -356,10 +349,7 @@ const { data, error } = await useSafeAsyncData(
 )
 
 if (error.value) {
-  notification.warning(
-    '使用缓存数据',
-    '无法获取最新数据，正在显示缓存内容'
-  )
+  notification.warning('使用缓存数据', '无法获取最新数据，正在显示缓存内容')
 }
 ```
 
@@ -467,12 +457,7 @@ import { createError, ErrorCode } from '~/types/error'
 
 describe('Error Handling', () => {
   it('should create custom error with correct properties', () => {
-    const error = createError(
-      ErrorCode.NOT_FOUND,
-      '资源不存在',
-      undefined,
-      { resourceId: '123' }
-    )
+    const error = createError(ErrorCode.NOT_FOUND, '资源不存在', undefined, { resourceId: '123' })
 
     expect(error.code).toBe(ErrorCode.NOT_FOUND)
     expect(error.message).toBe('资源不存在')
@@ -496,10 +481,10 @@ import { useApiClient } from '~/utils/api-client'
 describe('API Error Handling', () => {
   it('should retry on network error', async () => {
     const apiClient = useApiClient()
-    
+
     // 模拟网络错误
     mockNetworkError()
-    
+
     try {
       await apiClient.get('/api/test', { maxRetries: 2 })
     } catch (error) {

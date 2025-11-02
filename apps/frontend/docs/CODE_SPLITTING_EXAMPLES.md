@@ -51,9 +51,7 @@ const module = await import(
 ```vue
 <script setup lang="ts">
 // Lazy load a component
-const HeavyComponent = defineAsyncComponent(() => 
-  import('./components/HeavyComponent.vue')
-)
+const HeavyComponent = defineAsyncComponent(() => import('./components/HeavyComponent.vue'))
 </script>
 
 <template>
@@ -88,11 +86,12 @@ const showAdminPanel = ref(false)
 // Only import when needed
 const AdminPanel = computed(() => {
   if (showAdminPanel.value) {
-    return defineAsyncComponent(() =>
-      import(
-        /* webpackChunkName: "admin-panel" */
-        './components/AdminPanel.vue'
-      )
+    return defineAsyncComponent(
+      () =>
+        import(
+          /* webpackChunkName: "admin-panel" */
+          './components/AdminPanel.vue'
+        )
     )
   }
   return null
@@ -119,7 +118,7 @@ const exportLesson = async () => {
     /* webpackChunkName: "pdf-export" */
     'jspdf'
   )
-  
+
   const pdf = new jsPDF()
   // ... generate PDF
 }
@@ -129,7 +128,7 @@ const generateQRCode = async () => {
     /* webpackChunkName: "qrcode-gen" */
     'qrcode'
   )
-  
+
   // ... generate QR code
 }
 </script>
@@ -153,7 +152,7 @@ export const useLessonsStore = defineStore('lessons', {
   state: () => ({
     lessons: [],
   }),
-  
+
   actions: {
     async loadLessonEditor() {
       // Load editor module only when needed
@@ -161,17 +160,17 @@ export const useLessonsStore = defineStore('lessons', {
         /* webpackChunkName: "lesson-editor" */
         './modules/lesson-editor'
       )
-      
+
       return new LessonEditor()
     },
-    
+
     async exportToArchive() {
       // Load archiver only when exporting
       const archiver = await import(
         /* webpackChunkName: "archiver" */
         'archiver'
       )
-      
+
       // ... use archiver
     },
   },
@@ -188,11 +187,12 @@ const isFeatureEnabled = config.public.newFeatureEnabled
 // Only load new feature code if enabled
 const NewFeature = computed(() => {
   if (isFeatureEnabled) {
-    return defineAsyncComponent(() =>
-      import(
-        /* webpackChunkName: "new-feature" */
-        './components/NewFeature.vue'
-      )
+    return defineAsyncComponent(
+      () =>
+        import(
+          /* webpackChunkName: "new-feature" */
+          './components/NewFeature.vue'
+        )
     )
   }
   return null
@@ -215,17 +215,17 @@ export default defineNuxtConfig({
             if (id.includes('jspdf') || id.includes('pdf-lib')) {
               return 'feature-pdf'
             }
-            
+
             // Image processing features
             if (id.includes('sharp') || id.includes('image-compressor')) {
               return 'feature-images'
             }
-            
+
             // Data visualization features
             if (id.includes('chart') || id.includes('d3')) {
               return 'feature-charts'
             }
-            
+
             // Admin features
             if (id.includes('/admin/')) {
               return 'feature-admin'
@@ -249,7 +249,7 @@ async function loadPolyfills() {
       'intersection-observer'
     )
   }
-  
+
   if (!('requestIdleCallback' in window)) {
     await import(
       /* webpackChunkName: "polyfill-ric" */
@@ -269,11 +269,8 @@ const WebGLVisualization = ref(null)
 onMounted(async () => {
   // Check capability
   const canvas = document.createElement('canvas')
-  supportsWebGL.value = !!(
-    canvas.getContext('webgl') || 
-    canvas.getContext('experimental-webgl')
-  )
-  
+  supportsWebGL.value = !!(canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
+
   // Only load if supported
   if (supportsWebGL.value) {
     const module = await import(
@@ -299,16 +296,16 @@ export function useDynamicImport() {
     // Check connection speed
     const connection = (navigator as any).connection
     if (!connection) return true
-    
+
     const { effectiveType, saveData } = connection
-    
+
     // Don't eager load on slow connections or data saver
     if (saveData) return false
     if (effectiveType === '2g' || effectiveType === '3g') return false
-    
+
     return true
   }
-  
+
   const loadComponent = async (path: string) => {
     if (shouldEagerLoad()) {
       // Load immediately
@@ -324,7 +321,7 @@ export function useDynamicImport() {
       })
     }
   }
-  
+
   return { loadComponent }
 }
 ```
@@ -352,20 +349,17 @@ export function useDynamicImport() {
 
 ```typescript
 // Track dynamic import performance
-export async function measureImport(
-  name: string,
-  importFn: () => Promise<any>
-) {
+export async function measureImport(name: string, importFn: () => Promise<any>) {
   const start = performance.now()
-  
+
   try {
     const module = await importFn()
     const duration = performance.now() - start
-    
+
     if (import.meta.dev) {
       console.log(`[Import] ${name}: ${duration.toFixed(2)}ms`)
     }
-    
+
     return module
   } catch (error) {
     console.error(`[Import Error] ${name}:`, error)
@@ -374,10 +368,7 @@ export async function measureImport(
 }
 
 // Usage
-const { jsPDF } = await measureImport(
-  'jsPDF',
-  () => import('jspdf')
-)
+const { jsPDF } = await measureImport('jsPDF', () => import('jspdf'))
 ```
 
 ## Testing Code Splitting
@@ -389,26 +380,26 @@ import { describe, it, expect, vi } from 'vitest'
 describe('Code Splitting', () => {
   it('should lazy load PDF library', async () => {
     const importSpy = vi.spyOn(await import('jspdf'), 'default')
-    
+
     // Initially not loaded
     expect(importSpy).not.toHaveBeenCalled()
-    
+
     // Trigger load
     await triggerPDFExport()
-    
+
     // Now loaded
     expect(importSpy).toHaveBeenCalled()
   })
-  
+
   it('should handle import errors gracefully', async () => {
     const errorHandler = vi.fn()
-    
+
     try {
       await import('./non-existent-module')
     } catch (error) {
       errorHandler(error)
     }
-    
+
     expect(errorHandler).toHaveBeenCalled()
   })
 })
@@ -420,11 +411,11 @@ describe('Code Splitting', () => {
 // Enable chunk loading debugging
 if (import.meta.dev) {
   const originalImport = window.__vite__import || window.import
-  
+
   window.__vite__import = async (path) => {
     console.log('🔷 Loading chunk:', path)
     const start = performance.now()
-    
+
     try {
       const module = await originalImport(path)
       console.log('✅ Loaded in:', performance.now() - start, 'ms')

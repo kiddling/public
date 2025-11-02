@@ -54,6 +54,7 @@ The E2E testing suite consists of:
 #### Prerequisites
 
 1. Install dependencies:
+
    ```bash
    pnpm install
    ```
@@ -225,6 +226,7 @@ test('should meet performance thresholds', async ({ page }) => {
 ```
 
 **Thresholds:**
+
 - **Desktop**:
   - LCP < 2.5s
   - FID < 100ms
@@ -253,6 +255,7 @@ The `.github/workflows/ci.yml` includes an `e2e` job that:
 ### Viewing Results
 
 After CI runs:
+
 1. Go to the Actions tab in GitHub
 2. Click on the workflow run
 3. Download artifacts:
@@ -265,14 +268,15 @@ After CI runs:
 ### Adding Test Specs
 
 1. Create a new spec file in `tests/e2e/specs/`:
+
    ```typescript
    import { test, expect } from '@playwright/test'
-   
+
    test.describe('Feature Name', () => {
      test.beforeEach(async ({ page }) => {
        await page.goto('/')
      })
-   
+
      test('should do something', async ({ page }) => {
        // Test implementation
      })
@@ -280,6 +284,7 @@ After CI runs:
    ```
 
 2. Use data-test attributes for stable selectors:
+
    ```vue
    <button data-test="submit-button">Submit</button>
    ```
@@ -294,6 +299,7 @@ After CI runs:
 
 1. Add or modify data in `tests/e2e/fixtures/`
 2. Follow the Strapi response format:
+
    ```typescript
    export const myFixture = {
      data: [...],
@@ -364,6 +370,7 @@ pnpm test:e2e:ui
 ```
 
 Provides a UI to:
+
 - See all tests
 - Run individual tests
 - View step-by-step execution
@@ -380,6 +387,7 @@ Opens browser with Playwright Inspector for step-through debugging.
 ### View Traces
 
 After a test failure:
+
 ```bash
 npx playwright show-trace test-results/trace.zip
 ```

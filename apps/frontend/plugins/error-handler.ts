@@ -8,10 +8,14 @@ import { ErrorCode, createError } from '~/types/error'
 export default defineNuxtPlugin((nuxtApp) => {
   // Vue error handler
   nuxtApp.vueApp.config.errorHandler = (error, instance, info) => {
-    logger.error('Vue error caught', {
-      componentName: instance?.$options?.name || 'Unknown',
-      info,
-    }, error)
+    logger.error(
+      'Vue error caught',
+      {
+        componentName: instance?.$options?.name || 'Unknown',
+        info,
+      },
+      error
+    )
 
     // In production, you might want to send this to an error tracking service
     if (process.env.NODE_ENV === 'production') {
@@ -30,9 +34,13 @@ export default defineNuxtPlugin((nuxtApp) => {
   // Handle unhandled promise rejections
   if (process.client) {
     window.addEventListener('unhandledrejection', (event) => {
-      logger.error('Unhandled promise rejection', {
-        reason: event.reason,
-      }, event.reason)
+      logger.error(
+        'Unhandled promise rejection',
+        {
+          reason: event.reason,
+        },
+        event.reason
+      )
 
       // Prevent the default browser console error
       event.preventDefault()
@@ -46,12 +54,16 @@ export default defineNuxtPlugin((nuxtApp) => {
 
     // Handle errors that weren't caught by error handlers
     window.addEventListener('error', (event) => {
-      logger.error('Uncaught error', {
-        message: event.message,
-        filename: event.filename,
-        lineno: event.lineno,
-        colno: event.colno,
-      }, event.error)
+      logger.error(
+        'Uncaught error',
+        {
+          message: event.message,
+          filename: event.filename,
+          lineno: event.lineno,
+          colno: event.colno,
+        },
+        event.error
+      )
 
       // In production, send to error tracking service
       if (process.env.NODE_ENV === 'production') {
@@ -76,7 +88,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     provide: {
       handleError: (error: any, context?: string) => {
         logger.error(context || 'Error occurred', {}, error)
-        
+
         // Show user-friendly error message
         // You can integrate with a toast/notification system here
         console.error('An error occurred:', error)

@@ -17,6 +17,7 @@ A modern full-stack web application using Nuxt 3 for the frontend and Strapi CMS
 ## 🛠️ Tech Stack
 
 ### Frontend (`apps/frontend`)
+
 - **Nuxt 3** - The Intuitive Vue Framework
 - **TypeScript** - Type-safe development
 - **Tailwind CSS** - Utility-first CSS framework
@@ -25,6 +26,7 @@ A modern full-stack web application using Nuxt 3 for the frontend and Strapi CMS
 - **Nuxt Content** - File-based CMS
 
 ### Backend (`apps/cms`)
+
 - **Strapi** - Headless CMS
 - **PostgreSQL/SQLite** - Database (configurable)
 - **Docker** - Containerization support
@@ -39,11 +41,13 @@ A modern full-stack web application using Nuxt 3 for the frontend and Strapi CMS
 ### Installation
 
 1. **Install pnpm** (if not already installed):
+
 ```bash
 npm install -g pnpm
 ```
 
 2. **Clone the repository** and install dependencies:
+
 ```bash
 git clone <repository-url>
 cd <project-directory>
@@ -52,31 +56,84 @@ pnpm install
 
 ### Environment Setup
 
-#### Frontend Environment Variables
+#### Quick Setup (推荐方法)
 
-Copy the example environment file:
+1. **Copy the root environment template** (copies all required variables):
+
+```bash
+cp .env.example .env
+```
+
+2. **Edit `.env` with your configuration**:
+   - Generate secure keys: `openssl rand -base64 32`
+   - Update all `tobemodified` placeholders
+   - Configure your Strapi API token
+
+3. **Validate your environment** (验证环境变量):
+
+```bash
+# Validate both frontend and CMS environments
+pnpm check:env
+
+# Validate only Strapi/CMS
+pnpm check:env:strapi
+
+# Validate only Nuxt/Frontend
+pnpm check:env:nuxt
+```
+
+The validation script will:
+
+- ✅ Check all required environment variables are present
+- ✅ Verify that default/placeholder values have been changed
+- ✅ Validate database configuration based on selected client
+- ✅ Ensure security keys are properly configured
+- ✅ Provide bilingual error messages (English & Chinese / 英文和中文)
+
+**Required Environment Variables** (必需的环境变量):
+
+**Strapi/CMS**:
+
+- `APP_KEYS` - Application encryption keys (4 keys comma-separated)
+- `API_TOKEN_SALT` - Salt for API tokens
+- `ADMIN_JWT_SECRET` - JWT secret for admin authentication
+- `TRANSFER_TOKEN_SALT` - Salt for transfer tokens
+- `JWT_SECRET` - General JWT secret
+- `DATABASE_CLIENT` - Database type (sqlite, postgres, mysql)
+- `CLIENT_URL` - Frontend URL for CORS
+
+**Nuxt/Frontend**:
+
+- `NUXT_PUBLIC_STRAPI_URL` - Public Strapi API URL
+- `NUXT_STRAPI_API_TOKEN` - Strapi API authentication token
+- `NUXT_PUBLIC_API_BASE_URL` - Base URL for API calls
+
+📚 **See also**:
+
+- `.env.example` - Complete environment template with all options
+- `.env.docker.example` - Docker-specific configuration
+- `apps/frontend/.env.example` - Frontend-specific options
+- `apps/cms/.env.example` - CMS-specific options
+
+#### Manual Setup (Individual Apps)
+
+If you prefer to configure apps individually:
+
+**Frontend**:
+
 ```bash
 cd apps/frontend
 cp .env.example .env
+# Edit .env with your configuration
 ```
 
-Edit `.env` with your configuration:
-```env
-NUXT_PUBLIC_API_BASE_URL=http://localhost:1337
-NUXT_PUBLIC_STRAPI_URL=http://localhost:1337
-NUXT_STRAPI_API_TOKEN=your-api-token-here
-NUXT_STRAPI_URL=http://localhost:1337
-```
+**CMS**:
 
-#### CMS Environment Variables
-
-Copy the example environment file:
 ```bash
 cd apps/cms
 cp .env.example .env
+# Edit .env with your configuration - see apps/cms/README.md for details
 ```
-
-Edit `.env` with your configuration - see `apps/cms/README.md` for details.
 
 ## ✨ Key Features
 
@@ -100,7 +157,7 @@ Cross-application search that spans all content types:
 - **Comprehensive Coverage**: Search lessons, knowledge cards, student works, and resources
 - **Chinese Segmentation**: Uses `nodejieba` for accurate Chinese word segmentation
 - **Smart Highlighting**: Keywords highlighted with precomputed match ranges
-- **Keyboard Navigation**: 
+- **Keyboard Navigation**:
   - `Cmd/Ctrl + K` to open search
   - Arrow keys to navigate results
   - `Enter` to open, `ESC` to close
@@ -110,7 +167,7 @@ Cross-application search that spans all content types:
 - **Difficulty Filtering**: Filter lessons by difficulty level
 - **Instant Suggestions**: Get search suggestions as you type
 - **Accessibility**: Full keyboard navigation, focus trap, ARIA labels
-- **Performance**: 
+- **Performance**:
   - 300ms debounce for smooth typing
   - 60-second cache for faster repeat searches
   - Pagination support
@@ -150,6 +207,7 @@ This project uses **pnpm** for fast, efficient dependency management. For users 
 ### Using Taobao Registry (Recommended for China)
 
 Edit `.npmrc` in the project root:
+
 ```ini
 registry=https://registry.npmmirror.com
 ```
@@ -170,16 +228,19 @@ registry=https://registry.npmmirror.com
 ## 🏃 Development
 
 ### Run both apps in parallel:
+
 ```bash
 pnpm dev
 ```
 
 ### Run frontend only:
+
 ```bash
 pnpm dev:frontend
 ```
 
 ### Run CMS only:
+
 ```bash
 pnpm dev:cms
 ```
@@ -207,27 +268,43 @@ pnpm deploy
 ## 🔨 Building
 
 ### Build all apps:
+
 ```bash
 pnpm build
 ```
 
 ### Build frontend only:
+
 ```bash
 pnpm build:frontend
 ```
 
 ### Build CMS only:
+
 ```bash
 pnpm build:cms
 ```
 
 ### Build admin panel (Strapi):
+
 ```bash
 cd apps/cms
 pnpm build
 ```
 
 ## 🧹 Code Quality
+
+### Environment Validation
+
+```bash
+# Validate environment variables
+pnpm check:env
+
+# Run in CI (with fallback test values)
+pnpm check:env || echo "Environment validation failed"
+```
+
+The validation runs automatically in CI before quality checks and deployments.
 
 ### Linting
 
@@ -263,6 +340,9 @@ pnpm test
 
 # Run unit tests only
 pnpm test:unit
+
+# Run environment validation tests
+pnpm vitest run tests/env/check-env.spec.ts
 ```
 
 ## 🎨 设计系统 (Design System)
@@ -368,6 +448,7 @@ pnpm test:unit
 ```
 
 添加新语言只需：
+
 1. 创建新的 JSON 语言文件
 2. 在 `nuxt.config.ts` 中注册
 
@@ -397,6 +478,7 @@ npm run story:dev
 ## 🌐 Deployment Considerations for China
 
 ### Frontend (Nuxt 3)
+
 - Uses SSR mode suitable for China hosting
 - Configured with domestic font CDNs (避免使用 Google Fonts)
 - Tailwind CSS configured for Chinese typography
@@ -404,6 +486,7 @@ npm run story:dev
 - Network optimizations for China (timeouts, retries)
 
 ### CMS (Strapi)
+
 - Database can be configured for Chinese cloud providers
 - Docker images can be pulled from domestic registries
 - See `apps/cms/README.md` for Docker registry configuration
@@ -421,6 +504,7 @@ yarn strapi deploy
 ### Installation Issues
 
 If you encounter slow downloads:
+
 1. Switch to Taobao registry in `.npmrc`
 2. Try clearing the pnpm store: `pnpm store prune`
 3. Use a VPN if necessary
@@ -428,6 +512,7 @@ If you encounter slow downloads:
 ### Port Conflicts
 
 If ports 3000 or 1337 are in use:
+
 - Frontend: Set `PORT` in `apps/frontend/.env`
 - CMS: Set `PORT` in `apps/cms/.env`
 
@@ -473,6 +558,7 @@ The Download Center provides a centralized location for managing downloadable re
 4. Publish the entry
 
 The system automatically:
+
 - Calculates SHA-256 checksum on file upload
 - Stores file metadata (size, MIME type)
 - Updates checksums when files are replaced
@@ -480,6 +566,7 @@ The system automatically:
 ### Using the Download Center
 
 Visit `/downloads` to:
+
 - Browse all available downloads
 - Filter by category or search by keyword
 - Download individual files with checksum verification
@@ -489,6 +576,7 @@ Visit `/downloads` to:
 ## 📚 Documentation
 
 ### Deployment
+
 - **[PRODUCTION_DEPLOYMENT_CN.md](./docs/PRODUCTION_DEPLOYMENT_CN.md)** - 🇨🇳 **Complete China production deployment guide** (Alibaba Cloud/Tencent Cloud, ICP filing, SSL, Nginx, Docker/PM2)
 - **[DEPLOYMENT_STRATEGY.md](./docs/DEPLOYMENT_STRATEGY.md)** - Blue/green deployment with zero-downtime
 - **[PRODUCTION_CHECKLIST.md](./docs/PRODUCTION_CHECKLIST.md)** - Production go-live readiness checklist (Chinese)
@@ -497,22 +585,27 @@ Visit `/downloads` to:
 - **[DEPLOYMENT.md](./docs/DEPLOYMENT.md)** - General deployment guide (Chinese)
 
 ### Security (安全)
+
 - **[SECURITY_CN.md](./docs/SECURITY_CN.md)** - Production security configuration guide (security headers, CORS, rate limiting, HTTPS enforcement)
 
 ### Compliance & Regulations (合规与监管)
+
 - **[COMPLIANCE_CHECKLIST_CN.md](./docs/COMPLIANCE_CHECKLIST_CN.md)** - China compliance checklist (ICP filing, data residency, PIPL, MLPS)
 - **[PRIVACY_POLICY_TEMPLATE.md](./docs/compliance/PRIVACY_POLICY_TEMPLATE.md)** - Privacy policy template (Chinese)
 - **[COOKIE_CONSENT_TEMPLATE.md](./docs/compliance/COOKIE_CONSENT_TEMPLATE.md)** - Cookie consent & policy template with implementation guide
 
 ### Scripts
+
 - **[scripts/deploy/README.md](./scripts/deploy/README.md)** - Deployment scripts documentation
 - **[tests/smoke/README.md](./tests/smoke/README.md)** - Smoke tests guide
 
 ### Infrastructure & Monitoring
+
 - **[DOCKER.md](./docs/DOCKER.md)** - Docker configuration
 - **[MONITORING.md](./docs/MONITORING.md)** - Monitoring and observability
 
 ### Features
+
 - **[DESIGN_LOG_SYSTEM.md](./docs/DESIGN_LOG_SYSTEM.md)** - Design log system
 - **[OPTIMIZATION_SUMMARY.md](./docs/OPTIMIZATION_SUMMARY.md)** - Performance optimizations
 

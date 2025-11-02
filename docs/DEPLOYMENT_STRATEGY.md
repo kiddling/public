@@ -22,6 +22,7 @@ This document outlines the blue/green deployment strategy for the Nuxt 3 + Strap
 ### System Components
 
 The application consists of three main services:
+
 - **Frontend**: Nuxt 3 SSR application (port 3000)
 - **CMS**: Strapi headless CMS (port 1337)
 - **Database**: PostgreSQL database
@@ -57,18 +58,23 @@ The application consists of three main services:
 ### Docker-based Deployment
 
 #### Configuration
+
 Two complete stacks run simultaneously using Docker Compose profiles:
 
 **Blue Stack** (production):
+
 - `frontend-blue` container (port 3000)
 - `cms-blue` container (port 1337)
 
 **Green Stack** (staging):
+
 - `frontend-green` container (port 3001)
 - `cms-green` container (port 1338)
 
 #### Traffic Switching
+
 Traffic is controlled via Nginx configuration symlinks:
+
 ```bash
 /etc/nginx/sites-enabled/active -> /etc/nginx/sites-available/blue.conf
 # or
@@ -78,16 +84,18 @@ Traffic is controlled via Nginx configuration symlinks:
 ### Kubernetes Deployment
 
 #### Namespace-based Isolation
+
 - `production-blue` namespace
 - `production-green` namespace
 
 #### Service and Ingress
+
 ```yaml
 # Traffic switching via Ingress annotation
 metadata:
   annotations:
-    nginx.ingress.kubernetes.io/canary: "false"
-    deployment.color: "blue"  # or "green"
+    nginx.ingress.kubernetes.io/canary: 'false'
+    deployment.color: 'blue' # or "green"
 ```
 
 ## Database Migration Strategy
@@ -102,6 +110,7 @@ metadata:
 ### Migration Guardrails
 
 #### Safe Operations (Green Light)
+
 - Adding new tables
 - Adding nullable columns
 - Adding indexes (with `CONCURRENTLY` for PostgreSQL)
@@ -109,11 +118,13 @@ metadata:
 - Inserting reference data
 
 #### Caution Operations (Yellow Light)
+
 - Adding non-nullable columns (requires default value)
 - Renaming columns (requires application code to support both names temporarily)
 - Data type changes (requires migration path)
 
 #### Dangerous Operations (Red Light)
+
 - Dropping tables or columns (use deprecation period)
 - Changing primary keys
 - Altering critical constraints
@@ -138,6 +149,7 @@ npm run migration:down
 ### Database Version Tracking
 
 Maintain a `database_version` table to track compatibility:
+
 ```sql
 CREATE TABLE database_version (
   version INTEGER PRIMARY KEY,
@@ -152,6 +164,7 @@ CREATE TABLE database_version (
 ### Phase 1: Pre-flight Checks (5-10 minutes)
 
 **Automated Checks** (`scripts/deploy/preflight.sh`):
+
 ```bash
 ✓ Code quality (lint, format)
 ✓ Unit tests
@@ -163,6 +176,7 @@ CREATE TABLE database_version (
 ```
 
 **Manual Approval Gate**:
+
 - Review deployment notes
 - Verify rollback plan
 - Confirm maintenance window
@@ -171,18 +185,21 @@ CREATE TABLE database_version (
 ### Phase 2: Idle Stack Preparation (10-15 minutes)
 
 1. **Determine Active Color**
+
    ```bash
    ACTIVE_COLOR=$(./scripts/deploy/get-active-color.sh)
    TARGET_COLOR=$([ "$ACTIVE_COLOR" = "blue" ] && echo "green" || echo "blue")
    ```
 
 2. **Build and Tag Images**
+
    ```bash
    docker build -t app/frontend:${VERSION}-${TARGET_COLOR} ./apps/frontend
    docker build -t app/cms:${VERSION}-${TARGET_COLOR} ./apps/cms
    ```
 
 3. **Deploy to Idle Stack**
+
    ```bash
    docker-compose --profile ${TARGET_COLOR} up -d
    ```
@@ -195,6 +212,7 @@ CREATE TABLE database_version (
 ### Phase 3: Verification (5-10 minutes)
 
 1. **Health Checks**
+
    ```bash
    # Wait for services to be healthy
    timeout 300 bash -c 'until curl -f http://localhost:3001/api/health; do sleep 5; done'
@@ -202,6 +220,7 @@ CREATE TABLE database_version (
    ```
 
 2. **Smoke Tests**
+
    ```bash
    # Run smoke test suite against idle stack
    SMOKE_TEST_URL=http://localhost:3001 npm run test:smoke
@@ -216,6 +235,7 @@ CREATE TABLE database_version (
 ### Phase 4: Traffic Cutover (1-2 minutes)
 
 **Docker Deployment**:
+
 ```bash
 # Update Nginx configuration symlink
 ln -sf /etc/nginx/sites-available/${TARGET_COLOR}.conf /etc/nginx/sites-enabled/active
@@ -225,6 +245,7 @@ nginx -t && nginx -s reload
 ```
 
 **Kubernetes Deployment**:
+
 ```bash
 # Update Ingress to point to new service
 kubectl patch ingress main-ingress -p '{"spec":{"rules":[{"host":"app.example.com","http":{"paths":[{"path":"/","backend":{"service":{"name":"frontend-'${TARGET_COLOR}'","port":{"number":3000}}}}]}}]}}'
@@ -233,6 +254,7 @@ kubectl patch ingress main-ingress -p '{"spec":{"rules":[{"host":"app.example.co
 ### Phase 5: Post-Deployment (5-10 minutes)
 
 1. **Live Smoke Tests**
+
    ```bash
    # Run smoke tests against live production URL
    npm run test:smoke -- --project=production
@@ -254,6 +276,7 @@ kubectl patch ingress main-ingress -p '{"spec":{"rules":[{"host":"app.example.co
 ### Automatic Rollback Triggers
 
 The deployment process automatically rolls back if:
+
 - Health checks fail after 5 minutes
 - Smoke tests fail
 - Error rate exceeds 1%
@@ -279,12 +302,14 @@ curl http://localhost/api/version  # Should show previous version
 ### Database Rollback
 
 **Safe Rollback** (migrations are backward compatible):
+
 ```bash
 # No database changes needed, just revert traffic
 ./scripts/deploy/rollback.sh --skip-db
 ```
 
 **Database Rollback Required**:
+
 ```bash
 # Stop new version
 docker-compose --profile green down
@@ -308,6 +333,7 @@ docker-compose exec cms-blue npm run strapi migration:down
 ### Test Levels
 
 **Critical Path Tests** (must pass for deployment):
+
 - Homepage loads
 - User authentication
 - Content API responds
@@ -315,6 +341,7 @@ docker-compose exec cms-blue npm run strapi migration:down
 - Database connectivity
 
 **Extended Smoke Tests** (warnings if fail):
+
 - Search functionality
 - Media uploads
 - Third-party integrations
@@ -333,7 +360,7 @@ export default defineConfig({
       retries: 2,
     },
   ],
-});
+})
 ```
 
 ### Smoke Test Examples
@@ -341,40 +368,42 @@ export default defineConfig({
 ```typescript
 // tests/smoke/homepage.smoke.spec.ts
 test('homepage loads successfully', async ({ page }) => {
-  await page.goto('/');
-  await expect(page.locator('h1')).toBeVisible();
-  await expect(page).toHaveTitle(/Chinese Learning/);
-});
+  await page.goto('/')
+  await expect(page.locator('h1')).toBeVisible()
+  await expect(page).toHaveTitle(/Chinese Learning/)
+})
 
 // tests/smoke/api.smoke.spec.ts
 test('CMS API responds', async ({ request }) => {
-  const response = await request.get('/api/lessons');
-  expect(response.status()).toBe(200);
-});
+  const response = await request.get('/api/lessons')
+  expect(response.status()).toBe(200)
+})
 ```
 
 ## Canary vs. Full Cutover
 
 ### Decision Criteria
 
-| Factor | Full Cutover | Canary Release |
-|--------|--------------|----------------|
-| Change Scope | Small, low-risk changes | Major features, significant refactors |
-| Deployment Window | Short (< 5 minutes) | Extended (30-60 minutes) |
-| Rollback Complexity | Simple | Complex |
-| Traffic Volume | Low-medium | High |
-| User Impact Risk | Minimal | Moderate-High |
-| Testing Coverage | Comprehensive | Partial or new features |
+| Factor              | Full Cutover            | Canary Release                        |
+| ------------------- | ----------------------- | ------------------------------------- |
+| Change Scope        | Small, low-risk changes | Major features, significant refactors |
+| Deployment Window   | Short (< 5 minutes)     | Extended (30-60 minutes)              |
+| Rollback Complexity | Simple                  | Complex                               |
+| Traffic Volume      | Low-medium              | High                                  |
+| User Impact Risk    | Minimal                 | Moderate-High                         |
+| Testing Coverage    | Comprehensive           | Partial or new features               |
 
 ### Full Blue/Green Cutover
 
 **When to Use**:
+
 - Bug fixes
 - Performance improvements
 - Dependency updates
 - Configuration changes
 
 **Process**:
+
 1. Deploy to idle stack
 2. Run full test suite
 3. Switch 100% traffic at once
@@ -384,12 +413,14 @@ test('CMS API responds', async ({ request }) => {
 ### Canary Deployment
 
 **When to Use**:
+
 - New features with uncertain impact
 - Architecture changes
 - Database schema modifications
 - Third-party integration changes
 
 **Process**:
+
 1. Deploy to idle stack (green)
 2. Route 5% of traffic to green
 3. Monitor for 15 minutes
@@ -398,6 +429,7 @@ test('CMS API responds', async ({ request }) => {
 6. Full cutover to 100% if no issues
 
 **Canary Implementation** (Nginx):
+
 ```nginx
 # Split traffic using split_clients
 split_clients "${remote_addr}${http_user_agent}${date_gmt}" $deployment_color {
@@ -411,13 +443,14 @@ upstream frontend_dynamic {
 ```
 
 **Canary Implementation** (Kubernetes):
+
 ```yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
-    nginx.ingress.kubernetes.io/canary: "true"
-    nginx.ingress.kubernetes.io/canary-weight: "5"
+    nginx.ingress.kubernetes.io/canary: 'true'
+    nginx.ingress.kubernetes.io/canary-weight: '5'
 ```
 
 ## Communication Protocols
@@ -425,6 +458,7 @@ metadata:
 ### Pre-Deployment Communication (T-24 hours)
 
 **Internal Notification** (via Slack/Email):
+
 ```
 🚀 Deployment Scheduled
 
@@ -449,6 +483,7 @@ Status Page: [URL]
 ```
 
 **Customer Notification** (if needed):
+
 ```
 Scheduled Maintenance: [Date] [Time]
 
@@ -461,6 +496,7 @@ If you experience any issues, please contact support.
 ### During Deployment
 
 **Status Updates** (every 5 minutes):
+
 ```
 ✅ T+0:  Preflight checks complete
 ✅ T+5:  Green stack deployed
@@ -472,6 +508,7 @@ If you experience any issues, please contact support.
 ### Post-Deployment Communication
 
 **Success Notification**:
+
 ```
 ✅ Deployment Complete
 
@@ -487,6 +524,7 @@ Monitoring: [Dashboard URL]
 ```
 
 **Rollback Notification**:
+
 ```
 ⚠️ Deployment Rolled Back
 
@@ -511,6 +549,7 @@ Follow-up: Post-incident review scheduled
 ### Status Page Updates
 
 **Pre-Deployment**:
+
 ```bash
 # Update status page
 curl -X POST https://api.statuspage.io/v1/incidents \
@@ -520,6 +559,7 @@ curl -X POST https://api.statuspage.io/v1/incidents \
 ```
 
 **During Deployment**:
+
 ```bash
 # Update to in-progress
 curl -X PATCH https://api.statuspage.io/v1/incidents/[ID] \
@@ -527,6 +567,7 @@ curl -X PATCH https://api.statuspage.io/v1/incidents/[ID] \
 ```
 
 **Post-Deployment**:
+
 ```bash
 # Mark as resolved
 curl -X PATCH https://api.statuspage.io/v1/incidents/[ID] \
@@ -538,18 +579,21 @@ curl -X PATCH https://api.statuspage.io/v1/incidents/[ID] \
 ### Key Metrics
 
 **Application Health**:
+
 - HTTP 5xx error rate < 0.1%
 - HTTP 4xx error rate < 2%
 - Response time p95 < 500ms
 - Response time p99 < 1000ms
 
 **Infrastructure Health**:
+
 - CPU usage < 70%
 - Memory usage < 80%
 - Disk usage < 85%
 - Network latency < 50ms
 
 **Business Metrics**:
+
 - Active user sessions
 - API request rate
 - Content delivery success rate
@@ -558,6 +602,7 @@ curl -X PATCH https://api.statuspage.io/v1/incidents/[ID] \
 ### Monitoring Dashboards
 
 **Real-time Dashboard** (Grafana):
+
 ```
 - Active deployment color indicator
 - Error rates by service
@@ -568,6 +613,7 @@ curl -X PATCH https://api.statuspage.io/v1/incidents/[ID] \
 ```
 
 **Deployment Dashboard**:
+
 ```
 - Deployment timeline
 - Health check status
@@ -579,12 +625,14 @@ curl -X PATCH https://api.statuspage.io/v1/incidents/[ID] \
 ### Alerting Rules
 
 **Critical Alerts** (immediate action):
+
 - Service down (health check fails)
 - Error rate > 1%
 - Database connection pool exhausted
 - Disk usage > 90%
 
 **Warning Alerts** (investigate):
+
 - Response time > 1s p95
 - Error rate > 0.5%
 - Memory usage > 85%
@@ -593,6 +641,7 @@ curl -X PATCH https://api.statuspage.io/v1/incidents/[ID] \
 ### Log Aggregation
 
 **Structured Logging**:
+
 ```json
 {
   "timestamp": "2024-01-15T10:30:00Z",
@@ -608,6 +657,7 @@ curl -X PATCH https://api.statuspage.io/v1/incidents/[ID] \
 ```
 
 **Log Queries** (CloudWatch/ELK):
+
 ```
 # Errors in last 5 minutes
 deployment_color:green AND level:error AND @timestamp:[now-5m TO now]
@@ -620,55 +670,60 @@ message:"deployment" AND @timestamp:[now-1h TO now]
 
 ### Standard Deployment Timeline
 
-| Time | Phase | Duration | Actions | Responsible |
-|------|-------|----------|---------|-------------|
-| T-24h | Notice | - | Send deployment notification | Release Manager |
-| T-1h | Preparation | 15m | Review checklist, verify backups | DevOps Engineer |
-| T-0 | Preflight | 10m | Run automated checks | CI/CD System |
-| T+10m | Approval | 5m | Manual approval gate | Tech Lead |
-| T+15m | Deploy | 15m | Deploy to green stack | Deployment Script |
-| T+30m | Verify | 10m | Smoke tests and health checks | Automation |
-| T+40m | Cutover | 2m | Switch traffic to green | Deployment Script |
-| T+42m | Monitor | 15m | Active monitoring period | On-call Engineer |
-| T+57m | Complete | 3m | Send success notification | Release Manager |
+| Time  | Phase       | Duration | Actions                          | Responsible       |
+| ----- | ----------- | -------- | -------------------------------- | ----------------- |
+| T-24h | Notice      | -        | Send deployment notification     | Release Manager   |
+| T-1h  | Preparation | 15m      | Review checklist, verify backups | DevOps Engineer   |
+| T-0   | Preflight   | 10m      | Run automated checks             | CI/CD System      |
+| T+10m | Approval    | 5m       | Manual approval gate             | Tech Lead         |
+| T+15m | Deploy      | 15m      | Deploy to green stack            | Deployment Script |
+| T+30m | Verify      | 10m      | Smoke tests and health checks    | Automation        |
+| T+40m | Cutover     | 2m       | Switch traffic to green          | Deployment Script |
+| T+42m | Monitor     | 15m      | Active monitoring period         | On-call Engineer  |
+| T+57m | Complete    | 3m       | Send success notification        | Release Manager   |
 
 ### Canary Deployment Timeline
 
-| Time | Phase | Traffic % | Duration | Actions |
-|------|-------|-----------|----------|---------|
-| T-0 | Deploy | 0% | 15m | Deploy to green stack |
-| T+15m | Canary | 5% | 15m | Route 5% traffic to green |
-| T+30m | Expand | 25% | 15m | Increase to 25% |
-| T+45m | Majority | 50% | 15m | Increase to 50% |
-| T+60m | Full | 100% | - | Complete cutover |
+| Time  | Phase    | Traffic % | Duration | Actions                   |
+| ----- | -------- | --------- | -------- | ------------------------- |
+| T-0   | Deploy   | 0%        | 15m      | Deploy to green stack     |
+| T+15m | Canary   | 5%        | 15m      | Route 5% traffic to green |
+| T+30m | Expand   | 25%       | 15m      | Increase to 25%           |
+| T+45m | Majority | 50%       | 15m      | Increase to 50%           |
+| T+60m | Full     | 100%      | -        | Complete cutover          |
 
 ### Roles and Responsibilities
 
 **Release Manager**:
+
 - Coordinate deployment schedule
 - Communicate with stakeholders
 - Manage deployment checklist
 - Post-deployment reporting
 
 **DevOps Engineer**:
+
 - Execute deployment scripts
 - Monitor infrastructure metrics
 - Handle rollbacks if needed
 - Update configuration
 
 **Tech Lead**:
+
 - Code review and approval
 - Manual approval gate
 - Technical decisions during issues
 - Post-mortem facilitation
 
 **On-call Engineer**:
+
 - Monitor alerts during deployment
 - First responder for issues
 - Execute emergency procedures
 - Escalate to Tech Lead if needed
 
 **QA Engineer**:
+
 - Verify smoke test coverage
 - Manual testing (if needed)
 - Regression validation
@@ -687,6 +742,7 @@ Infrastructure Lead: [Name] - [Phone]
 ### Deployment Checklist
 
 #### Pre-Deployment
+
 - [ ] All tests passing in CI
 - [ ] Database backup completed
 - [ ] Rollback plan documented
@@ -697,6 +753,7 @@ Infrastructure Lead: [Name] - [Phone]
 - [ ] Docker images built and scanned
 
 #### During Deployment
+
 - [ ] Preflight checks passed
 - [ ] Green stack deployed successfully
 - [ ] Database migrations applied
@@ -707,6 +764,7 @@ Infrastructure Lead: [Name] - [Phone]
 - [ ] Monitoring shows healthy metrics
 
 #### Post-Deployment
+
 - [ ] Live smoke tests passed
 - [ ] Error rates normal
 - [ ] Response times normal
@@ -742,6 +800,6 @@ Infrastructure Lead: [Name] - [Phone]
 
 ### Version History
 
-| Version | Date | Changes | Author |
-|---------|------|---------|--------|
-| 1.0 | 2024-01-15 | Initial blue/green deployment strategy | DevOps Team |
+| Version | Date       | Changes                                | Author      |
+| ------- | ---------- | -------------------------------------- | ----------- |
+| 1.0     | 2024-01-15 | Initial blue/green deployment strategy | DevOps Team |

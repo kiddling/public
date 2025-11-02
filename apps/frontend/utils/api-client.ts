@@ -38,7 +38,7 @@ export class ApiClient {
   }
 
   private async sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms))
+    return new Promise((resolve) => setTimeout(resolve, ms))
   }
 
   private calculateRetryDelay(attempt: number): number {
@@ -131,10 +131,7 @@ export class ApiClient {
     })
   }
 
-  private async requestWithTimeout<T>(
-    fetcher: () => Promise<T>,
-    timeout: number
-  ): Promise<T> {
+  private async requestWithTimeout<T>(fetcher: () => Promise<T>, timeout: number): Promise<T> {
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), timeout)
 
@@ -151,10 +148,7 @@ export class ApiClient {
     }
   }
 
-  async request<T = any>(
-    url: string,
-    options: ApiClientOptions = {}
-  ): Promise<T> {
+  async request<T = any>(url: string, options: ApiClientOptions = {}): Promise<T> {
     const {
       retry = true,
       maxRetries = this.retryConfig.maxRetries,
@@ -174,10 +168,11 @@ export class ApiClient {
     while (attempt <= maxRetries) {
       try {
         const response = await this.requestWithTimeout(
-          () => $fetch<T>(fullUrl, {
-            ...fetchOptions,
-            retry: false, // We handle retry ourselves
-          }),
+          () =>
+            $fetch<T>(fullUrl, {
+              ...fetchOptions,
+              retry: false, // We handle retry ourselves
+            }),
           timeout
         )
 
@@ -189,19 +184,23 @@ export class ApiClient {
         return response
       } catch (error: any) {
         lastError = error
-        
+
         if (!retry || !this.shouldRetry(error, attempt)) {
           break
         }
 
         attempt++
         const delay = this.calculateRetryDelay(attempt - 1)
-        
-        logger.warn(`API request failed, retrying (${attempt}/${maxRetries})`, {
-          url: fullUrl,
-          attempt,
-          delay,
-        }, error)
+
+        logger.warn(
+          `API request failed, retrying (${attempt}/${maxRetries})`,
+          {
+            url: fullUrl,
+            attempt,
+            delay,
+          },
+          error
+        )
 
         await this.sleep(delay)
       }
@@ -218,27 +217,15 @@ export class ApiClient {
     return this.request<T>(url, { ...options, method: 'GET' })
   }
 
-  async post<T = any>(
-    url: string,
-    body?: any,
-    options?: ApiClientOptions
-  ): Promise<T> {
+  async post<T = any>(url: string, body?: any, options?: ApiClientOptions): Promise<T> {
     return this.request<T>(url, { ...options, method: 'POST', body })
   }
 
-  async put<T = any>(
-    url: string,
-    body?: any,
-    options?: ApiClientOptions
-  ): Promise<T> {
+  async put<T = any>(url: string, body?: any, options?: ApiClientOptions): Promise<T> {
     return this.request<T>(url, { ...options, method: 'PUT', body })
   }
 
-  async patch<T = any>(
-    url: string,
-    body?: any,
-    options?: ApiClientOptions
-  ): Promise<T> {
+  async patch<T = any>(url: string, body?: any, options?: ApiClientOptions): Promise<T> {
     return this.request<T>(url, { ...options, method: 'PATCH', body })
   }
 

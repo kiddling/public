@@ -9,11 +9,7 @@
   "attributes": {
     "difficulty": {
       "type": "enumeration",
-      "enum": [
-        "Base",
-        "Advance",
-        "Stretch"
-      ],
+      "enum": ["Base", "Advance", "Stretch"],
       "required": true
     },
     "content": {

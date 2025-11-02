@@ -26,7 +26,7 @@ describe('useLessons composables', () => {
   describe('useLessons', () => {
     it('should call useAsyncData with correct parameters', () => {
       const { useAsyncData } = vi.mocked(await import('#app'))
-      
+
       useLessons()
 
       expect(useAsyncData).toHaveBeenCalledWith(
@@ -35,13 +35,13 @@ describe('useLessons composables', () => {
         expect.objectContaining({
           immediate: true,
           server: true,
-        }),
+        })
       )
     })
 
     it('should accept custom options', () => {
       const { useAsyncData } = vi.mocked(await import('#app'))
-      
+
       useLessons({
         key: 'custom-key',
         immediate: false,
@@ -54,7 +54,7 @@ describe('useLessons composables', () => {
         expect.objectContaining({
           immediate: false,
           lazy: true,
-        }),
+        })
       )
     })
 
@@ -100,25 +100,25 @@ describe('useLessons composables', () => {
   describe('useLesson', () => {
     it('should fetch single lesson by code', () => {
       const { useAsyncData } = vi.mocked(await import('#app'))
-      
+
       useLesson('L1.1')
 
       expect(useAsyncData).toHaveBeenCalledWith(
         'lesson-L1.1',
         expect.any(Function),
-        expect.any(Object),
+        expect.any(Object)
       )
     })
 
     it('should use custom key if provided', () => {
       const { useAsyncData } = vi.mocked(await import('#app'))
-      
+
       useLesson('L1.1', { key: 'my-lesson' })
 
       expect(useAsyncData).toHaveBeenCalledWith(
         'my-lesson',
         expect.any(Function),
-        expect.any(Object),
+        expect.any(Object)
       )
     })
   })
@@ -126,13 +126,13 @@ describe('useLessons composables', () => {
   describe('useLessonsByPart', () => {
     it('should fetch lessons filtered by part', () => {
       const { useAsyncData } = vi.mocked(await import('#app'))
-      
+
       useLessonsByPart('foundation')
 
       expect(useAsyncData).toHaveBeenCalledWith(
         'lessons-part-foundation',
         expect.any(Function),
-        expect.any(Object),
+        expect.any(Object)
       )
     })
 
@@ -147,19 +147,19 @@ describe('useLessons composables', () => {
   describe('useSearchLessons', () => {
     it('should search lessons by query', () => {
       const { useAsyncData } = vi.mocked(await import('#app'))
-      
+
       useSearchLessons('design')
 
       expect(useAsyncData).toHaveBeenCalledWith(
         'lessons-search-design',
         expect.any(Function),
-        expect.any(Object),
+        expect.any(Object)
       )
     })
 
     it('should not fetch immediately for empty query', () => {
       const { useAsyncData } = vi.mocked(await import('#app'))
-      
+
       useSearchLessons('')
 
       expect(useAsyncData).toHaveBeenCalledWith(
@@ -167,7 +167,7 @@ describe('useLessons composables', () => {
         expect.any(Function),
         expect.objectContaining({
           immediate: false,
-        }),
+        })
       )
     })
   })

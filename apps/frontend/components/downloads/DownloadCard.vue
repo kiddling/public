@@ -1,6 +1,6 @@
 <template>
   <div
-    class="group relative rounded-lg border bg-white p-4 shadow-sm transition-all hover:shadow-md dark:bg-gray-800 dark:border-gray-700"
+    class="group relative rounded-lg border bg-white p-4 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800"
     :class="{ 'ring-2 ring-blue-500': selected }"
   >
     <div class="flex gap-4">
@@ -15,10 +15,10 @@
         />
       </div>
 
-      <div class="flex-1 min-w-0">
+      <div class="min-w-0 flex-1">
         <div class="flex items-start justify-between gap-2">
-          <div class="flex-1 min-w-0">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white truncate">
+          <div class="min-w-0 flex-1">
+            <h3 class="truncate text-lg font-semibold text-gray-900 dark:text-white">
               {{ item.attributes.title }}
             </h3>
             <div class="mt-1 flex flex-wrap items-center gap-2">
@@ -52,11 +52,16 @@
           </div>
         </div>
 
-        <p v-if="item.attributes.description" class="mt-2 text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
+        <p
+          v-if="item.attributes.description"
+          class="mt-2 line-clamp-2 text-sm text-gray-600 dark:text-gray-300"
+        >
           {{ item.attributes.description }}
         </p>
 
-        <div class="mt-3 flex flex-wrap items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
+        <div
+          class="mt-3 flex flex-wrap items-center gap-3 text-xs text-gray-500 dark:text-gray-400"
+        >
           <div v-if="checksumValid !== null" class="flex items-center gap-1">
             <span
               class="inline-flex h-4 w-4 items-center justify-center rounded-full"
@@ -130,7 +135,9 @@ const handleDownload = async () => {
     const fileUrl = props.item.attributes.file.data.attributes.url
     const fileName = props.item.attributes.file.data.attributes.name
 
-    const response = await fetch(fileUrl.startsWith('http') ? fileUrl : `${window.location.origin}${fileUrl}`)
+    const response = await fetch(
+      fileUrl.startsWith('http') ? fileUrl : `${window.location.origin}${fileUrl}`
+    )
     const blob = await response.blob()
     const file = new File([blob], fileName, { type: blob.type })
 

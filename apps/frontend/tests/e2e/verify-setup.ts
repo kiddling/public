@@ -40,10 +40,10 @@ let allFilesExist = true
 for (const file of requiredFiles) {
   const filePath = resolve(process.cwd(), file)
   const exists = existsSync(filePath)
-  
+
   const status = exists ? '✅' : '❌'
   console.log(`${status} ${file}`)
-  
+
   if (!exists) {
     allFilesExist = false
   }

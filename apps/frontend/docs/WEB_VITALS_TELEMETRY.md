@@ -103,11 +103,9 @@ import { useMonitoring } from '~/composables/useMonitoring'
 const { trackDataFetch } = useMonitoring()
 
 // Automatically track fetch duration
-const users = await trackDataFetch(
-  'fetch-users',
-  () => $fetch('/api/users'),
-  { endpoint: '/api/users' }
-)
+const users = await trackDataFetch('fetch-users', () => $fetch('/api/users'), {
+  endpoint: '/api/users',
+})
 ```
 
 ### Track User Interactions
@@ -120,9 +118,9 @@ const { trackInteraction } = useMonitoring()
 function handleClick() {
   trackInteraction('button-click', {
     button: 'download',
-    page: 'lessons'
+    page: 'lessons',
   })
-  
+
   // ... handle the click
 }
 ```
@@ -155,12 +153,12 @@ async function loadLessons() {
 
 ### Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `NUXT_PUBLIC_ENABLE_VITALS_TELEMETRY` | `true` | Enable/disable telemetry |
-| `NUXT_PUBLIC_VITALS_SAMPLING_RATE` | `1.0` | Sampling rate (0.0 to 1.0) |
-| `NUXT_PUBLIC_VITALS_RATE_LIMIT` | `100` | Max requests per session per hour |
-| `NUXT_PUBLIC_ENABLE_VITALS_FORWARDING` | `false` | Forward to Strapi |
+| Variable                               | Default | Description                       |
+| -------------------------------------- | ------- | --------------------------------- |
+| `NUXT_PUBLIC_ENABLE_VITALS_TELEMETRY`  | `true`  | Enable/disable telemetry          |
+| `NUXT_PUBLIC_VITALS_SAMPLING_RATE`     | `1.0`   | Sampling rate (0.0 to 1.0)        |
+| `NUXT_PUBLIC_VITALS_RATE_LIMIT`        | `100`   | Max requests per session per hour |
+| `NUXT_PUBLIC_ENABLE_VITALS_FORWARDING` | `false` | Forward to Strapi                 |
 
 ### Production Recommendations
 
@@ -269,14 +267,14 @@ pnpm test useMonitoring.spec
 
 The system includes performance budgets that warn when exceeded:
 
-| Metric | Budget | Description |
-|--------|--------|-------------|
-| LCP | 2500ms | Largest Contentful Paint |
-| FCP | 1500ms | First Contentful Paint |
-| CLS | 0.1 | Cumulative Layout Shift |
-| FID | 100ms | First Input Delay |
-| INP | 200ms | Interaction to Next Paint |
-| TTFB | 600ms | Time to First Byte |
+| Metric | Budget | Description               |
+| ------ | ------ | ------------------------- |
+| LCP    | 2500ms | Largest Contentful Paint  |
+| FCP    | 1500ms | First Contentful Paint    |
+| CLS    | 0.1    | Cumulative Layout Shift   |
+| FID    | 100ms  | First Input Delay         |
+| INP    | 200ms  | Interaction to Next Paint |
+| TTFB   | 600ms  | Time to First Byte        |
 
 When a metric exceeds its budget, you'll see a warning in the console:
 
@@ -289,11 +287,13 @@ When a metric exceeds its budget, you'll see a warning in the console:
 ### No Metrics Collected
 
 1. Check if telemetry is enabled:
+
    ```bash
    echo $NUXT_PUBLIC_ENABLE_VITALS_TELEMETRY
    ```
 
 2. Check sampling rate (might be too low):
+
    ```bash
    echo $NUXT_PUBLIC_VITALS_SAMPLING_RATE
    ```
@@ -311,6 +311,7 @@ NUXT_PUBLIC_VITALS_RATE_LIMIT=200
 ### Metrics Not Appearing in Logs
 
 1. Make sure you're in production mode:
+
    ```bash
    pnpm build:frontend
    pnpm --filter frontend preview
@@ -347,12 +348,14 @@ NUXT_PUBLIC_VITALS_RATE_LIMIT=200
 ### Adding Custom Metrics
 
 1. **Component Performance**
+
    ```typescript
    const { trackComponentMount } = useMonitoring()
    trackComponentMount('MyComponent')
    ```
 
 2. **Data Fetching**
+
    ```typescript
    const { trackDataFetch } = useMonitoring()
    await trackDataFetch('my-fetch', fetchFn, { tags: 'here' })
@@ -423,9 +426,10 @@ scrape_configs:
 The plugin automatically collects Web Vitals. No manual API calls needed.
 
 Debug in console:
+
 ```javascript
-window.__webVitals        // Current metrics
-window.__webVitalsQueue   // Pending batch
+window.__webVitals // Current metrics
+window.__webVitalsQueue // Pending batch
 window.__webVitalsOffline // Offline queue
 ```
 

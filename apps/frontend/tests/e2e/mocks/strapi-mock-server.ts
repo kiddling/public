@@ -27,110 +27,144 @@ export class StrapiMockServer {
     const router = createRouter()
 
     // Health check endpoint
-    router.get('/health', eventHandler(() => ({ status: 'ok' })))
+    router.get(
+      '/health',
+      eventHandler(() => ({ status: 'ok' }))
+    )
 
     // Lessons endpoints
-    router.get('/api/lessons', eventHandler((event) => {
-      const query = new URL(event.node.req.url || '', 'http://localhost').searchParams
-      const slug = query.get('filters[slug][$eq]')
-      
-      if (slug) {
-        // Filter by slug for single lesson
-        const lesson = lessonsFixture.data.find(l => l.attributes.slug === slug)
-        return lesson ? { data: [lesson] } : { data: [] }
-      }
-      
-      return lessonsFixture
-    }))
+    router.get(
+      '/api/lessons',
+      eventHandler((event) => {
+        const query = new URL(event.node.req.url || '', 'http://localhost').searchParams
+        const slug = query.get('filters[slug][$eq]')
 
-    router.get('/api/lessons/:id', eventHandler((event) => {
-      const id = parseInt(event.context.params?.id || '0')
-      const lesson = lessonsFixture.data.find(l => l.id === id)
-      return lesson ? { data: lesson } : { data: null }
-    }))
+        if (slug) {
+          // Filter by slug for single lesson
+          const lesson = lessonsFixture.data.find((l) => l.attributes.slug === slug)
+          return lesson ? { data: [lesson] } : { data: [] }
+        }
+
+        return lessonsFixture
+      })
+    )
+
+    router.get(
+      '/api/lessons/:id',
+      eventHandler((event) => {
+        const id = parseInt(event.context.params?.id || '0')
+        const lesson = lessonsFixture.data.find((l) => l.id === id)
+        return lesson ? { data: lesson } : { data: null }
+      })
+    )
 
     // Navigation endpoint
-    router.get('/api/navigation', eventHandler(() => navigationFixture))
+    router.get(
+      '/api/navigation',
+      eventHandler(() => navigationFixture)
+    )
 
     // Resources endpoints
-    router.get('/api/resources', eventHandler((event) => {
-      const query = new URL(event.node.req.url || '', 'http://localhost').searchParams
-      const category = query.get('filters[category][$eq]')
-      
-      if (category) {
-        const filtered = resourcesFixture.data.filter(
-          r => r.attributes.category === category
-        )
-        return { data: filtered }
-      }
-      
-      return resourcesFixture
-    }))
+    router.get(
+      '/api/resources',
+      eventHandler((event) => {
+        const query = new URL(event.node.req.url || '', 'http://localhost').searchParams
+        const category = query.get('filters[category][$eq]')
+
+        if (category) {
+          const filtered = resourcesFixture.data.filter((r) => r.attributes.category === category)
+          return { data: filtered }
+        }
+
+        return resourcesFixture
+      })
+    )
 
     // Student works endpoints
-    router.get('/api/student-works', eventHandler((event) => {
-      const query = new URL(event.node.req.url || '', 'http://localhost').searchParams
-      const grade = query.get('filters[gradeLevel][$eq]')
-      const medium = query.get('filters[medium][$eq]')
-      
-      let filtered = studentWorksFixture.data
-      
-      if (grade) {
-        filtered = filtered.filter(w => w.attributes.gradeLevel === grade)
-      }
-      if (medium) {
-        filtered = filtered.filter(w => w.attributes.medium === medium)
-      }
-      
-      return { data: filtered, meta: { pagination: { total: filtered.length } } }
-    }))
+    router.get(
+      '/api/student-works',
+      eventHandler((event) => {
+        const query = new URL(event.node.req.url || '', 'http://localhost').searchParams
+        const grade = query.get('filters[gradeLevel][$eq]')
+        const medium = query.get('filters[medium][$eq]')
+
+        let filtered = studentWorksFixture.data
+
+        if (grade) {
+          filtered = filtered.filter((w) => w.attributes.gradeLevel === grade)
+        }
+        if (medium) {
+          filtered = filtered.filter((w) => w.attributes.medium === medium)
+        }
+
+        return { data: filtered, meta: { pagination: { total: filtered.length } } }
+      })
+    )
 
     // Design log templates endpoint
-    router.get('/api/design-log-templates', eventHandler(() => designLogTemplatesFixture))
+    router.get(
+      '/api/design-log-templates',
+      eventHandler(() => designLogTemplatesFixture)
+    )
 
     // Knowledge cards endpoint
-    router.get('/api/knowledge-cards', eventHandler((event) => {
-      const query = new URL(event.node.req.url || '', 'http://localhost').searchParams
-      const search = query.get('filters[$or][0][title][$containsi]')
-      
-      if (search) {
-        const filtered = knowledgeCardsFixture.data.filter(
-          k => k.attributes.title.toLowerCase().includes(search.toLowerCase()) ||
-               k.attributes.description?.toLowerCase().includes(search.toLowerCase())
-        )
-        return { data: filtered }
-      }
-      
-      return knowledgeCardsFixture
-    }))
+    router.get(
+      '/api/knowledge-cards',
+      eventHandler((event) => {
+        const query = new URL(event.node.req.url || '', 'http://localhost').searchParams
+        const search = query.get('filters[$or][0][title][$containsi]')
+
+        if (search) {
+          const filtered = knowledgeCardsFixture.data.filter(
+            (k) =>
+              k.attributes.title.toLowerCase().includes(search.toLowerCase()) ||
+              k.attributes.description?.toLowerCase().includes(search.toLowerCase())
+          )
+          return { data: filtered }
+        }
+
+        return knowledgeCardsFixture
+      })
+    )
 
     // Design log save endpoint (POST)
-    router.post('/api/design-logs', eventHandler(async (event) => {
-      // Mock successful save
-      return {
-        data: {
-          id: Math.floor(Math.random() * 1000),
-          attributes: {
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
+    router.post(
+      '/api/design-logs',
+      eventHandler(async (event) => {
+        // Mock successful save
+        return {
+          data: {
+            id: Math.floor(Math.random() * 1000),
+            attributes: {
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+            },
           },
-        },
-      }
-    }))
+        }
+      })
+    )
 
     // Upload endpoint (for design log attachments)
-    router.post('/api/upload', eventHandler(async () => {
-      return [{
-        id: Math.floor(Math.random() * 1000),
-        url: '/mock-upload.jpg',
-        name: 'mock-file.jpg',
-      }]
-    }))
+    router.post(
+      '/api/upload',
+      eventHandler(async () => {
+        return [
+          {
+            id: Math.floor(Math.random() * 1000),
+            url: '/mock-upload.jpg',
+            name: 'mock-file.jpg',
+          },
+        ]
+      })
+    )
 
     // Catch-all for unhandled routes
-    router.get('/**', eventHandler(() => {
-      return { data: [], meta: {} }
-    }))
+    router.get(
+      '/**',
+      eventHandler(() => {
+        return { data: [], meta: {} }
+      })
+    )
 
     app.use(router)
 

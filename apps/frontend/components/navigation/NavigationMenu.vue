@@ -23,12 +23,14 @@
         >
           <button
             type="button"
-            class="flex w-full items-center justify-between gap-3 rounded-xl px-4 py-3 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-900"
+            class="focus-visible:ring-primary-500 flex w-full items-center justify-between gap-3 rounded-xl px-4 py-3 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-900"
             :aria-expanded="String(isPartExpanded(part.id))"
             :aria-controls="sectionContentId(part.id)"
             @click="togglePart(part.id)"
           >
-            <span class="flex items-center gap-3 text-sm font-semibold text-gray-900 dark:text-gray-50">
+            <span
+              class="flex items-center gap-3 text-sm font-semibold text-gray-900 dark:text-gray-50"
+            >
               <span
                 class="flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold text-white shadow-sm"
                 :style="{ backgroundColor: part.color || defaultAccentColor }"
@@ -61,31 +63,46 @@
               :aria-label="`${part.title} lessons`"
             >
               <div class="space-y-4">
-                <div v-for="loop in part.loops" :key="loop.id" class="space-y-2" :data-test="`nav-loop-${loop.id}`">
-                  <p class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                <div
+                  v-for="loop in part.loops"
+                  :key="loop.id"
+                  class="space-y-2"
+                  :data-test="`nav-loop-${loop.id}`"
+                >
+                  <p
+                    class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400"
+                  >
                     {{ loop.title }}
                   </p>
                   <ul role="list" class="space-y-1.5">
-                    <li v-for="lesson in loop.lessons" :key="lesson.code" :data-test="`nav-lesson-${lesson.code}`">
+                    <li
+                      v-for="lesson in loop.lessons"
+                      :key="lesson.code"
+                      :data-test="`nav-lesson-${lesson.code}`"
+                    >
                       <NuxtLink
                         :to="lessonRoute(lesson)"
-                        class="lesson-link group flex items-center justify-between gap-3 rounded-lg border border-transparent px-3 py-2 text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-900"
+                        class="lesson-link focus-visible:ring-primary-500 group flex items-center justify-between gap-3 rounded-lg border border-transparent px-3 py-2 text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-900"
                         :data-active="isActiveLesson(lesson) ? 'true' : undefined"
                         :aria-current="isActiveLesson(lesson) ? 'page' : undefined"
                         :style="isActiveLesson(lesson) ? activeLessonStyle(part.color) : undefined"
                         @click="handleLessonClick(lesson)"
                       >
                         <div class="flex min-w-0 flex-col gap-0.5">
-                          <span class="text-[11px] font-semibold uppercase tracking-wide text-gray-500 transition group-data-[active=true]:text-[color:var(--lesson-active-color)] dark:text-gray-400">
+                          <span
+                            class="text-[11px] font-semibold uppercase tracking-wide text-gray-500 transition group-data-[active=true]:text-[color:var(--lesson-active-color)] dark:text-gray-400"
+                          >
                             {{ lesson.code }}
                           </span>
-                          <span class="truncate text-sm font-medium text-gray-900 transition group-data-[active=true]:text-[color:var(--lesson-active-color)] dark:text-gray-100">
+                          <span
+                            class="truncate text-sm font-medium text-gray-900 transition group-data-[active=true]:text-[color:var(--lesson-active-color)] dark:text-gray-100"
+                          >
                             {{ lesson.title }}
                           </span>
                         </div>
                         <Icon
                           name="i-heroicons-arrow-right-16-solid"
-                          class="h-4 w-4 text-gray-400 opacity-0 transition group-hover:opacity-100 group-data-[active=true]:opacity-100 group-data-[active=true]:text-[color:var(--lesson-active-color)] dark:text-gray-500"
+                          class="h-4 w-4 text-gray-400 opacity-0 transition group-hover:opacity-100 group-data-[active=true]:text-[color:var(--lesson-active-color)] group-data-[active=true]:opacity-100 dark:text-gray-500"
                           aria-hidden="true"
                         />
                       </NuxtLink>
@@ -94,7 +111,9 @@
                 </div>
 
                 <div v-if="getStandaloneLessons(part).length" class="space-y-2">
-                  <p class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                  <p
+                    class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400"
+                  >
                     Additional Lessons
                   </p>
                   <ul role="list" class="space-y-1.5">
@@ -105,23 +124,27 @@
                     >
                       <NuxtLink
                         :to="lessonRoute(lesson)"
-                        class="lesson-link group flex items-center justify-between gap-3 rounded-lg border border-transparent px-3 py-2 text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-900"
+                        class="lesson-link focus-visible:ring-primary-500 group flex items-center justify-between gap-3 rounded-lg border border-transparent px-3 py-2 text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-900"
                         :data-active="isActiveLesson(lesson) ? 'true' : undefined"
                         :aria-current="isActiveLesson(lesson) ? 'page' : undefined"
                         :style="isActiveLesson(lesson) ? activeLessonStyle(part.color) : undefined"
                         @click="handleLessonClick(lesson)"
                       >
                         <div class="flex min-w-0 flex-col gap-0.5">
-                          <span class="text-[11px] font-semibold uppercase tracking-wide text-gray-500 transition group-data-[active=true]:text-[color:var(--lesson-active-color)] dark:text-gray-400">
+                          <span
+                            class="text-[11px] font-semibold uppercase tracking-wide text-gray-500 transition group-data-[active=true]:text-[color:var(--lesson-active-color)] dark:text-gray-400"
+                          >
                             {{ lesson.code }}
                           </span>
-                          <span class="truncate text-sm font-medium text-gray-900 transition group-data-[active=true]:text-[color:var(--lesson-active-color)] dark:text-gray-100">
+                          <span
+                            class="truncate text-sm font-medium text-gray-900 transition group-data-[active=true]:text-[color:var(--lesson-active-color)] dark:text-gray-100"
+                          >
                             {{ lesson.title }}
                           </span>
                         </div>
                         <Icon
                           name="i-heroicons-arrow-right-16-solid"
-                          class="h-4 w-4 text-gray-400 opacity-0 transition group-hover:opacity-100 group-data-[active=true]:opacity-100 group-data-[active=true]:text-[color:var(--lesson-active-color)] dark:text-gray-500"
+                          class="h-4 w-4 text-gray-400 opacity-0 transition group-hover:opacity-100 group-data-[active=true]:text-[color:var(--lesson-active-color)] group-data-[active=true]:opacity-100 dark:text-gray-500"
                           aria-hidden="true"
                         />
                       </NuxtLink>
@@ -163,7 +186,7 @@ const standaloneLessonsByPart = computed(() => {
   parts.value.forEach((part) => {
     map.set(
       part.id,
-      part.lessons.filter((lesson) => !lesson.loopId),
+      part.lessons.filter((lesson) => !lesson.loopId)
     )
   })
 
@@ -195,7 +218,7 @@ watch(
       expandedParts.value = next
     }
   },
-  { immediate: true },
+  { immediate: true }
 )
 
 watch(
@@ -210,7 +233,7 @@ watch(
       next.add(part.id)
       expandedParts.value = next
     }
-  },
+  }
 )
 
 function sectionContentId(partId: string): string {
@@ -273,8 +296,10 @@ function activeLessonStyle(color?: string | null) {
   const base = color && typeof color === 'string' ? color : defaultAccentColor
   return {
     '--lesson-active-color': base,
-    '--lesson-active-bg': hexToRgba(base, 0.12) ?? hexToRgba(defaultAccentColor, 0.12) ?? 'rgba(14, 165, 233, 0.12)',
-    '--lesson-active-border': hexToRgba(base, 0.4) ?? hexToRgba(defaultAccentColor, 0.4) ?? 'rgba(14, 165, 233, 0.4)',
+    '--lesson-active-bg':
+      hexToRgba(base, 0.12) ?? hexToRgba(defaultAccentColor, 0.12) ?? 'rgba(14, 165, 233, 0.12)',
+    '--lesson-active-border':
+      hexToRgba(base, 0.4) ?? hexToRgba(defaultAccentColor, 0.4) ?? 'rgba(14, 165, 233, 0.4)',
   }
 }
 </script>
@@ -282,7 +307,9 @@ function activeLessonStyle(color?: string | null) {
 <style scoped>
 .nav-collapse-enter-active,
 .nav-collapse-leave-active {
-  transition: max-height 0.25s ease, opacity 0.2s ease;
+  transition:
+    max-height 0.25s ease,
+    opacity 0.2s ease;
 }
 
 .nav-collapse-enter-from,

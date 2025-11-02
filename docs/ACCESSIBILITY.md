@@ -35,14 +35,14 @@
 
 ### 全局快捷键
 
-| 快捷键 | 功能 |
-|--------|------|
-| `Tab` | 前进到下一个可交互元素 |
-| `Shift + Tab` | 后退到上一个可交互元素 |
-| `Enter` / `Space` | 激活按钮或链接 |
-| `Escape` | 关闭模态框或菜单 |
-| `Cmd/Ctrl + K` | 打开全局搜索 |
-| `Arrow Keys` | 在列表或菜单中导航 |
+| 快捷键            | 功能                   |
+| ----------------- | ---------------------- |
+| `Tab`             | 前进到下一个可交互元素 |
+| `Shift + Tab`     | 后退到上一个可交互元素 |
+| `Enter` / `Space` | 激活按钮或链接         |
+| `Escape`          | 关闭模态框或菜单       |
+| `Cmd/Ctrl + K`    | 打开全局搜索           |
+| `Arrow Keys`      | 在列表或菜单中导航     |
 
 ### 跳转链接
 
@@ -53,6 +53,7 @@
 ### 焦点指示器
 
 所有可交互元素都有清晰可见的焦点指示器：
+
 - 蓝色外框
 - 高对比度
 - 符合 WCAG 2.1 AA 标准
@@ -60,11 +61,13 @@
 ### 焦点管理
 
 #### 模态框
+
 - 打开时焦点自动移至模态框内
 - 焦点限制在模态框内（焦点陷阱）
 - 关闭时焦点返回到触发元素
 
 #### 页面导航
+
 - 页面切换后焦点重置到主内容区域
 - 保留用户的导航位置
 
@@ -145,12 +148,13 @@ announceAssertive('表单提交失败，请检查错误信息')
 
 ```html
 <h1>页面主标题</h1>
-  <h2>章节标题</h2>
-    <h3>子章节标题</h3>
-      <h4>小节标题</h4>
+<h2>章节标题</h2>
+<h3>子章节标题</h3>
+<h4>小节标题</h4>
 ```
 
 规则：
+
 - 每页只有一个 `<h1>`
 - 标题层级连续，不跳级
 - 使用语义标题而非样式类
@@ -189,6 +193,7 @@ announceAssertive('表单提交失败，请检查错误信息')
 ### 常用 ARIA 属性
 
 #### aria-label
+
 为元素提供无可见文本时的标签：
 
 ```vue
@@ -198,6 +203,7 @@ announceAssertive('表单提交失败，请检查错误信息')
 ```
 
 #### aria-labelledby
+
 引用其他元素作为标签：
 
 ```vue
@@ -208,33 +214,28 @@ announceAssertive('表单提交失败，请检查错误信息')
 ```
 
 #### aria-describedby
+
 提供额外的描述信息：
 
 ```vue
-<input
-  id="password"
-  type="password"
-  aria-describedby="password-requirements"
-/>
+<input id="password" type="password" aria-describedby="password-requirements" />
 <div id="password-requirements">
   密码必须至少 8 个字符
 </div>
 ```
 
 #### aria-expanded
+
 指示可展开元素的状态：
 
 ```vue
-<button
-  aria-expanded="false"
-  aria-controls="menu"
-  @click="toggleMenu"
->
+<button aria-expanded="false" aria-controls="menu" @click="toggleMenu">
   菜单
 </button>
 ```
 
 #### aria-hidden
+
 隐藏装饰性元素：
 
 ```vue
@@ -242,6 +243,7 @@ announceAssertive('表单提交失败，请检查错误信息')
 ```
 
 #### aria-live
+
 宣布动态内容更新：
 
 ```vue
@@ -317,6 +319,7 @@ announceAssertive('表单提交失败，请检查错误信息')
 ### 色盲友好
 
 设计考虑色盲用户：
+
 - 避免仅用红绿区分
 - 使用模式、形状、文本辅助
 - 测试色盲模拟器
@@ -344,12 +347,7 @@ announceAssertive('表单提交失败，请检查错误信息')
 <label for="email">
   邮箱 <span aria-label="必填">*</span>
 </label>
-<input
-  id="email"
-  type="email"
-  required
-  aria-required="true"
-/>
+<input id="email" type="email" required aria-required="true" />
 ```
 
 ### 错误提示
@@ -366,12 +364,7 @@ announceAssertive('表单提交失败，请检查错误信息')
       :aria-invalid="hasError"
       aria-describedby="password-error"
     />
-    <div
-      v-if="hasError"
-      id="password-error"
-      role="alert"
-      class="text-red-600"
-    >
+    <div v-if="hasError" id="password-error" role="alert" class="text-red-600">
       密码必须至少 8 个字符
     </div>
   </div>
@@ -384,11 +377,7 @@ announceAssertive('表单提交失败，请检查错误信息')
 
 ```vue
 <label for="phone">电话号码</label>
-<input
-  id="phone"
-  type="tel"
-  aria-describedby="phone-format"
-/>
+<input id="phone" type="tel" aria-describedby="phone-format" />
 <div id="phone-format" class="text-sm text-gray-600">
   格式：xxx-xxxx-xxxx
 </div>
@@ -402,18 +391,10 @@ announceAssertive('表单提交失败，请检查错误信息')
 
 ```vue
 <template>
-  <div
-    v-if="isOpen"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="modal-title"
-    ref="modalRef"
-  >
+  <div v-if="isOpen" role="dialog" aria-modal="true" aria-labelledby="modal-title" ref="modalRef">
     <h2 id="modal-title">{{ title }}</h2>
     <div>{{ content }}</div>
-    <button @click="close" aria-label="关闭对话框">
-      关闭
-    </button>
+    <button @click="close" aria-label="关闭对话框">关闭</button>
   </div>
 </template>
 
@@ -450,11 +431,7 @@ useFocusTrap(containerRef, isActive, {
 ```vue
 <template>
   <div>
-    <button
-      :disabled="isLoading"
-      :aria-busy="isLoading"
-      aria-live="polite"
-    >
+    <button :disabled="isLoading" :aria-busy="isLoading" aria-live="polite">
       <span v-if="isLoading">加载中...</span>
       <span v-else>提交</span>
     </button>
@@ -474,35 +451,36 @@ import { runAxeCheck, formatAxeViolations } from '../helpers/accessibility'
 test('should have no accessibility violations', async ({ page }) => {
   await page.goto('/')
   const results = await runAxeCheck(page)
-  
-  expect(
-    results.violations.length,
-    formatAxeViolations(results.violations)
-  ).toBe(0)
+
+  expect(results.violations.length, formatAxeViolations(results.violations)).toBe(0)
 })
 ```
 
 ### 手动测试清单
 
 #### 键盘导航
+
 - [ ] 所有功能可通过键盘访问
 - [ ] Tab 顺序逻辑合理
 - [ ] 焦点指示器清晰可见
 - [ ] 没有键盘陷阱（除了模态框）
 
 #### 屏幕阅读器
+
 - [ ] 使用 NVDA 或 VoiceOver 测试
 - [ ] 所有内容都能被读出
 - [ ] ARIA 标签准确描述功能
 - [ ] 动态内容更新有宣布
 
 #### 视觉检查
+
 - [ ] 文本对比度符合 WCAG AA
 - [ ] 200% 缩放下仍可用
 - [ ] 不仅依赖颜色传达信息
 - [ ] 高对比度模式下正常显示
 
 #### 表单测试
+
 - [ ] 所有字段有关联标签
 - [ ] 错误消息清晰且可访问
 - [ ] 必填字段明确标记
@@ -511,16 +489,19 @@ test('should have no accessibility violations', async ({ page }) => {
 ### 测试工具
 
 #### 浏览器扩展
+
 - **axe DevTools**: Chrome/Firefox 扩展
 - **WAVE**: Web 无障碍评估工具
 - **Lighthouse**: Chrome DevTools 内置
 
 #### 屏幕阅读器
+
 - **Windows**: NVDA (免费), JAWS (商业)
 - **macOS**: VoiceOver (内置)
 - **Linux**: Orca (免费)
 
 #### 命令行工具
+
 ```bash
 # 运行 Lighthouse 无障碍审计
 pnpm lighthouse
@@ -534,25 +515,25 @@ pnpm test:e2e tests/e2e/specs/accessibility.spec.ts
 ### 创建新组件时
 
 1. **使用语义化 HTML**
+
    ```vue
    <!-- ✅ 好 -->
    <button @click="submit">提交</button>
-   
+
    <!-- ❌ 坏 -->
    <div @click="submit">提交</div>
    ```
 
 2. **添加 ARIA 属性**
+
    ```vue
-   <button
-     aria-label="删除项目"
-     aria-describedby="delete-warning"
-   >
+   <button aria-label="删除项目" aria-describedby="delete-warning">
      <Icon name="delete" aria-hidden="true" />
    </button>
    ```
 
 3. **确保键盘可访问**
+
    ```vue
    <div
      role="button"
@@ -566,8 +547,9 @@ pnpm test:e2e tests/e2e/specs/accessibility.spec.ts
    ```
 
 4. **提供焦点样式**
+
    ```vue
-   <button class="focus:ring-2 focus:ring-primary-500 focus:outline-none">
+   <button class="focus:ring-primary-500 focus:outline-none focus:ring-2">
      按钮
    </button>
    ```
@@ -636,6 +618,7 @@ pnpm test:e2e tests/e2e/specs/accessibility.spec.ts
 ### Composables 参考
 
 #### useFocusTrap
+
 ```typescript
 import { useFocusTrap } from '~/composables/useFocusTrap'
 
@@ -648,6 +631,7 @@ useFocusTrap(modalRef, isOpen, {
 ```
 
 #### useAriaLive
+
 ```typescript
 import { useAriaLive } from '~/composables/useAriaLive'
 
@@ -663,15 +647,18 @@ announceAssertive('操作失败')
 ## 参考资源
 
 ### 官方文档
+
 - [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
 - [ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/)
 - [MDN Accessibility](https://developer.mozilla.org/en-US/docs/Web/Accessibility)
 
 ### 中文资源
+
 - [Web 无障碍标准](https://www.w3.org/translations/WCAG21-zh/)
 - [无障碍开发指南](https://developer.mozilla.org/zh-CN/docs/Web/Accessibility)
 
 ### 工具和库
+
 - [axe-core](https://github.com/dequelabs/axe-core)
 - [@axe-core/playwright](https://github.com/dequelabs/axe-core-npm/tree/develop/packages/playwright)
 - [VueUse - useEventListener](https://vueuse.org/core/useEventListener/)

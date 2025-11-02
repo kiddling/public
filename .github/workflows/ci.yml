@@ -33,6 +33,21 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Validate environment variables
+        run: pnpm check:env
+        env:
+          APP_KEYS: ${{ secrets.APP_KEYS || 'ci-test-key-1,ci-test-key-2,ci-test-key-3,ci-test-key-4' }}
+          API_TOKEN_SALT: ${{ secrets.API_TOKEN_SALT || 'ci-test-salt-123' }}
+          ADMIN_JWT_SECRET: ${{ secrets.ADMIN_JWT_SECRET || 'ci-test-admin-secret' }}
+          TRANSFER_TOKEN_SALT: ${{ secrets.TRANSFER_TOKEN_SALT || 'ci-test-transfer-salt' }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET || 'ci-test-jwt-secret' }}
+          DATABASE_CLIENT: sqlite
+          DATABASE_FILENAME: .tmp/data.db
+          CLIENT_URL: http://localhost:3000
+          NUXT_PUBLIC_STRAPI_URL: ${{ secrets.NUXT_PUBLIC_STRAPI_URL || 'http://localhost:1337' }}
+          NUXT_STRAPI_API_TOKEN: ${{ secrets.NUXT_STRAPI_API_TOKEN || 'ci-test-token' }}
+          NUXT_PUBLIC_API_BASE_URL: ${{ secrets.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:1337' }}
+
       - name: Lint check
         run: pnpm lint
 
@@ -333,6 +348,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
       - name: Setup deployment environment
         run: |
           chmod +x scripts/deploy/*.sh
@@ -343,6 +372,25 @@ jobs:
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Validate deployment environment variables
+        run: pnpm check:env
+        env:
+          APP_KEYS: ${{ secrets.APP_KEYS }}
+          API_TOKEN_SALT: ${{ secrets.API_TOKEN_SALT }}
+          ADMIN_JWT_SECRET: ${{ secrets.ADMIN_JWT_SECRET }}
+          TRANSFER_TOKEN_SALT: ${{ secrets.TRANSFER_TOKEN_SALT }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          DATABASE_CLIENT: ${{ secrets.DATABASE_CLIENT || 'postgres' }}
+          DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
+          DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
+          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+          DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+          CLIENT_URL: ${{ secrets.CLIENT_URL || 'https://your-domain.com' }}
+          NUXT_PUBLIC_STRAPI_URL: ${{ secrets.NUXT_PUBLIC_STRAPI_URL }}
+          NUXT_STRAPI_API_TOKEN: ${{ secrets.NUXT_STRAPI_API_TOKEN }}
+          NUXT_PUBLIC_API_BASE_URL: ${{ secrets.NUXT_PUBLIC_API_BASE_URL }}
 
       - name: Run preflight checks
         id: preflight

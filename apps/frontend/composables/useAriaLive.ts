@@ -27,7 +27,7 @@ export function initAriaLiveRegion() {
   container.setAttribute('aria-atomic', 'true')
   container.className = 'sr-only'
   container.id = 'aria-live-region'
-  
+
   document.body.appendChild(container)
   liveRegionContainer.value = container
 }
@@ -36,10 +36,7 @@ export function initAriaLiveRegion() {
  * Announce a message to screen readers
  */
 export function useAriaLive() {
-  const announce = (
-    message: string,
-    options: LiveRegionOptions = {}
-  ): void => {
+  const announce = (message: string, options: LiveRegionOptions = {}): void => {
     if (import.meta.server) return
 
     // Ensure live region exists

@@ -41,10 +41,14 @@ export function useErrorHandling(options: UseErrorHandlingOptions = {}) {
     const errorMessage = getErrorMessage(error)
     const errorCode = getErrorCode(error)
 
-    logger.error(context || 'Error occurred', {
-      code: errorCode,
-      message: errorMessage,
-    }, error)
+    logger.error(
+      context || 'Error occurred',
+      {
+        code: errorCode,
+        message: errorMessage,
+      },
+      error
+    )
 
     // Show notification if enabled
     if (options.showNotification !== false) {
@@ -76,12 +80,12 @@ export function useErrorHandling(options: UseErrorHandlingOptions = {}) {
       return result
     } catch (error) {
       handleError(error, context)
-      
+
       // Return fallback data if provided
       if (options.fallbackData !== undefined) {
         return options.fallbackData
       }
-      
+
       return null
     }
   }
@@ -121,7 +125,7 @@ export function useSafeAsyncData<T>(
       if (retry && attempts < retryAttempts) {
         attempts++
         logger.info(`Retrying async data fetch (${attempts}/${retryAttempts})`)
-        await new Promise(resolve => setTimeout(resolve, retryDelay * attempts))
+        await new Promise((resolve) => setTimeout(resolve, retryDelay * attempts))
         return wrappedHandler()
       }
 

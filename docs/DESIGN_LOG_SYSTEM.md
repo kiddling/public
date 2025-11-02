@@ -5,6 +5,7 @@
 ## 📋 功能特性
 
 ### 1. 设计日志表单
+
 - ✅ 交互式表单，结构化记录设计过程
 - ✅ 项目信息管理
 - ✅ 设计过程追踪
@@ -12,18 +13,21 @@
 - ✅ 标签和分类
 
 ### 2. 本地存储 (IndexedDB)
+
 - ✅ 离线可用，无需网络连接
 - ✅ 自动保存和草稿功能
 - ✅ 快速搜索和过滤
 - ✅ 数据导入导出
 
 ### 3. PDF 导出
+
 - ✅ 一键导出为专业 PDF 文档
 - ✅ 格式化布局
 - ✅ 支持中文字体
 - ✅ 批量导出
 
 ### 4. 设计模板 API
+
 - ✅ Strapi 自定义 API 端点
 - ✅ 模板管理
 - ✅ RESTful 接口
@@ -110,41 +114,41 @@ http://localhost:3000/design-log
 
 ```typescript
 interface DesignLog {
-  id?: number;
-  projectName: string;
-  projectType: string;
-  date: string;
-  objective: string;
-  inspiration: string;
-  process: string;
-  challenges: string;
-  outcome: string;
-  reflection: string;
-  nextSteps: string;
-  tags: string;
-  tools: string;
-  createdAt: string;
-  updatedAt: string;
+  id?: number
+  projectName: string
+  projectType: string
+  date: string
+  objective: string
+  inspiration: string
+  process: string
+  challenges: string
+  outcome: string
+  reflection: string
+  nextSteps: string
+  tags: string
+  tools: string
+  createdAt: string
+  updatedAt: string
 }
 ```
 
 ### 存储 API
 
 ```typescript
-const { 
-  saveDesignLog,        // 保存新日志
-  updateDesignLog,      // 更新日志
-  getDesignLog,         // 获取单个日志
-  getAllDesignLogs,     // 获取所有日志
-  deleteDesignLog,      // 删除日志
-  searchDesignLogs,     // 搜索日志
-  filterByDate,         // 按日期过滤
-  filterByType,         // 按类型过滤
-  saveDraft,            // 保存草稿
-  getAllDrafts,         // 获取所有草稿
-  exportAllLogs,        // 导出为 JSON
-  importLogs            // 导入 JSON
-} = useDesignLogStorage();
+const {
+  saveDesignLog, // 保存新日志
+  updateDesignLog, // 更新日志
+  getDesignLog, // 获取单个日志
+  getAllDesignLogs, // 获取所有日志
+  deleteDesignLog, // 删除日志
+  searchDesignLogs, // 搜索日志
+  filterByDate, // 按日期过滤
+  filterByType, // 按类型过滤
+  saveDraft, // 保存草稿
+  getAllDrafts, // 获取所有草稿
+  exportAllLogs, // 导出为 JSON
+  importLogs, // 导入 JSON
+} = useDesignLogStorage()
 ```
 
 ### 使用示例
@@ -157,13 +161,13 @@ const id = await saveDesignLog({
   date: '2024-01-01',
   objective: '设计一个现代化的个人网站',
   // ... 其他字段
-});
+})
 
 // 搜索日志
-const results = await searchDesignLogs('网站');
+const results = await searchDesignLogs('网站')
 
 // 按日期过滤
-const logs = await filterByDate('2024-01-01', '2024-12-31');
+const logs = await filterByDate('2024-01-01', '2024-12-31')
 ```
 
 ## 📄 PDF 导出
@@ -171,10 +175,10 @@ const logs = await filterByDate('2024-01-01', '2024-12-31');
 ### 导出功能
 
 ```typescript
-const { 
-  exportToPDF,          // 导出单个日志
-  exportMultipleToPDF   // 导出多个日志
-} = useDesignLogPDF();
+const {
+  exportToPDF, // 导出单个日志
+  exportMultipleToPDF, // 导出多个日志
+} = useDesignLogPDF()
 ```
 
 ### PDF 格式
@@ -210,10 +214,10 @@ const {
 
 ```typescript
 // 导出单个日志
-await exportToPDF(logData);
+await exportToPDF(logData)
 
 // 导出多个日志
-await exportMultipleToPDF([log1, log2, log3]);
+await exportMultipleToPDF([log1, log2, log3])
 ```
 
 ## 🔌 设计模板 API
@@ -244,24 +248,24 @@ apps/cms/src/api/design-template/
 
 ```typescript
 // 获取所有模板
-const response = await fetch('http://localhost:1337/api/design-templates');
-const templates = await response.json();
+const response = await fetch('http://localhost:1337/api/design-templates')
+const templates = await response.json()
 
 // 创建新模板
 const response = await fetch('http://localhost:1337/api/design-templates', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`
+    Authorization: `Bearer ${token}`,
   },
   body: JSON.stringify({
     data: {
       name: '网页设计模板',
       description: '用于网页设计项目的模板',
-      fields: ['目标', '用户研究', '线框图', '视觉设计']
-    }
-  })
-});
+      fields: ['目标', '用户研究', '线框图', '视觉设计'],
+    },
+  }),
+})
 ```
 
 ## 🎨 界面组件
@@ -273,6 +277,7 @@ const response = await fetch('http://localhost:1337/api/design-templates', {
 **Props**: 无
 
 **Features**:
+
 - 表单验证
 - 自动保存草稿
 - 实时反馈
@@ -291,6 +296,7 @@ const response = await fetch('http://localhost:1337/api/design-templates', {
 `pages/design-log.vue` 提供完整的日志管理界面。
 
 **Features**:
+
 - 标签页导航
 - 搜索和过滤
 - 批量操作
@@ -307,11 +313,7 @@ const response = await fetch('http://localhost:1337/api/design-templates', {
   <!-- 添加自定义字段 -->
   <div>
     <label for="customField">自定义字段</label>
-    <input
-      id="customField"
-      v-model="formData.customField"
-      type="text"
-    />
+    <input id="customField" v-model="formData.customField" type="text" />
   </div>
 </template>
 
@@ -319,7 +321,7 @@ const response = await fetch('http://localhost:1337/api/design-templates', {
 // 更新接口
 interface DesignLogData {
   // ... 现有字段
-  customField: string;
+  customField: string
 }
 </script>
 ```
@@ -330,8 +332,8 @@ interface DesignLogData {
 
 ```typescript
 // 修改字体、颜色、布局等
-doc.setFontSize(20);
-doc.setTextColor(0, 0, 255);
+doc.setFontSize(20)
+doc.setTextColor(0, 0, 255)
 ```
 
 ### 扩展存储功能
@@ -340,14 +342,14 @@ doc.setTextColor(0, 0, 255);
 
 ```typescript
 // 添加新的索引
-logStore.createIndex('customIndex', 'customField');
+logStore.createIndex('customIndex', 'customField')
 
 // 添加新的查询方法
 const filterByCustom = async (value: string) => {
-  const db = await initDB();
-  const index = db.transaction(STORE_NAME).store.index('customIndex');
-  return await index.getAll(value);
-};
+  const db = await initDB()
+  const index = db.transaction(STORE_NAME).store.index('customIndex')
+  return await index.getAll(value)
+}
 ```
 
 ## 📊 数据管理
@@ -356,31 +358,31 @@ const filterByCustom = async (value: string) => {
 
 ```typescript
 // 导出所有日志为 JSON
-const { exportAllLogs } = useDesignLogStorage();
-const json = await exportAllLogs();
+const { exportAllLogs } = useDesignLogStorage()
+const json = await exportAllLogs()
 
 // 下载文件
-const blob = new Blob([json], { type: 'application/json' });
-const url = URL.createObjectURL(blob);
-const a = document.createElement('a');
-a.href = url;
-a.download = 'design-logs.json';
-a.click();
+const blob = new Blob([json], { type: 'application/json' })
+const url = URL.createObjectURL(blob)
+const a = document.createElement('a')
+a.href = url
+a.download = 'design-logs.json'
+a.click()
 ```
 
 ### 导入数据
 
 ```typescript
 // 从 JSON 导入日志
-const { importLogs } = useDesignLogStorage();
+const { importLogs } = useDesignLogStorage()
 
 // 读取文件
-const fileInput = document.querySelector('input[type="file"]');
+const fileInput = document.querySelector('input[type="file"]')
 fileInput.addEventListener('change', async (e) => {
-  const file = e.target.files[0];
-  const text = await file.text();
-  await importLogs(text);
-});
+  const file = e.target.files[0]
+  const text = await file.text()
+  await importLogs(text)
+})
 ```
 
 ### 数据备份
@@ -404,11 +406,11 @@ fileInput.addEventListener('change', async (e) => {
 
 ```typescript
 // 清空所有日志
-const db = await openDB('DesignLogDB', 1);
-await db.clear('designLogs');
+const db = await openDB('DesignLogDB', 1)
+await db.clear('designLogs')
 
 // 清空所有草稿
-await db.clear('designDrafts');
+await db.clear('designDrafts')
 ```
 
 ### 浏览器兼容性
@@ -437,16 +439,19 @@ await db.clear('designDrafts');
 ### 课堂活动
 
 **每周设计日志**:
+
 - 学生每周完成一个设计项目
 - 填写设计日志
 - 导出 PDF 提交
 
 **设计回顾会**:
+
 - 学生分享设计日志
 - 讨论挑战和解决方案
 - 互相学习和反馈
 
 **期末作品集**:
+
 - 导出整学期的设计日志
 - 制作专业作品集
 - 申请或求职使用
@@ -473,6 +478,7 @@ await db.clear('designDrafts');
 **症状**: 无法保存日志
 
 **解决**:
+
 1. 检查浏览器兼容性
 2. 确保浏览器允许使用 IndexedDB
 3. 检查是否在隐私/无痕模式
@@ -483,6 +489,7 @@ await db.clear('designDrafts');
 **症状**: 导出 PDF 时出错
 
 **解决**:
+
 1. 检查 jsPDF 库是否正确加载
 2. 确保数据格式正确
 3. 查看浏览器控制台错误信息
@@ -493,6 +500,7 @@ await db.clear('designDrafts');
 **症状**: 搜索无结果
 
 **解决**:
+
 1. 检查搜索关键词是否正确
 2. 确保日志包含搜索的内容
 3. 尝试清除筛选条件

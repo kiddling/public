@@ -3,11 +3,11 @@
 本文档提供 Nuxt 3 + Strapi CMS 单体仓库的完整部署指南。
 
 > **📘 Production Deployment:** For zero-downtime production deployments using blue/green strategy, see [DEPLOYMENT_STRATEGY.md](./DEPLOYMENT_STRATEGY.md)
-> 
+>
 > **✅ Production Readiness:** For comprehensive go-live checklist covering security, performance, backups, and compliance, see [PRODUCTION_CHECKLIST.md](./PRODUCTION_CHECKLIST.md)
-> 
+>
 > **🇨🇳 China Deployment:** For complete production deployment guide covering Alibaba Cloud/Tencent Cloud, ICP filing, domain setup, SSL certificates, Nginx configuration, and deployment best practices for China, see [PRODUCTION_DEPLOYMENT_CN.md](./PRODUCTION_DEPLOYMENT_CN.md)
-> 
+>
 > **🇨🇳 China Compliance:** For ICP filing, data residency, privacy protection, and regulatory requirements for operating in China, see [COMPLIANCE_CHECKLIST_CN.md](./COMPLIANCE_CHECKLIST_CN.md)
 
 ## 📋 目录
@@ -149,7 +149,7 @@ module.exports = {
       exec_mode: 'fork',
     },
   ],
-};
+}
 ```
 
 #### 4. 启动应用
@@ -330,11 +330,11 @@ pnpm add --filter frontend prom-client
 
 ```typescript
 // apps/frontend/server/api/metrics.get.ts
-import { register } from 'prom-client';
+import { register } from 'prom-client'
 
 export default defineEventHandler(() => {
-  return register.metrics();
-});
+  return register.metrics()
+})
 ```
 
 #### 健康检查端点
@@ -520,6 +520,7 @@ find $BACKUP_DIR -name "*.tar.gz" -mtime +7 -delete
 ### 1. Nginx 配置
 
 参考 `config/nginx/nginx.conf` 进行优化:
+
 - 启用 gzip 压缩
 - 配置静态资源缓存
 - 设置速率限制
@@ -537,6 +538,7 @@ EXPLAIN ANALYZE SELECT * FROM table_name;
 ### 3. CDN 配置
 
 将静态资源部署到 CDN:
+
 - 上传文件
 - 图片资源
 - CSS/JS 文件
@@ -570,9 +572,7 @@ docker-compose up -d redis
 ```vue
 <template>
   <footer>
-    <a href="https://beian.miit.gov.cn/" target="_blank">
-      ICP备案号：京ICP备12345678号
-    </a>
+    <a href="https://beian.miit.gov.cn/" target="_blank"> ICP备案号：京ICP备12345678号 </a>
   </footer>
 </template>
 ```
@@ -580,21 +580,25 @@ docker-compose up -d redis
 ## 相关文档
 
 ### Production Deployment
+
 - **[DEPLOYMENT_STRATEGY.md](./DEPLOYMENT_STRATEGY.md)** - Blue/green deployment strategy with zero-downtime
 - **[DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md)** - Pre/post-deployment checklist
 - **[PRODUCTION_CHECKLIST.md](./PRODUCTION_CHECKLIST.md)** - Production go-live readiness checklist
 - **[scripts/deploy/README.md](../scripts/deploy/README.md)** - Deployment scripts documentation
 
 ### Compliance and Regulations
+
 - **[COMPLIANCE_CHECKLIST_CN.md](./COMPLIANCE_CHECKLIST_CN.md)** - China compliance requirements (ICP filing, data residency, PIPL)
 - **[compliance/PRIVACY_POLICY_TEMPLATE.md](./compliance/PRIVACY_POLICY_TEMPLATE.md)** - Privacy policy template
 - **[compliance/COOKIE_CONSENT_TEMPLATE.md](./compliance/COOKIE_CONSENT_TEMPLATE.md)** - Cookie consent implementation guide
 
 ### Testing and Monitoring
+
 - **[tests/smoke/README.md](../tests/smoke/README.md)** - Smoke tests for deployment verification
 - **[MONITORING.md](./MONITORING.md)** - Monitoring and observability setup
 
 ### Infrastructure
+
 - **[DOCKER.md](./DOCKER.md)** - Docker configuration and best practices
 - **[.github/workflows/ci.yml](../.github/workflows/ci.yml)** - CI/CD pipeline configuration
 

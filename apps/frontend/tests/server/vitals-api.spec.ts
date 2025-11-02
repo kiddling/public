@@ -58,8 +58,8 @@ describe('Web Vitals API Endpoint', () => {
 
   it('validates rating values', () => {
     const validRatings = ['good', 'needs-improvement', 'poor']
-    
-    validRatings.forEach(rating => {
+
+    validRatings.forEach((rating) => {
       const metric = { ...validPayload.metrics[0], rating }
       expect(['good', 'needs-improvement', 'poor']).toContain(metric.rating)
     })
@@ -91,15 +91,15 @@ describe('Web Vitals API Endpoint', () => {
 
   it('supports all web vitals metric types', () => {
     const metricTypes = ['LCP', 'FID', 'CLS', 'FCP', 'TTFB', 'INP']
-    
-    metricTypes.forEach(type => {
+
+    metricTypes.forEach((type) => {
       const metric = {
         id: `test-${type}`,
         name: type,
         value: 100,
         rating: 'good' as const,
       }
-      
+
       expect(metric.name).toBe(type)
       expect(metricTypes).toContain(metric.name)
     })
@@ -136,7 +136,7 @@ describe('Web Vitals API Endpoint', () => {
     }
 
     expect(batchPayload.metrics).toHaveLength(5)
-    expect(batchPayload.metrics.every(m => m.rating === 'good')).toBe(true)
+    expect(batchPayload.metrics.every((m) => m.rating === 'good')).toBe(true)
   })
 
   it('validates payload structure', () => {
@@ -148,13 +148,13 @@ describe('Web Vitals API Endpoint', () => {
 
   it('handles connection type metadata', () => {
     const connectionTypes = ['4g', '3g', '2g', 'slow-2g', 'wifi', undefined]
-    
-    connectionTypes.forEach(type => {
+
+    connectionTypes.forEach((type) => {
       const payload = {
         ...validPayload,
         connectionType: type,
       }
-      
+
       if (type) {
         expect(payload.connectionType).toBe(type)
       } else {
@@ -195,8 +195,8 @@ describe('Web Vitals API Endpoint', () => {
 
   it('validates sampling rate', () => {
     const samplingRates = [0.0, 0.1, 0.5, 1.0]
-    
-    samplingRates.forEach(rate => {
+
+    samplingRates.forEach((rate) => {
       expect(rate).toBeGreaterThanOrEqual(0)
       expect(rate).toBeLessThanOrEqual(1)
     })

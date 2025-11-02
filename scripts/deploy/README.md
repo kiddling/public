@@ -13,6 +13,7 @@ The deployment process uses a blue/green strategy where two identical production
 Runs comprehensive pre-deployment checks to ensure the system is ready for deployment.
 
 **Checks performed:**
+
 - Code quality (lint, format, typecheck)
 - Unit tests
 - Environment variable validation
@@ -22,15 +23,18 @@ Runs comprehensive pre-deployment checks to ensure the system is ready for deplo
 - Build verification
 
 **Usage:**
+
 ```bash
 ./scripts/deploy/preflight.sh
 ```
 
 **Exit codes:**
+
 - `0` - All checks passed
 - `1` - One or more checks failed
 
 **Logs:**
+
 - `logs/preflight_TIMESTAMP.log`
 
 ---
@@ -40,6 +44,7 @@ Runs comprehensive pre-deployment checks to ensure the system is ready for deplo
 Determines which deployment stack (blue or green) is currently serving production traffic.
 
 **Detection methods (in order):**
+
 1. Nginx symlink (`/etc/nginx/sites-enabled/active`)
 2. Environment variable (`$ACTIVE_DEPLOYMENT_COLOR`)
 3. Marker file (`/tmp/active-deployment-color`)
@@ -47,12 +52,14 @@ Determines which deployment stack (blue or green) is currently serving productio
 5. Default to blue if unable to determine
 
 **Usage:**
+
 ```bash
 ACTIVE_COLOR=$(./scripts/deploy/get-active-color.sh)
 echo "Active deployment color: $ACTIVE_COLOR"
 ```
 
 **Output:**
+
 - `blue` or `green`
 
 ---
@@ -62,6 +69,7 @@ echo "Active deployment color: $ACTIVE_COLOR"
 Main deployment orchestration script that performs zero-downtime blue/green deployment.
 
 **Process:**
+
 1. Determine active and target deployment colors
 2. Create database backup
 3. Build Docker images with version tags
@@ -73,6 +81,7 @@ Main deployment orchestration script that performs zero-downtime blue/green depl
 9. Monitor post-cutover metrics
 
 **Usage:**
+
 ```bash
 # Basic deployment
 ./scripts/deploy/blue-green-deploy.sh
@@ -91,6 +100,7 @@ Main deployment orchestration script that performs zero-downtime blue/green depl
 ```
 
 **Options:**
+
 - `--version VERSION` - Docker image version tag (default: git commit sha)
 - `--target-color COLOR` - Force deployment to specific color (blue|green)
 - `--skip-migrations` - Skip database migrations
@@ -99,15 +109,18 @@ Main deployment orchestration script that performs zero-downtime blue/green depl
 - `--help` - Show help message
 
 **Environment variables:**
+
 - `DEPLOYMENT_ENV` - Deployment environment (default: production)
 - `CONTAINER_REGISTRY` - Docker registry URL
 - `DATABASE_BACKUP` - Enable database backup (default: true)
 
 **Logs:**
+
 - `logs/deployment_TIMESTAMP.log`
 
 **Automatic rollback:**
 The script automatically triggers rollback if:
+
 - Health checks fail
 - Post-deployment verification fails
 - Timeout waiting for services
@@ -119,6 +132,7 @@ The script automatically triggers rollback if:
 Reverts deployment to the previous stack in case of issues.
 
 **Process:**
+
 1. Determine target rollback color
 2. Verify target stack is healthy
 3. Optionally rollback database migrations
@@ -126,6 +140,7 @@ Reverts deployment to the previous stack in case of issues.
 5. Verify rollback success
 
 **Usage:**
+
 ```bash
 # Interactive rollback (with confirmations)
 ./scripts/deploy/rollback.sh
@@ -141,12 +156,14 @@ Reverts deployment to the previous stack in case of issues.
 ```
 
 **Options:**
+
 - `--target-color COLOR` - Color to roll back to (blue|green)
 - `--skip-db` - Skip database rollback
 - `--force` - Force rollback without confirmations
 - `--help` - Show help message
 
 **Logs:**
+
 - `logs/rollback_TIMESTAMP.log`
 
 **⚠️ Warning:**
@@ -159,6 +176,7 @@ Database rollbacks can be destructive. Only perform database rollback if migrati
 Runs comprehensive verification checks after deployment to ensure the system is functioning correctly.
 
 **Checks performed:**
+
 - Frontend health endpoint
 - CMS health endpoint
 - Homepage loading
@@ -169,6 +187,7 @@ Runs comprehensive verification checks after deployment to ensure the system is 
 - Playwright smoke tests (if configured)
 
 **Usage:**
+
 ```bash
 # Verify specific deployment color
 ./scripts/deploy/post-deploy-verify.sh --target-color green --frontend-port 3001 --cms-port 1338
@@ -181,6 +200,7 @@ Runs comprehensive verification checks after deployment to ensure the system is 
 ```
 
 **Options:**
+
 - `--target-color COLOR` - Color to verify (blue|green)
 - `--frontend-port PORT` - Frontend port (default: 3000)
 - `--cms-port PORT` - CMS port (default: 1337)
@@ -189,10 +209,12 @@ Runs comprehensive verification checks after deployment to ensure the system is 
 - `--help` - Show help message
 
 **Logs:**
+
 - `logs/verification_TIMESTAMP.log`
 - `logs/verification_TIMESTAMP_report.json` (machine-readable report)
 
 **Exit codes:**
+
 - `0` - All verifications passed
 - `1` - One or more verifications failed
 
@@ -232,6 +254,7 @@ curl http://localhost/api/health
 These scripts are integrated into the GitHub Actions CI/CD pipeline (`.github/workflows/ci.yml`).
 
 The automated deployment process:
+
 1. Runs preflight checks
 2. Waits for manual approval (if configured)
 3. Executes blue/green deployment
@@ -244,14 +267,17 @@ The automated deployment process:
 ## Port Configuration
 
 ### Blue Stack
+
 - Frontend: `3000`
 - CMS: `1337`
 
 ### Green Stack
+
 - Frontend: `3001`
 - CMS: `1338`
 
 ### Shared Services
+
 - PostgreSQL: `5432`
 - Redis: `6379`
 - Nginx: `80`, `443`
@@ -360,6 +386,7 @@ docker logs nuxt-strapi-cms-green
 ### Health Checks Timeout
 
 If health checks timeout during deployment:
+
 1. Check container logs: `docker logs <container-name>`
 2. Verify environment variables are set correctly
 3. Ensure database is accessible
@@ -368,6 +395,7 @@ If health checks timeout during deployment:
 ### Database Migration Failures
 
 If migrations fail:
+
 1. Review migration files in `database/migrations/`
 2. Check database connectivity
 3. Verify migration compatibility
@@ -376,6 +404,7 @@ If migrations fail:
 ### Traffic Not Switching
 
 If traffic doesn't switch to new stack:
+
 1. Verify Nginx configuration
 2. Check Nginx logs: `docker logs nuxt-strapi-nginx`
 3. Manually test endpoints: `curl http://localhost:3000/api/health`
@@ -384,6 +413,7 @@ If traffic doesn't switch to new stack:
 ### Rollback Not Working
 
 If rollback fails:
+
 1. Check if target stack containers are running
 2. Manually start target stack: `docker-compose -f docker-compose.blue.yml up -d`
 3. Manually switch Nginx config
@@ -437,6 +467,7 @@ If rollback fails:
 ## Support
 
 For issues or questions about deployment:
+
 1. Check troubleshooting section above
 2. Review deployment logs in `logs/` directory
 3. Consult the team documentation
@@ -446,6 +477,6 @@ For issues or questions about deployment:
 
 ## Version History
 
-| Version | Date | Changes |
-|---------|------|---------|
-| 1.0 | 2024-01-15 | Initial blue/green deployment implementation |
+| Version | Date       | Changes                                      |
+| ------- | ---------- | -------------------------------------------- |
+| 1.0     | 2024-01-15 | Initial blue/green deployment implementation |

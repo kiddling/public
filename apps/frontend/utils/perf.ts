@@ -33,7 +33,7 @@ class PerformanceTracker {
     try {
       const time = performance.now()
       this.marks.set(name, time)
-      
+
       if (performance.mark) {
         performance.mark(name)
       }
@@ -186,29 +186,25 @@ export function perfMeasure(name: string, startMark: string, endMark?: string): 
  * Decorator to measure function execution time
  */
 export function measurePerformance(label?: string) {
-  return function (
-    target: any,
-    propertyKey: string,
-    descriptor: PropertyDescriptor
-  ) {
+  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value
     const measureName = label || `${target.constructor.name}.${propertyKey}`
 
     descriptor.value = async function (...args: any[]) {
       const startMark = `${measureName}-start`
       const endMark = `${measureName}-end`
-      
+
       perfMark(startMark)
-      
+
       try {
         const result = await originalMethod.apply(this, args)
         perfMark(endMark)
-        
+
         const duration = perfMeasure(measureName, startMark, endMark)
         if (process.dev && duration !== null) {
           console.log(`[Perf] ${measureName}: ${duration.toFixed(2)}ms`)
         }
-        
+
         return result
       } catch (error) {
         perfMark(endMark)
@@ -223,10 +219,7 @@ export function measurePerformance(label?: string) {
 /**
  * Async wrapper to measure function execution
  */
-export async function measureAsync<T>(
-  name: string,
-  fn: () => Promise<T>
-): Promise<T> {
+export async function measureAsync<T>(name: string, fn: () => Promise<T>): Promise<T> {
   const startMark = `${name}-start`
   const endMark = `${name}-end`
 
@@ -235,7 +228,7 @@ export async function measureAsync<T>(
   try {
     const result = await fn()
     perfMark(endMark)
-    
+
     const duration = perfMeasure(name, startMark, endMark)
     if (process.dev && duration !== null) {
       console.log(`[Perf] ${name}: ${duration.toFixed(2)}ms`)
@@ -260,7 +253,7 @@ export function measureSync<T>(name: string, fn: () => T): T {
   try {
     const result = fn()
     perfMark(endMark)
-    
+
     const duration = perfMeasure(name, startMark, endMark)
     if (process.dev && duration !== null) {
       console.log(`[Perf] ${name}: ${duration.toFixed(2)}ms`)

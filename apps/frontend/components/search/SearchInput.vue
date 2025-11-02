@@ -9,7 +9,7 @@
       ref="inputRef"
       v-model="searchStore.query"
       type="search"
-      class="w-full rounded-xl border border-gray-200 bg-white/90 py-3 pl-11 pr-3 text-base text-gray-900 shadow-sm focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-100 dark:border-gray-700 dark:bg-gray-900/80 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-primary-400 dark:focus:ring-primary-500/30"
+      class="focus:border-primary-400 focus:ring-primary-100 dark:focus:border-primary-400 dark:focus:ring-primary-500/30 w-full rounded-xl border border-gray-200 bg-white/90 py-3 pl-11 pr-3 text-base text-gray-900 shadow-sm focus:outline-none focus:ring-2 dark:border-gray-700 dark:bg-gray-900/80 dark:text-gray-100 dark:placeholder:text-gray-500"
       placeholder="Search lessons, cards, works, resources..."
       role="combobox"
       aria-label="Global search input"
@@ -112,13 +112,16 @@ defineExpose({
 })
 
 // Focus input when modal opens
-watch(() => searchStore.isOpen, (isOpen) => {
-  if (isOpen) {
-    nextTick(() => {
-      inputRef.value?.focus()
-    })
+watch(
+  () => searchStore.isOpen,
+  (isOpen) => {
+    if (isOpen) {
+      nextTick(() => {
+        inputRef.value?.focus()
+      })
+    }
   }
-})
+)
 
 onMounted(() => {
   if (searchStore.isOpen) {

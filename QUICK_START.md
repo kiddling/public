@@ -45,6 +45,7 @@ pnpm dev
 ```
 
 访问：
+
 - **Frontend**: http://localhost:3000
 - **CMS Admin**: http://localhost:1337/admin
 
@@ -92,6 +93,7 @@ pnpm docker:down
 ### 2. 全局搜索
 
 按 `Cmd/Ctrl + K` 打开搜索：
+
 - 搜索课程、知识卡片、学生作品
 - 智能中文分词
 - 键盘导航
@@ -151,19 +153,23 @@ pnpm lighthouse       # 运行 Lighthouse CI
 ## 📚 文档导航
 
 ### 核心文档
+
 - [README.md](./README.md) - 项目概览
 - [CHANGELOG.md](./CHANGELOG.md) - 更新日志
 
 ### 技术文档
+
 - [部署指南](./docs/DEPLOYMENT.md) - 生产环境部署
 - [Docker 文档](./docs/DOCKER.md) - 容器化详解
 - [监控指南](./docs/MONITORING.md) - 性能监控
 - [优化总结](./docs/OPTIMIZATION_SUMMARY.md) - 批量优化任务
 
 ### 功能文档
+
 - [设计日志系统](./docs/DESIGN_LOG_SYSTEM.md) - 设计工具套件
 
 ### 应用文档
+
 - [Frontend README](./apps/frontend/README.md) - Nuxt 应用文档
 - [CMS README](./apps/cms/README.md) - Strapi 文档
 
@@ -272,6 +278,7 @@ docker system prune -a
 ## 🎓 学习资源
 
 ### 技术栈
+
 - [Nuxt 3 文档](https://nuxt.com/)
 - [Strapi 文档](https://docs.strapi.io)
 - [Vue 3 文档](https://vuejs.org/)
@@ -279,6 +286,7 @@ docker system prune -a
 - [Docker 文档](https://docs.docker.com/)
 
 ### 工具
+
 - [pnpm 文档](https://pnpm.io/)
 - [TypeScript 文档](https://www.typescriptlang.org/)
 - [Lighthouse 文档](https://developer.chrome.com/docs/lighthouse/)

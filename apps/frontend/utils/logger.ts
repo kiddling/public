@@ -173,17 +173,17 @@ class Logger {
 // Export singleton instance
 export const logger = Logger.getInstance()
 
-// Composable for Vue components  
+// Composable for Vue components
 export function useLogger() {
   // Check if we're in a component context
   let route: ReturnType<typeof useRoute> | null = null
-  
+
   try {
     route = useRoute()
   } catch {
     // Not in a component context, that's ok
   }
-  
+
   const createContext = (additionalContext?: LogContext): LogContext => {
     return {
       ...(route ? { url: route.fullPath } : {}),
@@ -193,13 +193,11 @@ export function useLogger() {
   }
 
   return {
-    debug: (message: string, context?: LogContext) => 
-      logger.debug(message, createContext(context)),
-    info: (message: string, context?: LogContext) => 
-      logger.info(message, createContext(context)),
-    warn: (message: string, context?: LogContext, error?: Error | unknown) => 
+    debug: (message: string, context?: LogContext) => logger.debug(message, createContext(context)),
+    info: (message: string, context?: LogContext) => logger.info(message, createContext(context)),
+    warn: (message: string, context?: LogContext, error?: Error | unknown) =>
       logger.warn(message, createContext(context), error),
-    error: (message: string, context?: LogContext, error?: Error | unknown) => 
+    error: (message: string, context?: LogContext, error?: Error | unknown) =>
       logger.error(message, createContext(context), error),
     addBreadcrumb: (message: string) => logger.addBreadcrumb(message),
     getBreadcrumbs: () => logger.getBreadcrumbs(),

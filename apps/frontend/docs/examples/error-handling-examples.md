@@ -21,11 +21,9 @@
     <div v-if="error" class="error-message">
       {{ error }}
     </div>
-    
-    <div v-else-if="loading">
-      加载中...
-    </div>
-    
+
+    <div v-else-if="loading">加载中...</div>
+
     <div v-else>
       <!-- 内容 -->
     </div>
@@ -46,7 +44,7 @@ const data = ref(null)
 const fetchData = async () => {
   loading.value = true
   error.value = null
-  
+
   try {
     logger.addBreadcrumb('开始加载数据')
     const response = await $fetch('/api/data')
@@ -73,7 +71,7 @@ onMounted(() => {
 <template>
   <div>
     <h1>我的页面</h1>
-    
+
     <!-- 保护可能出错的组件 -->
     <ErrorBoundary
       error-title="内容加载失败"
@@ -128,20 +126,15 @@ const createUser = async (userData: any) => {
       maxRetries: 3,
       timeout: 10000,
     })
-    
+
     notification.success('成功', '用户创建成功')
     return user
   } catch (error) {
     logger.error('创建用户失败', { userData }, error)
-    notification.error(
-      '创建失败',
-      '无法创建用户，请检查输入后重试',
-      0,
-      {
-        label: '查看详情',
-        onClick: () => console.error(error),
-      }
-    )
+    notification.error('创建失败', '无法创建用户，请检查输入后重试', 0, {
+      label: '查看详情',
+      onClick: () => console.error(error),
+    })
     throw error
   }
 }
@@ -183,12 +176,7 @@ watch(error, (newError) => {
   <form @submit.prevent="handleSubmit">
     <div>
       <label for="email">邮箱</label>
-      <input
-        id="email"
-        v-model="form.email"
-        type="email"
-        :class="{ 'error': errors.email }"
-      />
+      <input id="email" v-model="form.email" type="email" :class="{ error: errors.email }" />
       <span v-if="errors.email" class="error-message">
         {{ errors.email }}
       </span>
@@ -200,7 +188,7 @@ watch(error, (newError) => {
         id="password"
         v-model="form.password"
         type="password"
-        :class="{ 'error': errors.password }"
+        :class="{ error: errors.password }"
       />
       <span v-if="errors.password" class="error-message">
         {{ errors.password }}
@@ -231,7 +219,7 @@ const submitting = ref(false)
 
 const validateForm = (): boolean => {
   // 清除之前的错误
-  Object.keys(errors).forEach(key => delete errors[key])
+  Object.keys(errors).forEach((key) => delete errors[key])
 
   let isValid = true
 
@@ -277,7 +265,7 @@ const handleSubmit = async () => {
 
     logger.info('登录成功', { email: form.email })
     notification.success('成功', '登录成功')
-    
+
     // 跳转到首页
     await navigateTo('/')
   } catch (error: any) {
@@ -334,24 +322,16 @@ const handleFileUpload = async (event: Event) => {
 
   if (file.size > maxSize) {
     logger.warn('文件过大', { size: file.size, maxSize })
-    notification.error(
-      '文件过大',
-      `文件大小超过限制（最大 ${maxSize / 1024 / 1024}MB）`,
-      0,
-      {
-        label: '了解更多',
-        onClick: () => navigateTo('/help/file-upload'),
-      }
-    )
+    notification.error('文件过大', `文件大小超过限制（最大 ${maxSize / 1024 / 1024}MB）`, 0, {
+      label: '了解更多',
+      onClick: () => navigateTo('/help/file-upload'),
+    })
     return
   }
 
   if (!allowedTypes.includes(file.type)) {
     logger.warn('文件类型不支持', { type: file.type })
-    notification.error(
-      '文件类型不支持',
-      '仅支持 JPEG、PNG 和 WebP 格式'
-    )
+    notification.error('文件类型不支持', '仅支持 JPEG、PNG 和 WebP 格式')
     return
   }
 
@@ -397,15 +377,10 @@ const handleFileUpload = async (event: Event) => {
     notification.success('上传成功', `${file.name} 已成功上传`)
   } catch (error: any) {
     logger.error('文件上传失败', { filename: file.name }, error)
-    notification.error(
-      '上传失败',
-      '文件上传失败，请重试',
-      0,
-      {
-        label: '重试',
-        onClick: () => handleFileUpload(event),
-      }
-    )
+    notification.error('上传失败', '文件上传失败，请重试', 0, {
+      label: '重试',
+      onClick: () => handleFileUpload(event),
+    })
   } finally {
     uploading.value = false
     progress.value = 0
@@ -452,10 +427,7 @@ watch(isOnline, async (online) => {
 // 显示离线提示
 watchEffect(() => {
   if (!isOnline.value && isStale.value) {
-    notification.warning(
-      '数据可能已过期',
-      '您正在离线模式下查看缓存数据'
-    )
+    notification.warning('数据可能已过期', '您正在离线模式下查看缓存数据')
   }
 })
 </script>
@@ -485,22 +457,22 @@ onMounted(() => {
 // 监控 API 调用
 const fetchData = async () => {
   const startTime = performance.now()
-  
+
   try {
     const data = await $fetch('/api/data')
     const duration = performance.now() - startTime
-    
+
     monitoring.recordApiCall('/api/data', duration, true)
     logger.debug('API 调用成功', { duration })
-    
+
     return data
   } catch (error) {
     const duration = performance.now() - startTime
-    
+
     monitoring.recordApiCall('/api/data', duration, false)
     monitoring.recordError('API_ERROR', 'Failed to fetch data')
     logger.error('API 调用失败', { duration }, error)
-    
+
     throw error
   }
 }
@@ -511,7 +483,7 @@ const handleUserAction = (action: string) => {
     page: route.path,
     timestamp: new Date().toISOString(),
   })
-  
+
   logger.addBreadcrumb(`用户操作: ${action}`)
 }
 
@@ -519,7 +491,7 @@ const handleUserAction = (action: string) => {
 onMounted(() => {
   const checkInterval = setInterval(() => {
     const errorRate = monitoring.getErrorRate(3600000) // 最近1小时
-    
+
     if (errorRate > 100) {
       logger.warn('错误率过高', { errorRate })
       // 发送告警
@@ -546,10 +518,7 @@ const notification = useNotification()
 const maxRetries = 3
 const retryDelay = 2000
 
-const fetchWithRetry = async (
-  fetcher: () => Promise<any>,
-  attempt = 1
-): Promise<any> => {
+const fetchWithRetry = async (fetcher: () => Promise<any>, attempt = 1): Promise<any> => {
   try {
     logger.debug(`尝试获取数据 (${attempt}/${maxRetries})`)
     return await fetcher()
@@ -560,8 +529,8 @@ const fetchWithRetry = async (
     }
 
     logger.warn(`获取失败，将在 ${retryDelay}ms 后重试`, { attempt })
-    
-    await new Promise(resolve => setTimeout(resolve, retryDelay * attempt))
+
+    await new Promise((resolve) => setTimeout(resolve, retryDelay * attempt))
     return fetchWithRetry(fetcher, attempt + 1)
   }
 }
@@ -573,15 +542,10 @@ const loadData = async () => {
     return data
   } catch (error) {
     logger.error('数据加载失败', {}, error)
-    notification.error(
-      '加载失败',
-      '多次尝试后仍无法加载数据，请稍后重试',
-      0,
-      {
-        label: '重试',
-        onClick: () => loadData(),
-      }
-    )
+    notification.error('加载失败', '多次尝试后仍无法加载数据，请稍后重试', 0, {
+      label: '重试',
+      onClick: () => loadData(),
+    })
   }
 }
 </script>
@@ -599,6 +563,7 @@ const loadData = async () => {
 6. **性能监控**：记录和分析关键指标
 
 记住始终：
+
 - 记录详细的日志信息
 - 提供友好的中文错误消息
 - 实现优雅降级

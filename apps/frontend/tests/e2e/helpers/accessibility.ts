@@ -58,7 +58,7 @@ export async function runAxeCheck(
   }
 
   const results = await builder.analyze()
-  
+
   return {
     violations: results.violations,
   }
@@ -75,7 +75,7 @@ export function formatAxeViolations(violations: AxeResults['violations']): strin
   return violations
     .map((violation, index) => {
       const nodes = violation.nodes
-        .map(node => `    - ${node.html}\n      Target: ${node.target.join(', ')}`)
+        .map((node) => `    - ${node.html}\n      Target: ${node.target.join(', ')}`)
         .join('\n')
 
       return `
@@ -97,12 +97,12 @@ ${nodes}
 export async function testKeyboardNavigation(page: Page) {
   // Test Tab navigation
   await page.keyboard.press('Tab')
-  
+
   // Check if focus is visible
   const focusedElement = await page.evaluate(() => {
     const element = document.activeElement
     if (!element) return null
-    
+
     const styles = window.getComputedStyle(element)
     return {
       tagName: element.tagName,
@@ -110,7 +110,7 @@ export async function testKeyboardNavigation(page: Page) {
       outlineWidth: styles.outlineWidth,
     }
   })
-  
+
   return focusedElement
 }
 
@@ -121,7 +121,7 @@ export async function checkAriaLabels(page: Page, selector: string): Promise<boo
   return await page.evaluate((sel) => {
     const element = document.querySelector(sel)
     if (!element) return false
-    
+
     return !!(
       element.getAttribute('aria-label') ||
       element.getAttribute('aria-labelledby') ||
@@ -138,6 +138,6 @@ export async function checkAriaLive(page: Page): Promise<string[]> {
     const liveRegions = Array.from(
       document.querySelectorAll('[aria-live], [role="status"], [role="alert"]')
     )
-    return liveRegions.map(el => el.textContent || '')
+    return liveRegions.map((el) => el.textContent || '')
   })
 }

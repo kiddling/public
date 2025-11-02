@@ -1,7 +1,7 @@
 <template>
   <article
     :class="[
-      'knowledge-card rounded-lg shadow-md overflow-hidden transition-all duration-200 hover:shadow-lg',
+      'knowledge-card overflow-hidden rounded-lg shadow-md transition-all duration-200 hover:shadow-lg',
       cardTypeClass,
       { 'cursor-pointer': clickable },
     ]"
@@ -9,16 +9,16 @@
     @click="handleClick"
   >
     <!-- Card Header with Type Badge -->
-    <div class="card-header p-4 pb-3 flex justify-between items-start">
+    <div class="card-header flex items-start justify-between p-4 pb-3">
       <div class="flex-1">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 line-clamp-2">
+        <h3 class="line-clamp-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
           {{ card.title }}
         </h3>
-        <div v-if="card.tags && card.tags.length > 0" class="flex flex-wrap gap-2 mt-2">
+        <div v-if="card.tags && card.tags.length > 0" class="mt-2 flex flex-wrap gap-2">
           <span
             v-for="tag in card.tags"
             :key="tag"
-            class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
+            class="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-300"
           >
             {{ tag }}
           </span>
@@ -26,7 +26,7 @@
       </div>
       <span
         :class="[
-          'ml-3 px-3 py-1 text-xs font-semibold rounded-full whitespace-nowrap',
+          'ml-3 whitespace-nowrap rounded-full px-3 py-1 text-xs font-semibold',
           typeColorClass,
         ]"
       >
@@ -40,15 +40,15 @@
         v-if="isImage(firstMedia)"
         :src="firstMedia.url"
         :alt="firstMedia.alternativeText || card.title || 'Knowledge card image'"
-        class="w-full h-48 object-cover"
+        class="h-48 w-full object-cover"
         loading="lazy"
         preset="card"
         sizes="sm:400px md:400px lg:400px"
       />
-      <div v-else-if="isVideo(firstMedia)" class="relative h-48 flex items-center justify-center">
+      <div v-else-if="isVideo(firstMedia)" class="relative flex h-48 items-center justify-center">
         <div class="absolute inset-0 bg-gradient-to-br from-gray-700 to-gray-900"></div>
         <svg
-          class="relative z-10 w-16 h-16 text-white opacity-75"
+          class="relative z-10 h-16 w-16 text-white opacity-75"
           fill="currentColor"
           viewBox="0 0 20 20"
         >
@@ -57,10 +57,12 @@
           />
         </svg>
       </div>
-      <div v-else-if="isPdf(firstMedia)" class="relative h-48 flex items-center justify-center">
-        <div class="absolute inset-0 bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900 dark:to-red-800"></div>
+      <div v-else-if="isPdf(firstMedia)" class="relative flex h-48 items-center justify-center">
+        <div
+          class="absolute inset-0 bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900 dark:to-red-800"
+        ></div>
         <svg
-          class="relative z-10 w-16 h-16 text-red-600 dark:text-red-300"
+          class="relative z-10 h-16 w-16 text-red-600 dark:text-red-300"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -79,25 +81,25 @@
     <div class="card-content p-4">
       <!-- Theory Type -->
       <div v-if="card.type === 'Theory'" class="space-y-2">
-        <p v-if="card.description" class="text-sm text-gray-700 dark:text-gray-300 line-clamp-3">
+        <p v-if="card.description" class="line-clamp-3 text-sm text-gray-700 dark:text-gray-300">
           {{ card.description }}
         </p>
       </div>
 
       <!-- Case Study Type -->
       <div v-else-if="card.type === 'Case Study'" class="space-y-2">
-        <p v-if="card.description" class="text-sm text-gray-700 dark:text-gray-300 line-clamp-4">
+        <p v-if="card.description" class="line-clamp-4 text-sm text-gray-700 dark:text-gray-300">
           {{ card.description }}
         </p>
       </div>
 
       <!-- Student Work Type -->
       <div v-else-if="card.type === 'Student Work'" class="space-y-2">
-        <p v-if="card.description" class="text-sm text-gray-700 dark:text-gray-300 line-clamp-3">
+        <p v-if="card.description" class="line-clamp-3 text-sm text-gray-700 dark:text-gray-300">
           {{ card.description }}
         </p>
         <div v-if="card.media.length > 1" class="flex items-center text-xs text-gray-500">
-          <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+          <svg class="mr-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
             <path
               fill-rule="evenodd"
               d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
@@ -111,18 +113,20 @@
       <!-- AI Prompt Type -->
       <div v-else-if="card.type === 'AI Prompt'" class="space-y-3">
         <div v-if="card.promptText" class="relative">
-          <div class="prompt-preview bg-gray-50 dark:bg-gray-800 rounded p-3 text-sm font-mono text-gray-800 dark:text-gray-200 line-clamp-3">
+          <div
+            class="prompt-preview line-clamp-3 rounded bg-gray-50 p-3 font-mono text-sm text-gray-800 dark:bg-gray-800 dark:text-gray-200"
+          >
             {{ card.promptText }}
           </div>
           <button
             v-if="showCopyButton"
-            class="absolute top-2 right-2 p-1.5 bg-white dark:bg-gray-700 rounded hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+            class="absolute right-2 top-2 rounded bg-white p-1.5 transition-colors hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600"
             :title="copied ? 'Copied!' : 'Copy prompt'"
             @click.stop="copyPrompt"
           >
             <svg
               v-if="!copied"
-              class="w-4 h-4 text-gray-600 dark:text-gray-300"
+              class="h-4 w-4 text-gray-600 dark:text-gray-300"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -136,12 +140,17 @@
             </svg>
             <svg
               v-else
-              class="w-4 h-4 text-green-600 dark:text-green-400"
+              class="h-4 w-4 text-green-600 dark:text-green-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"
+              />
             </svg>
           </button>
         </div>
@@ -153,14 +162,18 @@
       <!-- Extended Thinking Type -->
       <div v-else-if="card.type === 'Extended Thinking'" class="space-y-2">
         <div class="flex items-start space-x-2">
-          <svg class="w-5 h-5 text-purple-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+          <svg
+            class="mt-0.5 h-5 w-5 flex-shrink-0 text-purple-500"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
             <path
               fill-rule="evenodd"
               d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
               clip-rule="evenodd"
             />
           </svg>
-          <p class="text-sm text-gray-700 dark:text-gray-300 line-clamp-4">
+          <p class="line-clamp-4 text-sm text-gray-700 dark:text-gray-300">
             {{ card.description }}
           </p>
         </div>
@@ -168,9 +181,12 @@
     </div>
 
     <!-- Card Footer -->
-    <div v-if="showFooter" class="card-footer px-4 pb-4 pt-2 flex justify-between items-center border-t border-gray-100 dark:border-gray-700">
+    <div
+      v-if="showFooter"
+      class="card-footer flex items-center justify-between border-t border-gray-100 px-4 pb-4 pt-2 dark:border-gray-700"
+    >
       <div class="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -181,31 +197,42 @@
         <span v-if="card.publishedAt">{{ formatDate(card.publishedAt) }}</span>
         <span v-else-if="card.createdAt">{{ formatDate(card.createdAt) }}</span>
       </div>
-      
+
       <div class="flex items-center space-x-2">
         <button
           v-if="showQrButton && card.qrLink"
-          class="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+          class="rounded p-1 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
           title="View QR code"
           @click.stop="$emit('show-qr')"
         >
-          <svg class="w-4 h-4 text-gray-600 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+          <svg
+            class="h-4 w-4 text-gray-600 dark:text-gray-400"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
             <path
               fill-rule="evenodd"
               d="M3 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm2 2V5h1v1H5zM3 13a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3zm2 2v-1h1v1H5zM13 3a1 1 0 00-1 1v3a1 1 0 001 1h3a1 1 0 001-1V4a1 1 0 00-1-1h-3zm1 2v1h1V5h-1z"
               clip-rule="evenodd"
             />
-            <path d="M11 4a1 1 0 10-2 0v1a1 1 0 002 0V4zM10 7a1 1 0 011 1v1h2a1 1 0 110 2h-3a1 1 0 01-1-1V8a1 1 0 011-1zM16 9a1 1 0 100 2 1 1 0 000-2zM9 13a1 1 0 011-1h1a1 1 0 110 2v2a1 1 0 11-2 0v-3zM7 11a1 1 0 100-2H4a1 1 0 100 2h3zM17 13a1 1 0 01-1 1h-2a1 1 0 110-2h2a1 1 0 011 1zM16 17a1 1 0 100-2h-3a1 1 0 100 2h3z" />
+            <path
+              d="M11 4a1 1 0 10-2 0v1a1 1 0 002 0V4zM10 7a1 1 0 011 1v1h2a1 1 0 110 2h-3a1 1 0 01-1-1V8a1 1 0 011-1zM16 9a1 1 0 100 2 1 1 0 000-2zM9 13a1 1 0 011-1h1a1 1 0 110 2v2a1 1 0 11-2 0v-3zM7 11a1 1 0 100-2H4a1 1 0 100 2h3zM17 13a1 1 0 01-1 1h-2a1 1 0 110-2h2a1 1 0 011 1zM16 17a1 1 0 100-2h-3a1 1 0 100 2h3z"
+            />
           </svg>
         </button>
-        
+
         <button
           v-if="showShareButton"
-          class="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+          class="rounded p-1 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
           title="Share card"
           @click.stop="$emit('share')"
         >
-          <svg class="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg
+            class="h-4 w-4 text-gray-600 dark:text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
             <path
               stroke-linecap="round"
               stroke-linejoin="round"

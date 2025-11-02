@@ -20,29 +20,29 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20'
-          
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 8
-          
+
       - name: Install dependencies
         run: pnpm install
-        
+
       - name: Build Frontend
         run: pnpm build:frontend
-        
+
       - name: Check Bundle Budget
         run: pnpm bundle:check
-        
+
       - name: Upload Bundle Report
         if: always()
         uses: actions/upload-artifact@v3
@@ -73,7 +73,7 @@ Add bundle size information to PR comments:
 - name: Check Bundle Budget
   id: budget
   run: pnpm bundle:check || true
-  
+
 - name: Comment PR
   if: github.event_name == 'pull_request'
   uses: actions/github-script@v6
@@ -83,20 +83,20 @@ Add bundle size information to PR comments:
       const report = JSON.parse(
         fs.readFileSync('apps/frontend/.output/bundle-budget-report.json', 'utf8')
       );
-      
+
       const { summary, results } = report;
       const status = summary.hasViolations ? '❌' : '✅';
-      
+
       let comment = `## ${status} Bundle Budget Report\n\n`;
       comment += `**Total JS**: ${(summary.totalJSSize / 1024).toFixed(2)} KB (gzipped)\n`;
       comment += `**Total CSS**: ${(summary.totalCSSSize / 1024).toFixed(2)} KB\n\n`;
       comment += `### Budget Results\n\n`;
-      
+
       results.forEach(r => {
         const icon = r.passed ? '✅' : '❌';
         comment += `${icon} **${r.name}**: ${r.actual.toFixed(2)} KB / ${r.limit} KB (${r.percentage.toFixed(1)}%)\n`;
       });
-      
+
       github.rest.issues.createComment({
         issue_number: context.issue.number,
         owner: context.repo.owner,
@@ -148,20 +148,20 @@ Add to `Jenkinsfile`:
 ```groovy
 pipeline {
     agent any
-    
+
     stages {
         stage('Install') {
             steps {
                 sh 'pnpm install'
             }
         }
-        
+
         stage('Build') {
             steps {
                 sh 'pnpm build:frontend'
             }
         }
-        
+
         stage('Check Bundle Budget') {
             steps {
                 script {
@@ -169,7 +169,7 @@ pipeline {
                         script: 'pnpm bundle:check',
                         returnStatus: true
                     )
-                    
+
                     if (budgetCheck != 0) {
                         currentBuild.result = 'FAILURE'
                         error('Bundle budget exceeded!')
@@ -199,32 +199,32 @@ jobs:
       - image: cimg/node:20.0
     steps:
       - checkout
-      
+
       - restore_cache:
           keys:
             - v1-deps-{{ checksum "pnpm-lock.yaml" }}
-            
+
       - run:
           name: Install pnpm
           command: npm install -g pnpm@8
-          
+
       - run:
           name: Install dependencies
           command: pnpm install
-          
+
       - save_cache:
           key: v1-deps-{{ checksum "pnpm-lock.yaml" }}
           paths:
             - node_modules
-            
+
       - run:
           name: Build Frontend
           command: pnpm build:frontend
-          
+
       - run:
           name: Check Bundle Budget
           command: pnpm bundle:check
-          
+
       - store_artifacts:
           path: apps/frontend/.output/bundle-budget-report.json
 
@@ -247,13 +247,13 @@ Add to `.husky/pre-commit` or `.git/hooks/pre-commit`:
 # Only check bundle if there are changes to frontend
 if git diff --cached --name-only | grep -q "^apps/frontend/"; then
   echo "Frontend changes detected, checking bundle budget..."
-  
+
   # Build
   pnpm build:frontend
-  
+
   # Check budget with margin
   BUDGET_MARGIN=5 pnpm bundle:check
-  
+
   if [ $? -ne 0 ]; then
     echo "Bundle budget check failed. Commit rejected."
     exit 1

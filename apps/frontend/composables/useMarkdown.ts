@@ -30,7 +30,7 @@ export function useMarkdown(markdown: string | null | undefined): string {
   }
 
   const instance = getMarkdownInstance()
-  
+
   try {
     return instance.render(markdown)
   } catch (error) {
@@ -50,7 +50,7 @@ export function useMarkdownInline(markdown: string | null | undefined): string {
   }
 
   const instance = getMarkdownInstance()
-  
+
   try {
     return instance.renderInline(markdown)
   } catch (error) {
@@ -71,16 +71,16 @@ export function isMarkdown(content: unknown): boolean {
 
   // Check for common markdown patterns
   const markdownPatterns = [
-    /^#{1,6}\s/m,           // Headers
-    /\*\*.*\*\*/,           // Bold
-    /\*.*\*/,               // Italic
-    /\[.*\]\(.*\)/,         // Links
-    /^[-*+]\s/m,            // Unordered lists
-    /^\d+\.\s/m,            // Ordered lists
-    /^>\s/m,                // Blockquotes
-    /`[^`]+`/,              // Inline code
-    /```[\s\S]*```/,        // Code blocks
+    /^#{1,6}\s/m, // Headers
+    /\*\*.*\*\*/, // Bold
+    /\*.*\*/, // Italic
+    /\[.*\]\(.*\)/, // Links
+    /^[-*+]\s/m, // Unordered lists
+    /^\d+\.\s/m, // Ordered lists
+    /^>\s/m, // Blockquotes
+    /`[^`]+`/, // Inline code
+    /```[\s\S]*```/, // Code blocks
   ]
 
-  return markdownPatterns.some(pattern => pattern.test(content))
+  return markdownPatterns.some((pattern) => pattern.test(content))
 }

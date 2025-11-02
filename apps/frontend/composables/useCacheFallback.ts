@@ -44,7 +44,7 @@ class CacheManager {
       try {
         const storageObj = storage === 'local' ? localStorage : sessionStorage
         const cached = storageObj.getItem(key)
-        
+
         if (!cached) return null
 
         const { data, timestamp, ttl } = JSON.parse(cached)
@@ -139,7 +139,7 @@ export function useCacheFallback<T>(options: CacheOptions) {
       const cached = getCached()
       if (cached !== null) {
         logger.info('Using cached data', { key })
-        
+
         // Optionally fetch fresh data in background
         fetcher()
           .then((fresh) => {
@@ -158,11 +158,11 @@ export function useCacheFallback<T>(options: CacheOptions) {
     // Fetch fresh data
     try {
       const data = await fetcher()
-      
+
       if (updateCache) {
         setCache(data as T)
       }
-      
+
       return data
     } catch (error) {
       logger.error('Fetch failed, checking cache', { key }, error)

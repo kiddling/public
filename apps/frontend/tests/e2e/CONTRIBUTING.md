@@ -25,20 +25,15 @@ Always use `data-test` attributes for stable, semantic selectors:
 ```vue
 <!-- Component.vue -->
 <template>
-  <button 
-    data-test="submit-button"
-    @click="submit"
-  >
-    Submit
-  </button>
-  
+  <button data-test="submit-button" @click="submit">Submit</button>
+
   <div data-test="lesson-content">
     <h1 data-test="lesson-title">{{ title }}</h1>
     <div data-test="lesson-body" v-html="content" />
   </div>
-  
+
   <nav data-test="lesson-navigation">
-    <a 
+    <a
       v-for="lesson in lessons"
       :key="lesson.id"
       :data-test="`lesson-link-${lesson.id}`"
@@ -85,10 +80,10 @@ test.describe('Feature Name', () => {
   test('should do something', async ({ page }) => {
     // Arrange: setup test data
     const button = page.locator('[data-test="submit-button"]')
-    
+
     // Act: perform action
     await button.click()
-    
+
     // Assert: verify result
     const result = page.locator('[data-test="result"]')
     await expect(result).toHaveText('Success')
@@ -123,7 +118,11 @@ expect(focusInfo).toBeTruthy()
 #### Performance
 
 ```typescript
-import { capturePerformanceMetrics, DESKTOP_THRESHOLDS, formatPerformanceMetrics } from '../helpers/performance'
+import {
+  capturePerformanceMetrics,
+  DESKTOP_THRESHOLDS,
+  formatPerformanceMetrics,
+} from '../helpers/performance'
 
 const metrics = await capturePerformanceMetrics(page)
 console.log(formatPerformanceMetrics(metrics))
@@ -179,7 +178,10 @@ export const myFeatureFixture = {
 import { myFeatureFixture } from '../fixtures/my-feature'
 
 // In createRouter():
-router.get('/api/my-feature', eventHandler(() => myFeatureFixture))
+router.get(
+  '/api/my-feature',
+  eventHandler(() => myFeatureFixture)
+)
 ```
 
 ### 3. Use in Tests
@@ -187,7 +189,7 @@ router.get('/api/my-feature', eventHandler(() => myFeatureFixture))
 ```typescript
 test('should load my feature data', async ({ page }) => {
   await page.goto('/my-feature')
-  
+
   // Data will be loaded from fixture
   const items = page.locator('[data-test="feature-item"]')
   expect(await items.count()).toBe(1)
@@ -203,10 +205,10 @@ test('should submit form', async ({ page }) => {
   // Fill inputs
   await page.fill('[data-test="name-input"]', 'John Doe')
   await page.fill('[data-test="email-input"]', 'john@example.com')
-  
+
   // Submit
   await page.click('[data-test="submit-button"]')
-  
+
   // Verify success
   await expect(page.locator('[data-test="success-message"]')).toBeVisible()
 })
@@ -218,14 +220,14 @@ test('should submit form', async ({ page }) => {
 test('should open and close modal', async ({ page }) => {
   // Open modal
   await page.click('[data-test="open-modal"]')
-  
+
   const modal = page.locator('[data-test="modal"]')
   await expect(modal).toBeVisible()
-  
+
   // Close with button
   await page.click('[data-test="close-modal"]')
   await expect(modal).not.toBeVisible()
-  
+
   // Test Escape key
   await page.click('[data-test="open-modal"]')
   await page.keyboard.press('Escape')
@@ -240,11 +242,11 @@ test('should filter results', async ({ page }) => {
   // Initial state
   const items = page.locator('[data-test="item"]')
   const initialCount = await items.count()
-  
+
   // Apply filter
   await page.selectOption('[data-test="filter-select"]', 'category-1')
   await page.waitForTimeout(500) // Wait for filter to apply
-  
+
   // Verify filtered results
   const filteredCount = await items.count()
   expect(filteredCount).toBeLessThan(initialCount)
@@ -257,9 +259,9 @@ test('should filter results', async ({ page }) => {
 test('should download file', async ({ page }) => {
   // Start waiting for download before clicking
   const downloadPromise = page.waitForEvent('download')
-  
+
   await page.click('[data-test="download-button"]')
-  
+
   const download = await downloadPromise
   expect(download.suggestedFilename()).toContain('.pdf')
 })
@@ -270,11 +272,11 @@ test('should download file', async ({ page }) => {
 ```typescript
 test('should navigate between pages', async ({ page }) => {
   await page.goto('/')
-  
+
   // Navigate to page
   await page.click('[data-test="nav-link-about"]')
   await page.waitForURL('**/about')
-  
+
   // Verify navigation
   expect(page.url()).toContain('/about')
   await expect(page.locator('[data-test="page-title"]')).toHaveText('About')
@@ -330,8 +332,8 @@ npx playwright show-trace test-results/path-to-trace.zip
 
 ```typescript
 test('debug test', async ({ page }) => {
-  page.on('console', msg => console.log('Browser:', msg.text()))
-  
+  page.on('console', (msg) => console.log('Browser:', msg.text()))
+
   // Your test code
 })
 ```
@@ -358,7 +360,7 @@ Ensure element exists and use proper waits:
 await page.waitForSelector('[data-test="element"]', { state: 'visible' })
 
 // Check if element exists
-const exists = await page.locator('[data-test="element"]').count() > 0
+const exists = (await page.locator('[data-test="element"]').count()) > 0
 if (exists) {
   // ...
 }

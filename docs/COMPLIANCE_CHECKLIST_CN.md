@@ -3,6 +3,7 @@
 本文档提供在中国大陆运营互联网应用所需的合规要求和检查清单。确保您的应用满足中国法律法规和监管要求。
 
 > **📋 相关文档**:
+>
 > - [隐私政策模板](./compliance/PRIVACY_POLICY_TEMPLATE.md)
 > - [Cookie同意模板](./compliance/COOKIE_CONSENT_TEMPLATE.md)
 > - [生产环境检查清单](./PRODUCTION_CHECKLIST.md)
@@ -27,6 +28,7 @@
 ### 主要法律法规
 
 #### 1. 网络安全法 (Cybersecurity Law - CSL)
+
 - **生效日期**: 2017年6月1日
 - **适用范围**: 所有在中国运营的网络运营者
 - **关键要求**:
@@ -36,6 +38,7 @@
   - 数据本地化存储
 
 #### 2. 数据安全法 (Data Security Law - DSL)
+
 - **生效日期**: 2021年9月1日
 - **适用范围**: 所有在中国境内收集、存储、使用、处理数据的组织
 - **关键要求**:
@@ -44,6 +47,7 @@
   - 重要数据和核心数据保护
 
 #### 3. 个人信息保护法 (Personal Information Protection Law - PIPL)
+
 - **生效日期**: 2021年11月1日
 - **适用范围**: 所有处理个人信息的组织
 - **关键要求**:
@@ -53,6 +57,7 @@
   - 敏感个人信息特殊保护
 
 #### 4. 互联网信息服务管理办法
+
 - **要求**: ICP备案/许可证
 - **分类**:
   - **ICP备案**: 非经营性网站
@@ -72,6 +77,7 @@
 ### 备案类型判断
 
 #### 非经营性网站 - ICP备案
+
 - [ ] 纯信息展示网站
 - [ ] 企业官网
 - [ ] 个人博客
@@ -80,6 +86,7 @@
 **流程**: 通过云服务商提交备案申请 → 管局审核（7-20个工作日）
 
 #### 经营性网站 - ICP许可证
+
 - [ ] 在线销售商品或服务
 - [ ] 收取费用的会员服务
 - [ ] 广告展示获取收益
@@ -90,6 +97,7 @@
 ### ICP备案准备材料
 
 #### 企业备案
+
 - [ ] 营业执照副本扫描件
 - [ ] 法人身份证正反面扫描件
 - [ ] 网站负责人身份证正反面扫描件
@@ -100,6 +108,7 @@
 - [ ] 服务器接入商信息
 
 #### 个人备案
+
 - [ ] 个人身份证正反面扫描件
 - [ ] 手持身份证照片
 - [ ] 域名证书
@@ -151,11 +160,10 @@ graph LR
 ### 备案后维护
 
 - [ ] **网站底部展示备案号**
+
   ```html
   <footer>
-    <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">
-      京ICP备12345678号-1
-    </a>
+    <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener"> 京ICP备12345678号-1 </a>
   </footer>
   ```
 
@@ -168,7 +176,7 @@ graph LR
   ```html
   <footer>
     <a href="http://www.beian.gov.cn/portal/registerSystemInfo" target="_blank">
-      <img src="公安图标.png" alt="公安备案">
+      <img src="公安图标.png" alt="公安备案" />
       京公网安备 11010502012345号
     </a>
   </footer>
@@ -203,10 +211,12 @@ graph LR
 ### 数据本地化要求
 
 #### 关键信息基础设施运营者 (CIIO)
+
 - [ ] 确认是否属于CIIO（金融、通信、能源、交通等关键行业）
 - [ ] **强制要求**: 在中国境内收集和产生的个人信息和重要数据必须存储在境内
 
 #### 一般网络运营者
+
 - [ ] 评估是否处理大量个人信息（超过100万人）
 - [ ] 如超过阈值，需遵守数据本地化要求
 
@@ -215,6 +225,7 @@ graph LR
 如需将数据传输到境外，必须满足以下条件之一:
 
 #### 1. 网信办安全评估
+
 - [ ] 适用场景:
   - CIIO向境外提供数据
   - 处理100万人以上个人信息向境外提供
@@ -225,9 +236,11 @@ graph LR
   - 数据安全保护措施
 
 #### 2. 个人信息保护认证
+
 - [ ] 通过国家网信部门认可的专业机构认证
 
 #### 3. 标准合同
+
 - [ ] 签署网信办发布的标准合同
 - [ ] 明确双方权利义务和责任
 - [ ] 报省级网信办备案
@@ -237,6 +250,7 @@ graph LR
 ### 技术实施清单
 
 - [ ] **数据存储位置审查**
+
   ```bash
   # 检查数据库服务器位置
   # PostgreSQL示例
@@ -260,20 +274,21 @@ graph LR
   - 评估是否涉及跨境传输
 
 - [ ] **数据分类清单**
+
   ```typescript
   // 数据分类示例
   enum DataClassification {
-    PUBLIC = 'public',           // 公开数据
-    INTERNAL = 'internal',       // 内部数据
+    PUBLIC = 'public', // 公开数据
+    INTERNAL = 'internal', // 内部数据
     CONFIDENTIAL = 'confidential', // 机密数据
-    SENSITIVE = 'sensitive'      // 敏感个人信息
+    SENSITIVE = 'sensitive', // 敏感个人信息
   }
-  
+
   // 个人信息分类
   enum PersonalInfoType {
-    BASIC = 'basic',             // 基本个人信息（姓名、电话、邮箱）
-    SENSITIVE = 'sensitive',     // 敏感个人信息（身份证号、生物识别、金融账户）
-    MINOR = 'minor'             // 未成年人信息
+    BASIC = 'basic', // 基本个人信息（姓名、电话、邮箱）
+    SENSITIVE = 'sensitive', // 敏感个人信息（身份证号、生物识别、金融账户）
+    MINOR = 'minor', // 未成年人信息
   }
   ```
 
@@ -318,6 +333,7 @@ graph TD
 ### 告知同意机制
 
 #### 隐私政策要求
+
 - [ ] **明确、易懂的语言**
   - 避免法律术语和专业术语
   - 使用短句和分段
@@ -351,10 +367,8 @@ graph TD
   - 必须用户主动勾选或点击同意
   - 示例:
     ```html
-    <input type="checkbox" id="privacy-consent" name="privacy-consent" required>
-    <label for="privacy-consent">
-      我已阅读并同意 <a href="/privacy-policy">隐私政策</a>
-    </label>
+    <input type="checkbox" id="privacy-consent" name="privacy-consent" required />
+    <label for="privacy-consent"> 我已阅读并同意 <a href="/privacy-policy">隐私政策</a> </label>
     ```
 
 - [ ] **单独同意**（敏感个人信息）
@@ -362,12 +376,10 @@ graph TD
   - 医疗健康、金融账户信息
   - 行踪轨迹、宗教信仰
   - 不满十四周岁未成年人的个人信息
-  
+
   ```html
-  <input type="checkbox" id="sensitive-consent" name="sensitive-consent">
-  <label for="sensitive-consent">
-    我同意处理我的敏感个人信息（身份证号）用于实名认证
-  </label>
+  <input type="checkbox" id="sensitive-consent" name="sensitive-consent" />
+  <label for="sensitive-consent"> 我同意处理我的敏感个人信息（身份证号）用于实名认证 </label>
   ```
 
 - [ ] **撤回同意机制**
@@ -381,14 +393,17 @@ graph TD
 ### 用户权利保障
 
 #### 1. 知情权
+
 - [ ] 随时查看隐私政策
 - [ ] 了解个人信息处理情况
 
 #### 2. 决定权
+
 - [ ] 同意或拒绝个人信息处理
 - [ ] 授权第三方处理
 
 #### 3. 查询和复制权
+
 - [ ] **实施要求**: 提供个人信息导出功能
 - [ ] **响应时间**: 15个工作日内
 - [ ] **实现示例**:
@@ -400,10 +415,12 @@ graph TD
   ```
 
 #### 4. 更正和补充权
+
 - [ ] 提供信息编辑功能
 - [ ] 及时更新错误信息
 
 #### 5. 删除权
+
 - [ ] **触发条件**:
   - 处理目的已实现
   - 停止提供产品或服务
@@ -415,25 +432,27 @@ graph TD
   // 账户删除API
   async function deleteAccount(userId: string) {
     // 1. 标记账户为待删除
-    await markAccountForDeletion(userId);
-    
+    await markAccountForDeletion(userId)
+
     // 2. 30天冷静期
-    const deleteDate = new Date();
-    deleteDate.setDate(deleteDate.getDate() + 30);
-    
+    const deleteDate = new Date()
+    deleteDate.setDate(deleteDate.getDate() + 30)
+
     // 3. 匿名化或删除个人信息
-    await anonymizePersonalInfo(userId);
-    
+    await anonymizePersonalInfo(userId)
+
     // 4. 保留必要记录（法律要求）
-    await retainLegalRecords(userId);
+    await retainLegalRecords(userId)
   }
   ```
 
 #### 6. 解释说明权
+
 - [ ] 提供个人信息处理规则的解释
 - [ ] 建立客服或支持渠道
 
 #### 7. 可携带权
+
 - [ ] 允许用户获取个人信息副本
 - [ ] 提供通用格式（JSON、CSV）
 
@@ -444,8 +463,8 @@ graph TD
   ```typescript
   // 年龄验证示例
   function requireParentalConsent(birthDate: Date): boolean {
-    const age = calculateAge(birthDate);
-    return age < 14;
+    const age = calculateAge(birthDate)
+    return age < 14
   }
   ```
 - [ ] **监护人同意方式**:
@@ -460,8 +479,9 @@ graph TD
 ### 个人信息安全
 
 #### 技术措施
+
 - [ ] **传输加密**: HTTPS/TLS 1.2+
-- [ ] **存储加密**: 
+- [ ] **存储加密**:
   - 敏感信息加密存储
   - 密码哈希（bcrypt、Argon2）
 - [ ] **访问控制**:
@@ -472,6 +492,7 @@ graph TD
   - 日志保存至少6个月
 
 #### 组织措施
+
 - [ ] **指定个人信息保护负责人**
   - 姓名和联系方式在隐私政策中公开
 - [ ] **员工培训**
@@ -496,6 +517,7 @@ graph TD
 - [ ] **应急预案**:
   ```markdown
   ## 数据泄露应急流程
+
   1. 发现/接报 → 2小时内启动应急响应
   2. 评估影响范围和严重程度
   3. 采取技术措施遏制泄露
@@ -514,22 +536,24 @@ graph TD
 
 #### 等级划分
 
-| 等级 | 名称 | 适用对象 | 要求 |
-|------|------|----------|------|
-| **一级** | 自主保护级 | 一般小型网站 | 自主保护 |
-| **二级** | 指导保护级 | 一般企业网站、小型应用 | **备案** |
+| 等级     | 名称       | 适用对象                       | 要求          |
+| -------- | ---------- | ------------------------------ | ------------- |
+| **一级** | 自主保护级 | 一般小型网站                   | 自主保护      |
+| **二级** | 指导保护级 | 一般企业网站、小型应用         | **备案**      |
 | **三级** | 监督保护级 | 重要业务系统、涉及大量用户信息 | **备案+测评** |
-| **四级** | 强制保护级 | 关键信息基础设施 | 强制保护 |
-| **五级** | 专控保护级 | 国家核心系统 | 专控保护 |
+| **四级** | 强制保护级 | 关键信息基础设施               | 强制保护      |
+| **五级** | 专控保护级 | 国家核心系统                   | 专控保护      |
 
 #### 等级判断标准
 
 **二级系统**（大多数应用适用）:
+
 - [ ] 注册用户 < 10万
 - [ ] 业务中断影响较小
 - [ ] 个人信息量中等
 
 **三级系统**:
+
 - [ ] 注册用户 ≥ 10万
 - [ ] 涉及重要业务（金融交易、在线教育、医疗健康）
 - [ ] 业务中断对公共利益造成严重损害
@@ -548,17 +572,21 @@ graph LR
 ```
 
 #### 1. 系统定级
+
 - [ ] 确定系统安全保护等级（通常为二级）
 - [ ] 编写《定级报告》
 
 #### 2. 专家评审
+
 - [ ] 组织不少于5名专家评审定级
 - [ ] 专家出具评审意见
 
 #### 3. 主管部门审批
+
 - [ ] 提交主管单位审核批准
 
 #### 4. 公安机关备案
+
 - [ ] 携带备案材料到当地公安网监部门
 - [ ] 材料:
   - 定级报告
@@ -568,14 +596,17 @@ graph LR
 - [ ] 获得《备案证明》
 
 #### 5. 建设整改
+
 - [ ] 按照等保要求进行安全建设
 - [ ] 配置安全设备和措施
 
 #### 6. 自查
+
 - [ ] 完成内部安全自查
 - [ ] 确保符合等保要求
 
 #### 7. 运行维护
+
 - [ ] 持续安全运维
 - [ ] 定期安全检查
 
@@ -584,12 +615,14 @@ graph LR
 在二级基础上增加:
 
 #### 8. 等级测评
+
 - [ ] 选择有资质的测评机构
 - [ ] 进行等级测评（每年至少一次）
 - [ ] 获得《等级测评报告》
 - [ ] 测评分数 ≥ 75分（基本符合）
 
 #### 9. 整改
+
 - [ ] 根据测评报告整改
 - [ ] 完成风险项处理
 
@@ -598,18 +631,21 @@ graph LR
 #### 二级系统技术要求
 
 **物理安全**
+
 - [ ] 机房访问控制
 - [ ] 防火、防水、防盗措施
 - [ ] 温湿度控制
 - [ ] 电力供应（UPS）
 
 **网络安全**
+
 - [ ] 网络边界防护（防火墙）
 - [ ] 访问控制策略
 - [ ] 入侵检测（可选）
 - [ ] 恶意代码防范
 
 **主机安全**
+
 - [ ] 操作系统安全加固
 - [ ] 身份鉴别
 - [ ] 访问控制
@@ -617,6 +653,7 @@ graph LR
 - [ ] 防病毒软件
 
 **应用安全**
+
 - [ ] 用户身份鉴别
 - [ ] 访问控制
 - [ ] 安全审计
@@ -624,11 +661,13 @@ graph LR
 - [ ] 通信完整性和保密性（HTTPS）
 
 **数据安全**
+
 - [ ] 数据备份与恢复
 - [ ] 数据完整性
 - [ ] 数据保密性（加密存储）
 
 **安全管理**
+
 - [ ] 安全管理制度
 - [ ] 安全管理机构
 - [ ] 人员安全管理
@@ -689,7 +728,6 @@ graph LR
 
 - [ ] **制定Cookie政策文档**
   - 参考: [Cookie同意模板](./compliance/COOKIE_CONSENT_TEMPLATE.md)
-  
 - [ ] **Cookie政策内容**:
   1. 什么是Cookie
   2. 使用的Cookie类型
@@ -726,6 +764,7 @@ graph LR
 参考以下实现方案:
 
 **前端Cookie横幅组件**:
+
 ```vue
 <!-- apps/frontend/components/CookieConsent.vue -->
 <template>
@@ -752,6 +791,7 @@ graph LR
 ```
 
 **Cookie管理工具类**:
+
 ```typescript
 // apps/frontend/utils/cookieConsent.ts
 // TODO: 实现Cookie分类管理
@@ -764,15 +804,15 @@ export enum CookieCategory {
   NECESSARY = 'necessary',
   FUNCTIONAL = 'functional',
   ANALYTICS = 'analytics',
-  ADVERTISING = 'advertising'
+  ADVERTISING = 'advertising',
 }
 
 export interface CookieConsent {
-  timestamp: Date;
-  necessary: boolean; // 始终为true
-  functional: boolean;
-  analytics: boolean;
-  advertising: boolean;
+  timestamp: Date
+  necessary: boolean // 始终为true
+  functional: boolean
+  analytics: boolean
+  advertising: boolean
 }
 
 // TODO: 实现以下功能
@@ -783,6 +823,7 @@ export interface CookieConsent {
 ```
 
 **环境变量配置**:
+
 ```bash
 # .env
 # Cookie和跟踪合规配置
@@ -832,6 +873,7 @@ NUXT_PUBLIC_ADVERTISING_ENABLED=false
 根据《网络安全法》、《网络信息内容生态治理规定》等法规:
 
 #### 禁止内容
+
 - [ ] 反对宪法确定的基本原则
 - [ ] 危害国家安全、泄露国家秘密
 - [ ] 颠覆国家政权、推翻社会主义制度
@@ -947,32 +989,32 @@ CROSS_BORDER_DATA_TRANSFER_ENABLED=false
 // - 检查日志保留期限符合要求
 
 export function validateComplianceEnv() {
-  const errors: string[] = [];
-  
+  const errors: string[] = []
+
   // ICP备案检查
   if (!process.env.ICP_FILING_NUMBER) {
-    errors.push('缺少ICP备案号 (ICP_FILING_NUMBER)');
+    errors.push('缺少ICP备案号 (ICP_FILING_NUMBER)')
   }
-  
+
   // 数据驻留检查
   if (process.env.DATA_RESIDENCY !== 'CN') {
-    errors.push('数据驻留地区必须设置为中国 (DATA_RESIDENCY=CN)');
+    errors.push('数据驻留地区必须设置为中国 (DATA_RESIDENCY=CN)')
   }
-  
+
   // 个人信息保护负责人
   if (!process.env.PERSONAL_INFO_OFFICER_EMAIL) {
-    errors.push('缺少个人信息保护负责人联系方式');
+    errors.push('缺少个人信息保护负责人联系方式')
   }
-  
+
   // 审计日志
   if (process.env.AUDIT_LOG_ENABLED === 'true') {
-    const retention = parseInt(process.env.AUDIT_LOG_RETENTION_DAYS || '0');
+    const retention = parseInt(process.env.AUDIT_LOG_RETENTION_DAYS || '0')
     if (retention < 180) {
-      errors.push('审计日志保留期限必须至少180天');
+      errors.push('审计日志保留期限必须至少180天')
     }
   }
-  
-  return errors;
+
+  return errors
 }
 ```
 
@@ -1010,24 +1052,28 @@ export function validateComplianceEnv() {
 ### 后端实施清单 (Strapi CMS)
 
 - [ ] **审计日志中间件**
+
   ```typescript
   // apps/cms/src/middlewares/audit-log.ts
   // TODO: 记录个人信息访问和处理操作
   ```
 
 - [ ] **数据保留策略**
+
   ```typescript
   // apps/cms/src/cron/data-retention.ts
   // TODO: 自动清理过期个人信息
   ```
 
 - [ ] **个人信息导出API**
+
   ```typescript
   // apps/cms/src/api/user/controllers/export-data.ts
   // TODO: 实现PIPL要求的数据可携带权
   ```
 
 - [ ] **账户删除API**
+
   ```typescript
   // apps/cms/src/api/user/controllers/delete-account.ts
   // TODO: 实现完整的账户和数据删除流程
@@ -1046,6 +1092,7 @@ export function validateComplianceEnv() {
 ### 启动前审核
 
 #### 法律文档
+
 - [ ] 隐私政策已发布并可访问
 - [ ] Cookie政策已发布
 - [ ] 用户协议已发布
@@ -1054,12 +1101,14 @@ export function validateComplianceEnv() {
 - [ ] 个人信息保护负责人信息已公开
 
 #### ICP备案
+
 - [ ] ICP备案已完成并获得备案号
 - [ ] 公安备案已完成（上线后30天内）
 - [ ] 备案号正确显示在网站底部
 - [ ] 备案号链接到官方网站
 
 #### 数据合规
+
 - [ ] 确认所有数据存储在中国境内
 - [ ] 数据库服务器位于中国大陆
 - [ ] CDN节点主要在中国大陆
@@ -1068,6 +1117,7 @@ export function validateComplianceEnv() {
 - [ ] 数据分类和分级已完成
 
 #### 个人信息保护
+
 - [ ] 用户同意机制已实施（明示同意）
 - [ ] 敏感信息单独同意机制已实施
 - [ ] 未成年人保护机制已实施
@@ -1077,6 +1127,7 @@ export function validateComplianceEnv() {
 - [ ] 数据加密传输和存储已配置
 
 #### 安全措施
+
 - [ ] HTTPS已启用
 - [ ] 安全头部已配置
 - [ ] 防火墙规则已配置
@@ -1086,11 +1137,13 @@ export function validateComplianceEnv() {
 - [ ] 应急响应预案已制定
 
 #### 等级保护
+
 - [ ] 系统等级保护定级已完成
 - [ ] 等保备案已完成（二级系统）
 - [ ] 等保测评已通过（三级系统，如适用）
 
 #### 内容合规
+
 - [ ] 内容审核机制已实施（如有UGC）
 - [ ] 关键词过滤已配置
 - [ ] 举报机制已实现
@@ -1099,18 +1152,21 @@ export function validateComplianceEnv() {
 ### 运营期审核
 
 #### 每月检查
+
 - [ ] 审查审计日志
 - [ ] 检查用户权利请求处理情况
 - [ ] 审查隐私投诉和举报
 - [ ] 检查数据备份完整性
 
 #### 每季度检查
+
 - [ ] 审查隐私政策是否需要更新
 - [ ] 评估第三方服务合规性
 - [ ] 检查员工培训记录
 - [ ] 进行内部安全审计
 
 #### 每年检查
+
 - [ ] 更新风险评估
 - [ ] 审查和更新应急预案
 - [ ] 等保测评（三级系统）
@@ -1139,21 +1195,25 @@ export function validateComplianceEnv() {
 ## 参考资源
 
 ### 法律法规原文
+
 - [网络安全法](http://www.npc.gov.cn/npc/c30834/201611/21c65ee427fc4d2e93c2372e1b6388f3.shtml)
 - [数据安全法](http://www.npc.gov.cn/npc/c30834/202106/7c9af12f51334a73b56d7938f99a788a.shtml)
 - [个人信息保护法](http://www.npc.gov.cn/npc/c30834/202108/a8c4e3672c74491a80b53a172bb753fe.shtml)
 
 ### 政府官方网站
+
 - [全国ICP备案管理系统](https://beian.miit.gov.cn/)
 - [全国公安机关互联网站安全管理服务平台](http://www.beian.gov.cn/)
 - [国家互联网信息办公室](http://www.cac.gov.cn/)
 - [国家网络安全等级保护网](http://www.djbh.net/)
 
 ### 技术指南
+
 - [信息安全技术 个人信息安全规范 (GB/T 35273)](https://www.tc260.org.cn/)
 - [信息安全技术 网络安全等级保护基本要求 (GB/T 22239)](https://www.tc260.org.cn/)
 
 ### 国际对比参考
+
 - 欧盟 GDPR (General Data Protection Regulation)
 - 加州 CCPA (California Consumer Privacy Act)
 - 注意: PIPL借鉴了GDPR，但有重要区别
@@ -1162,9 +1222,9 @@ export function validateComplianceEnv() {
 
 ## 更新记录
 
-| 版本 | 日期 | 更新内容 | 更新人 |
-|------|------|----------|--------|
-| 1.0 | 2024-11-02 | 初始版本创建 | 系统 |
+| 版本 | 日期       | 更新内容     | 更新人 |
+| ---- | ---------- | ------------ | ------ |
+| 1.0  | 2024-11-02 | 初始版本创建 | 系统   |
 
 ---
 

@@ -17,10 +17,10 @@ export default {
         // For self-hosted fonts, uncomment Source Han Sans CN in assets/css/fonts.css
         sans: [
           // 'Source Han Sans CN', // Self-hosted font (when configured)
-          'PingFang SC',           // macOS & iOS
-          'Hiragino Sans GB',      // Older macOS
-          'Microsoft YaHei',       // Windows
-          'WenQuanYi Micro Hei',   // Linux
+          'PingFang SC', // macOS & iOS
+          'Hiragino Sans GB', // Older macOS
+          'Microsoft YaHei', // Windows
+          'WenQuanYi Micro Hei', // Linux
           'sans-serif',
         ],
       },
@@ -64,7 +64,7 @@ export default {
           '--tw-prose-quotes': 'white',
         },
       })
-      
+
       addUtilities({
         // Screen reader only utility
         '.sr-only': {

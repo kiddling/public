@@ -73,9 +73,9 @@ describe('useCacheFallback', () => {
 
     const result = await fetchWithFallback(fetcher, { useCache: true })
     expect(result).toEqual(cachedData)
-    
+
     // Should still call fetcher in background
-    await new Promise(resolve => setTimeout(resolve, 100))
+    await new Promise((resolve) => setTimeout(resolve, 100))
     expect(fetcher).toHaveBeenCalledTimes(1)
   })
 
@@ -102,9 +102,7 @@ describe('useCacheFallback', () => {
 
     const fetcher = vi.fn().mockRejectedValue(new Error('Fetch failed'))
 
-    await expect(
-      fetchWithFallback(fetcher, { useCache: false })
-    ).rejects.toThrow('Fetch failed')
+    await expect(fetchWithFallback(fetcher, { useCache: false })).rejects.toThrow('Fetch failed')
   })
 })
 
@@ -120,7 +118,7 @@ describe('Cache TTL', () => {
     expect(getCached()).not.toBeNull()
 
     // Wait for TTL to expire
-    await new Promise(resolve => setTimeout(resolve, 150))
+    await new Promise((resolve) => setTimeout(resolve, 150))
 
     // Note: Memory storage doesn't actually expire by TTL
     // This is a limitation of the current implementation

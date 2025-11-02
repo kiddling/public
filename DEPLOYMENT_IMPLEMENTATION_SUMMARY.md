@@ -5,6 +5,7 @@ This document summarizes the blue/green deployment strategy implementation compl
 ## Overview
 
 A comprehensive blue/green deployment system has been implemented to achieve:
+
 - ✅ Zero-downtime deployments
 - ✅ Automated rollback capabilities
 - ✅ Pre-deployment validation
@@ -17,7 +18,9 @@ A comprehensive blue/green deployment system has been implemented to achieve:
 ### 1. Documentation (docs/)
 
 #### DEPLOYMENT_STRATEGY.md
+
 Comprehensive deployment strategy documentation covering:
+
 - Blue/green architecture topology for Nuxt + Strapi
 - Database migration guardrails and best practices
 - Decision criteria for blue→green cutover vs. canary
@@ -29,7 +32,9 @@ Comprehensive deployment strategy documentation covering:
 - Timelines and responsibilities matrix
 
 #### DEPLOYMENT_CHECKLIST.md
+
 Operational checklist including:
+
 - Pre-deployment tasks (T-24 hours)
 - Pre-flight checks (T-1 hour)
 - Deployment execution phases
@@ -41,7 +46,9 @@ Operational checklist including:
 - Emergency contacts template
 
 #### DEPLOYMENT_QUICK_REFERENCE.md
+
 Quick reference guide with:
+
 - Common command examples
 - Health check endpoints
 - Docker operations
@@ -53,7 +60,9 @@ Quick reference guide with:
 ### 2. Deployment Scripts (scripts/deploy/)
 
 #### preflight.sh
+
 Pre-deployment validation script that checks:
+
 - Code quality (lint, format, typecheck)
 - Unit tests
 - Environment variable validation
@@ -66,7 +75,9 @@ Pre-deployment validation script that checks:
 **Logs:** `logs/preflight_TIMESTAMP.log`
 
 #### get-active-color.sh
+
 Utility script to determine active deployment color (blue/green) using multiple detection methods:
+
 - Nginx symlink
 - Environment variable
 - Marker file
@@ -75,7 +86,9 @@ Utility script to determine active deployment color (blue/green) using multiple 
 **Output:** `blue` or `green`
 
 #### blue-green-deploy.sh
+
 Main deployment orchestration script (10 phases):
+
 1. Determine active and target colors
 2. Create database backup
 3. Build Docker images with version tags
@@ -88,6 +101,7 @@ Main deployment orchestration script (10 phases):
 10. Log success and provide next steps
 
 **Options:**
+
 - `--version` - Specify version tag
 - `--target-color` - Force specific color
 - `--skip-migrations` - Skip DB migrations
@@ -96,7 +110,9 @@ Main deployment orchestration script (10 phases):
 **Auto-rollback:** Triggers on health check or verification failure
 
 #### rollback.sh
+
 Deployment rollback script:
+
 1. Determine rollback target
 2. Verify target stack health
 3. Optional database rollback
@@ -105,12 +121,15 @@ Deployment rollback script:
 6. Cleanup recommendations
 
 **Options:**
+
 - `--target-color` - Specific rollback target
 - `--skip-db` - Skip database rollback
 - `--force` - No confirmations
 
 #### post-deploy-verify.sh
+
 Post-deployment verification script testing:
+
 - Frontend health endpoint
 - CMS health endpoint
 - Homepage functionality
@@ -121,17 +140,21 @@ Post-deployment verification script testing:
 - Playwright smoke tests (if available)
 
 **Outputs:**
+
 - Console logs
 - `logs/verification_TIMESTAMP.log`
 - `logs/verification_TIMESTAMP_report.json` (machine-readable)
 
 #### README.md
+
 Comprehensive script documentation covering usage, options, workflows, and troubleshooting.
 
 ### 3. Nginx Configuration (config/nginx/)
 
 #### blue.conf & green.conf
+
 Separate Nginx configurations for each deployment color:
+
 - Upstream definitions for blue/green stacks
 - Color-specific routing
 - Health check endpoints with color identification
@@ -143,7 +166,9 @@ Separate Nginx configurations for each deployment color:
 ### 4. Smoke Tests (tests/smoke/)
 
 #### homepage.smoke.spec.ts
+
 Critical path tests for homepage:
+
 - Page loads successfully
 - Title is correct
 - Navigation is functional
@@ -151,14 +176,18 @@ Critical path tests for homepage:
 - No critical console errors
 
 #### api.smoke.spec.ts
+
 API endpoint validation:
+
 - Frontend health endpoint
 - CMS health endpoint
 - API accessibility
 - Response time checks
 
 #### README.md
+
 Smoke test documentation including:
+
 - Purpose and test categories
 - Running instructions
 - Configuration details
@@ -168,6 +197,7 @@ Smoke test documentation including:
 ### 5. CI/CD Integration (.github/workflows/ci.yml)
 
 Enhanced deployment job with:
+
 - **Preflight checks** - Automated validation
 - **Manual approval gate** - Optional approval step with issue creation
 - **Blue/green deployment** - Execution of deployment script
@@ -178,6 +208,7 @@ Enhanced deployment job with:
 - **Slack notifications** - Team alerts (optional)
 
 **Job outputs:**
+
 - `deployment-color` - Active color after deployment
 - `deployment-status` - success/failed
 - `deployment-version` - Deployed version
@@ -185,6 +216,7 @@ Enhanced deployment job with:
 ### 6. Package.json Scripts
 
 Added convenient npm scripts:
+
 ```json
 {
   "test:smoke": "playwright test tests/smoke/",
@@ -224,13 +256,13 @@ Added convenient npm scripts:
 
 ### Port Allocation
 
-| Service | Blue | Green | Shared |
-|---------|------|-------|--------|
-| Frontend | 3000 | 3001 | - |
-| CMS | 1337 | 1338 | - |
-| PostgreSQL | - | - | 5432 |
-| Redis | - | - | 6379 |
-| Nginx | - | - | 80/443 |
+| Service    | Blue | Green | Shared |
+| ---------- | ---- | ----- | ------ |
+| Frontend   | 3000 | 3001  | -      |
+| CMS        | 1337 | 1338  | -      |
+| PostgreSQL | -    | -     | 5432   |
+| Redis      | -    | -     | 6379   |
+| Nginx      | -    | -     | 80/443 |
 
 ## Deployment Flow
 
@@ -303,17 +335,20 @@ PLAYWRIGHT_BASE_URL=http://localhost:3001 pnpm test:smoke
 ## Key Features
 
 ### 1. Zero-Downtime Deployment
+
 - Both blue and green stacks can run simultaneously
 - Traffic switching via Nginx configuration
 - No service interruption during cutover
 
 ### 2. Automated Rollback
+
 - Health check failures trigger automatic rollback
 - Smoke test failures trigger automatic rollback
 - Manual rollback available anytime
 - Database rollback supported (with caution)
 
 ### 3. Database Migration Safety
+
 - Forward-compatible migrations required
 - Safe operations documented (add columns, indexes)
 - Dangerous operations flagged (drop columns, tables)
@@ -321,6 +356,7 @@ PLAYWRIGHT_BASE_URL=http://localhost:3001 pnpm test:smoke
 - Automatic backup before migrations
 
 ### 4. Smoke Testing
+
 - Critical path tests run automatically
 - Fast execution (< 2 minutes)
 - Playwright-based browser tests
@@ -328,6 +364,7 @@ PLAYWRIGHT_BASE_URL=http://localhost:3001 pnpm test:smoke
 - Response time checks
 
 ### 5. Comprehensive Logging
+
 - All operations logged with timestamps
 - Separate logs for each phase
 - Machine-readable reports (JSON)
@@ -335,6 +372,7 @@ PLAYWRIGHT_BASE_URL=http://localhost:3001 pnpm test:smoke
 - 30-day retention for audit
 
 ### 6. Communication Protocols
+
 - Pre-deployment notifications (T-24h)
 - In-progress status updates
 - Success/failure notifications
@@ -344,6 +382,7 @@ PLAYWRIGHT_BASE_URL=http://localhost:3001 pnpm test:smoke
 ## Database Migration Strategy
 
 ### Safe Operations ✅
+
 - Add new tables
 - Add nullable columns
 - Add indexes (with CONCURRENTLY)
@@ -351,11 +390,13 @@ PLAYWRIGHT_BASE_URL=http://localhost:3001 pnpm test:smoke
 - Create views
 
 ### Caution Operations ⚠️
+
 - Add non-nullable columns (need defaults)
 - Rename columns (dual support needed)
 - Change data types (need migration path)
 
 ### Dangerous Operations 🚫
+
 - Drop tables/columns (use deprecation)
 - Change primary keys
 - Alter critical constraints
@@ -364,11 +405,13 @@ PLAYWRIGHT_BASE_URL=http://localhost:3001 pnpm test:smoke
 ## Monitoring & Verification
 
 ### Health Checks
+
 - Frontend: `/api/health`
 - CMS: `/_health`
 - Nginx: `/health`
 
 ### Success Criteria
+
 - HTTP 5xx errors < 0.1%
 - HTTP 4xx errors < 2%
 - Response time p95 < 500ms
@@ -376,12 +419,14 @@ PLAYWRIGHT_BASE_URL=http://localhost:3001 pnpm test:smoke
 - Memory usage < 80%
 
 ### Alerting
+
 - Critical: Service down, error rate > 1%
 - Warning: Response time > 1s, memory > 85%
 
 ## Files Created/Modified
 
 ### New Files
+
 ```
 docs/
 ├── DEPLOYMENT_STRATEGY.md
@@ -409,6 +454,7 @@ DEPLOYMENT_IMPLEMENTATION_SUMMARY.md (this file)
 ```
 
 ### Modified Files
+
 ```
 .github/workflows/ci.yml
   - Replaced placeholder deploy job with full implementation
@@ -479,6 +525,7 @@ To use this deployment system:
 ## Support
 
 For issues or questions:
+
 - Review troubleshooting sections in documentation
 - Check deployment logs in `logs/` directory
 - Consult [scripts/deploy/README.md](./scripts/deploy/README.md)
@@ -514,11 +561,12 @@ grep -A 5 "blue-green" .github/workflows/ci.yml
 ✅ **Communication**: Templates and protocols documented  
 ✅ **Monitoring**: Health checks and verification procedures  
 ✅ **Rollback**: Automated and manual rollback capabilities  
-✅ **Zero-Downtime**: Blue/green architecture implemented  
+✅ **Zero-Downtime**: Blue/green architecture implemented
 
 ## Conclusion
 
 A production-ready blue/green deployment system has been successfully implemented with:
+
 - Complete automation from preflight to post-deployment
 - Comprehensive documentation and runbooks
 - Automated rollback capabilities

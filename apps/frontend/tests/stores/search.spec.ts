@@ -164,7 +164,14 @@ describe('useSearchStore', () => {
     const store = useSearchStore()
 
     store.query = 'test query'
-    store.results = { results: [], groups: {}, suggestions: [], total: 0, page: 1, pageSize: 10 } as any
+    store.results = {
+      results: [],
+      groups: {},
+      suggestions: [],
+      total: 0,
+      page: 1,
+      pageSize: 10,
+    } as any
     store.error = 'test error'
     store.isLoading = true
 
@@ -227,7 +234,7 @@ describe('useSearchStore', () => {
     vi.mocked($fetch).mockRejectedValueOnce(new Error('Network error'))
 
     const store = useSearchStore()
-    
+
     try {
       await store.search('design')
       await new Promise((resolve) => setTimeout(resolve, 350))
@@ -236,7 +243,7 @@ describe('useSearchStore', () => {
     }
 
     await nextTick()
-    
+
     expect(store.error).toBeTruthy()
     expect(store.isLoading).toBe(false)
   })
@@ -261,10 +268,10 @@ describe('useSearchStore', () => {
     const store = useSearchStore()
 
     store.addToHistory('design thinking')
-    
+
     const stored = localStorage.getItem('global-search-history')
     expect(stored).toBeTruthy()
-    
+
     const parsed = JSON.parse(stored!)
     expect(parsed.length).toBe(1)
     expect(parsed[0].query).toBe('design thinking')
@@ -282,7 +289,7 @@ describe('useSearchStore', () => {
 
     const stored = localStorage.getItem('global-search-recent-visits')
     expect(stored).toBeTruthy()
-    
+
     const parsed = JSON.parse(stored!)
     expect(parsed.length).toBe(1)
     expect(parsed[0].title).toBe('Design Thinking')

@@ -51,6 +51,7 @@ tests/e2e/
 The mock Strapi server runs on `http://localhost:3457` and provides fixture-based responses.
 
 To add a new endpoint:
+
 1. Create fixture in `fixtures/`
 2. Add route handler in `mocks/strapi-mock-server.ts`
 3. Export fixture

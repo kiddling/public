@@ -32,4 +32,4 @@ export default {
       handler: 'design-template.delete',
     },
   ],
-};
+}

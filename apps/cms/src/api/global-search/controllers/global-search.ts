@@ -40,7 +40,8 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
       // Parse difficulty parameter (can be comma-separated)
       let difficulties: string[] = []
       if (difficulty) {
-        difficulties = typeof difficulty === 'string' ? difficulty.split(',').map((d) => d.trim()) : []
+        difficulties =
+          typeof difficulty === 'string' ? difficulty.split(',').map((d) => d.trim()) : []
       }
 
       // Parse pagination
@@ -48,15 +49,13 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
       const pageSizeNum = Math.min(100, Math.max(1, parseInt(pageSize, 10) || 20))
 
       // Execute search
-      const results = await strapi
-        .service('api::global-search.global-search')
-        .search({
-          query: query.trim(),
-          type: types,
-          page: pageNum,
-          pageSize: pageSizeNum,
-          difficulty: difficulties,
-        })
+      const results = await strapi.service('api::global-search.global-search').search({
+        query: query.trim(),
+        type: types,
+        page: pageNum,
+        pageSize: pageSizeNum,
+        difficulty: difficulties,
+      })
 
       return ctx.send(results)
     } catch (error) {

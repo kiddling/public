@@ -51,9 +51,7 @@ describe('ApiClient', () => {
       timeoutError.name = 'AbortError'
       vi.mocked($fetch).mockRejectedValueOnce(timeoutError)
 
-      await expect(
-        apiClient.get('/test', { timeout: 1000, retry: false })
-      ).rejects.toMatchObject({
+      await expect(apiClient.get('/test', { timeout: 1000, retry: false })).rejects.toMatchObject({
         code: ErrorCode.TIMEOUT,
       })
     })
@@ -96,7 +94,7 @@ describe('ApiClient', () => {
     it('should retry on network error', async () => {
       const { $fetch } = await import('ofetch')
       const networkError = new Error('Network error')
-      
+
       vi.mocked($fetch)
         .mockRejectedValueOnce(networkError)
         .mockRejectedValueOnce(networkError)
@@ -111,10 +109,8 @@ describe('ApiClient', () => {
       const { $fetch } = await import('ofetch')
       const error: any = new Error('Service unavailable')
       error.response = { status: 503 }
-      
-      vi.mocked($fetch)
-        .mockRejectedValueOnce(error)
-        .mockResolvedValueOnce({ success: true })
+
+      vi.mocked($fetch).mockRejectedValueOnce(error).mockResolvedValueOnce({ success: true })
 
       const result = await apiClient.get('/test', { maxRetries: 1 })
       expect(result).toEqual({ success: true })
@@ -125,28 +121,24 @@ describe('ApiClient', () => {
       const { $fetch } = await import('ofetch')
       const error: any = new Error('Not found')
       error.response = { status: 404 }
-      
+
       vi.mocked($fetch).mockRejectedValueOnce(error)
 
-      await expect(
-        apiClient.get('/test', { maxRetries: 3 })
-      ).rejects.toMatchObject({
+      await expect(apiClient.get('/test', { maxRetries: 3 })).rejects.toMatchObject({
         code: ErrorCode.NOT_FOUND,
       })
-      
+
       expect($fetch).toHaveBeenCalledTimes(1)
     })
 
     it('should respect maxRetries limit', async () => {
       const { $fetch } = await import('ofetch')
       const networkError = new Error('Network error')
-      
+
       vi.mocked($fetch).mockRejectedValue(networkError)
 
-      await expect(
-        apiClient.get('/test', { maxRetries: 2 })
-      ).rejects.toThrow()
-      
+      await expect(apiClient.get('/test', { maxRetries: 2 })).rejects.toThrow()
+
       expect($fetch).toHaveBeenCalledTimes(3) // 1 initial + 2 retries
     })
   })
@@ -154,14 +146,12 @@ describe('ApiClient', () => {
   describe('Timeout handling', () => {
     it('should timeout after specified duration', async () => {
       const { $fetch } = await import('ofetch')
-      
+
       vi.mocked($fetch).mockImplementation(
         () => new Promise((resolve) => setTimeout(resolve, 2000))
       )
 
-      await expect(
-        apiClient.get('/test', { timeout: 100, retry: false })
-      ).rejects.toMatchObject({
+      await expect(apiClient.get('/test', { timeout: 100, retry: false })).rejects.toMatchObject({
         code: ErrorCode.TIMEOUT,
       })
     })

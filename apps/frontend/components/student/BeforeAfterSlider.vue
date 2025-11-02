@@ -1,7 +1,7 @@
 <template>
   <div
     ref="containerRef"
-    class="relative w-full aspect-video bg-gray-900 rounded-lg overflow-hidden"
+    class="relative aspect-video w-full overflow-hidden rounded-lg bg-gray-900"
     role="img"
     :aria-label="`${pair.beforeLabel} and ${pair.afterLabel} comparison`"
     @mousedown="handleMouseDown"
@@ -10,20 +10,17 @@
     <NuxtImg
       :src="pair.afterMedia.url"
       :alt="pair.afterLabel"
-      class="absolute inset-0 w-full h-full object-contain select-none"
+      class="absolute inset-0 h-full w-full select-none object-contain"
       draggable="false"
       preset="gallery"
       sizes="sm:640px md:800px lg:1024px"
     />
 
-    <div
-      class="absolute inset-0 overflow-hidden"
-      :style="{ width: `${sliderPosition}%` }"
-    >
+    <div class="absolute inset-0 overflow-hidden" :style="{ width: `${sliderPosition}%` }">
       <NuxtImg
         :src="pair.beforeMedia.url"
         :alt="pair.beforeLabel"
-        class="absolute inset-0 w-full h-full object-contain select-none"
+        class="absolute inset-0 h-full w-full select-none object-contain"
         :style="{ width: containerWidth + 'px' }"
         draggable="false"
         preset="gallery"
@@ -32,20 +29,31 @@
     </div>
 
     <div
-      class="absolute top-0 bottom-0 w-1 bg-white cursor-ew-resize"
+      class="absolute bottom-0 top-0 w-1 cursor-ew-resize bg-white"
       :style="{ left: `${sliderPosition}%` }"
     >
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center">
-        <svg class="w-6 h-6 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+      <div
+        class="absolute left-1/2 top-1/2 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-lg"
+      >
+        <svg class="h-6 w-6 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M8 9l4-4 4 4m0 6l-4 4-4-4"
+          />
         </svg>
       </div>
     </div>
 
-    <div class="absolute top-4 left-4 px-3 py-1.5 bg-black/70 text-white text-sm font-medium rounded backdrop-blur-sm">
+    <div
+      class="absolute left-4 top-4 rounded bg-black/70 px-3 py-1.5 text-sm font-medium text-white backdrop-blur-sm"
+    >
       {{ pair.beforeLabel }}
     </div>
-    <div class="absolute top-4 right-4 px-3 py-1.5 bg-black/70 text-white text-sm font-medium rounded backdrop-blur-sm">
+    <div
+      class="absolute right-4 top-4 rounded bg-black/70 px-3 py-1.5 text-sm font-medium text-white backdrop-blur-sm"
+    >
       {{ pair.afterLabel }}
     </div>
 

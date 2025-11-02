@@ -27,7 +27,7 @@ export function useNotification() {
     action?: { label: string; onClick: () => void }
   ) => {
     const id = Math.random().toString(36).substring(7)
-    
+
     const notification: Notification = {
       id,
       type,
@@ -50,7 +50,7 @@ export function useNotification() {
   }
 
   const remove = (id: string) => {
-    const index = notifications.value.findIndex(n => n.id === id)
+    const index = notifications.value.findIndex((n) => n.id === id)
     if (index > -1) {
       notifications.value.splice(index, 1)
     }
@@ -64,7 +64,12 @@ export function useNotification() {
     return show('success', title, message, duration)
   }
 
-  const error = (title: string, message: string, duration?: number, action?: { label: string; onClick: () => void }) => {
+  const error = (
+    title: string,
+    message: string,
+    duration?: number,
+    action?: { label: string; onClick: () => void }
+  ) => {
     return show('error', title, message, duration, action)
   }
 

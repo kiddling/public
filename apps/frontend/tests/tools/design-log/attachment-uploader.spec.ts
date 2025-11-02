@@ -125,7 +125,7 @@ describe('AttachmentUploader', () => {
 
     const fileInput = wrapper.find('input[type="file"]')
     const file = new File(['content'], 'test.jpg', { type: 'image/jpeg' })
-    
+
     Object.defineProperty(fileInput.element, 'files', {
       value: [file],
       writable: false,
@@ -145,7 +145,7 @@ describe('AttachmentUploader', () => {
 
     const fileInput = wrapper.find('input[type="file"]')
     const largeFile = new File(['x'.repeat(11 * 1024 * 1024)], 'large.jpg', { type: 'image/jpeg' })
-    
+
     Object.defineProperty(fileInput.element, 'files', {
       value: [largeFile],
       writable: false,
@@ -165,7 +165,7 @@ describe('AttachmentUploader', () => {
     })
 
     const dropArea = wrapper.find('[class*="border-dashed"]')
-    
+
     await dropArea.trigger('dragover')
     expect(wrapper.vm.isDragging).toBe(true)
 
@@ -182,7 +182,7 @@ describe('AttachmentUploader', () => {
 
     const dropArea = wrapper.find('[class*="border-dashed"]')
     const file = new File(['content'], 'test.jpg', { type: 'image/jpeg' })
-    
+
     const dataTransfer = {
       files: [file],
     }
@@ -200,9 +200,9 @@ describe('AttachmentUploader', () => {
     })
 
     const dropArea = wrapper.find('[class*="border-dashed"]')
-    
+
     await dropArea.trigger('dragover')
-    
+
     expect(dropArea.classes()).toContain('border-blue-500')
   })
 
@@ -215,7 +215,7 @@ describe('AttachmentUploader', () => {
 
     const fileInput = wrapper.find('input[type="file"]')
     const file = new File(['content'], 'test.jpg', { type: 'image/jpeg' })
-    
+
     Object.defineProperty(fileInput.element, 'files', {
       value: [file],
       writable: false,

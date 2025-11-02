@@ -13,12 +13,7 @@
         </radialGradient>
       </defs>
 
-      <circle
-        :cx="center"
-        :cy="center"
-        :r="viewBoxSize / 2 - 8"
-        fill="url(#gradientId)"
-      />
+      <circle :cx="center" :cy="center" :r="viewBoxSize / 2 - 8" fill="url(#gradientId)" />
 
       <path
         v-if="spiralPath"
@@ -134,7 +129,7 @@ const buckets = computed(() => {
 
     const smallestIndex = groups.reduce(
       (acc, group, index) => (group.length < groups[acc].length ? index : acc),
-      0,
+      0
     )
     groups[smallestIndex].push(lesson)
   })
@@ -146,7 +141,9 @@ const loopMeta = computed(() =>
   buckets.value.map((lessons, index) => {
     const fallbackColor = fallbackColors[index] ?? fallbackColors[0]
     const firstLesson = lessons[0] ?? null
-    const color = firstLesson ? NAVIGATION_PART_COLORS[firstLesson.part] ?? fallbackColor : fallbackColor
+    const color = firstLesson
+      ? (NAVIGATION_PART_COLORS[firstLesson.part] ?? fallbackColor)
+      : fallbackColor
     const partType = firstLesson?.part ?? null
     return {
       index,
@@ -155,7 +152,7 @@ const loopMeta = computed(() =>
       partType,
       radius: radii.value[index] ?? radii.value[radii.value.length - 1] ?? 32,
     }
-  }),
+  })
 )
 
 const nodes = computed(() => {
@@ -260,7 +257,9 @@ function emitSelect(code: string) {
 
 .spiral-node {
   cursor: pointer;
-  transition: transform 0.2s ease, filter 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    filter 0.2s ease;
 }
 
 .spiral-node:focus-visible {
@@ -275,7 +274,10 @@ function emitSelect(code: string) {
 .spiral-node circle {
   fill: #fff;
   stroke: var(--node-color, #0ea5e9);
-  transition: fill 0.2s ease, stroke-width 0.2s ease, stroke 0.2s ease;
+  transition:
+    fill 0.2s ease,
+    stroke-width 0.2s ease,
+    stroke 0.2s ease;
 }
 
 .spiral-node[data-state='completed'] circle {

@@ -26,19 +26,19 @@ describe('useDesignLogTemplate composables', () => {
   describe('useDesignLogTemplates', () => {
     it('should fetch all templates', async () => {
       const { useDesignLogTemplates } = await import('~/composables/useDesignLogTemplate')
-      
+
       useDesignLogTemplates()
 
       expect(mockUseAsyncData).toHaveBeenCalledWith(
         'design-log-templates',
         expect.any(Function),
-        expect.any(Object),
+        expect.any(Object)
       )
     })
 
     it('should accept custom options', async () => {
       const { useDesignLogTemplates } = await import('~/composables/useDesignLogTemplate')
-      
+
       useDesignLogTemplates({
         key: 'custom-templates',
         immediate: false,
@@ -49,7 +49,7 @@ describe('useDesignLogTemplate composables', () => {
         expect.any(Function),
         expect.objectContaining({
           immediate: false,
-        }),
+        })
       )
     })
   })
@@ -57,25 +57,25 @@ describe('useDesignLogTemplate composables', () => {
   describe('useDesignLogTemplate', () => {
     it('should fetch a single template by id', async () => {
       const { useDesignLogTemplate } = await import('~/composables/useDesignLogTemplate')
-      
+
       useDesignLogTemplate(1)
 
       expect(mockUseAsyncData).toHaveBeenCalledWith(
         'design-log-template-1',
         expect.any(Function),
-        expect.any(Object),
+        expect.any(Object)
       )
     })
 
     it('should accept string id', async () => {
       const { useDesignLogTemplate } = await import('~/composables/useDesignLogTemplate')
-      
+
       useDesignLogTemplate('abc123')
 
       expect(mockUseAsyncData).toHaveBeenCalledWith(
         'design-log-template-abc123',
         expect.any(Function),
-        expect.any(Object),
+        expect.any(Object)
       )
     })
   })

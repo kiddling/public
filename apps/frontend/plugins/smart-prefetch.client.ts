@@ -1,6 +1,6 @@
 /**
  * Smart Prefetch Plugin
- * 
+ *
  * Optimizes resource prefetching for bandwidth-constrained environments (China)
  * - Detects connection speed
  * - Prefetches only on fast connections or when idle
@@ -9,7 +9,10 @@
 
 export default defineNuxtPlugin((nuxtApp) => {
   // Check if connection API is available
-  const connection = (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection
+  const connection =
+    (navigator as any).connection ||
+    (navigator as any).mozConnection ||
+    (navigator as any).webkitConnection
 
   // Determine if we should prefetch based on connection
   const shouldPrefetch = (): boolean => {
@@ -49,10 +52,10 @@ export default defineNuxtPlugin((nuxtApp) => {
     link.rel = 'prefetch'
     link.href = url
     link.as = 'document'
-    
+
     // Set fetchpriority if supported
     if ('fetchPriority' in link) {
-      (link as any).fetchPriority = options.priority || 'low'
+      ;(link as any).fetchPriority = options.priority || 'low'
     }
 
     document.head.appendChild(link)
@@ -83,7 +86,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.hook('page:start', () => {
     // Cancel any pending prefetch requests on navigation start
     const prefetchLinks = document.querySelectorAll('link[rel="prefetch"]')
-    prefetchLinks.forEach(link => {
+    prefetchLinks.forEach((link) => {
       // Only remove dynamically added prefetch links
       if (!link.hasAttribute('data-keep')) {
         link.remove()
@@ -96,32 +99,40 @@ export default defineNuxtPlugin((nuxtApp) => {
     nuxtApp.hook('page:finish', () => {
       if (!shouldPrefetch()) return
 
-      requestIdleCallback(() => {
-        const links = document.querySelectorAll<HTMLAnchorElement>('a[href^="/"]')
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting && entry.target instanceof HTMLAnchorElement) {
-              const href = entry.target.getAttribute('href')
-              if (href && !entry.target.hasAttribute('data-no-prefetch')) {
-                smartPrefetch(href, { priority: 'low' })
-                observer.unobserve(entry.target)
-              }
+      requestIdleCallback(
+        () => {
+          const links = document.querySelectorAll<HTMLAnchorElement>('a[href^="/"]')
+          const observer = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                if (entry.isIntersecting && entry.target instanceof HTMLAnchorElement) {
+                  const href = entry.target.getAttribute('href')
+                  if (href && !entry.target.hasAttribute('data-no-prefetch')) {
+                    smartPrefetch(href, { priority: 'low' })
+                    observer.unobserve(entry.target)
+                  }
+                }
+              })
+            },
+            {
+              rootMargin: '50px', // Start prefetching 50px before viewport
+            }
+          )
+
+          links.forEach((link) => {
+            // Skip heavy pages unless explicitly marked for prefetch
+            const href = link.getAttribute('href') || ''
+            const isHeavyPage = ['/lessons/', '/knowledge-cards/', '/students'].some((p) =>
+              href.startsWith(p)
+            )
+
+            if (!isHeavyPage || link.hasAttribute('data-prefetch')) {
+              observer.observe(link)
             }
           })
-        }, {
-          rootMargin: '50px', // Start prefetching 50px before viewport
-        })
-
-        links.forEach(link => {
-          // Skip heavy pages unless explicitly marked for prefetch
-          const href = link.getAttribute('href') || ''
-          const isHeavyPage = ['/lessons/', '/knowledge-cards/', '/students'].some(p => href.startsWith(p))
-          
-          if (!isHeavyPage || link.hasAttribute('data-prefetch')) {
-            observer.observe(link)
-          }
-        })
-      }, { timeout: 2000 })
+        },
+        { timeout: 2000 }
+      )
     })
   }
 })

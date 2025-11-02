@@ -21,7 +21,7 @@ export interface FormField {
 
 export function useFormAccessibility(fields: Record<string, FormField>) {
   const { announceAssertive } = useAriaLive()
-  
+
   const errors = ref<Record<string, string>>({})
   const touched = ref<Record<string, boolean>>({})
 
@@ -102,7 +102,7 @@ export function useFormAccessibility(fields: Record<string, FormField>) {
   }
 
   const hasErrors = computed(() => Object.keys(errors.value).length > 0)
-  
+
   const errorCount = computed(() => Object.keys(errors.value).length)
 
   return {
@@ -130,17 +130,17 @@ export const validationRules = {
     },
     message: '请输入有效的邮箱地址',
   },
-  
+
   minLength: (min: number) => ({
     validate: (value: string) => !value || value.length >= min,
     message: `至少需要 ${min} 个字符`,
   }),
-  
+
   maxLength: (max: number) => ({
     validate: (value: string) => !value || value.length <= max,
     message: `最多 ${max} 个字符`,
   }),
-  
+
   phone: {
     validate: (value: string) => {
       const phoneRegex = /^1[3-9]\d{9}$/
@@ -148,7 +148,7 @@ export const validationRules = {
     },
     message: '请输入有效的手机号码',
   },
-  
+
   url: {
     validate: (value: string) => {
       try {
@@ -160,12 +160,12 @@ export const validationRules = {
     },
     message: '请输入有效的 URL',
   },
-  
+
   number: {
     validate: (value: any) => !value || !isNaN(Number(value)),
     message: '请输入数字',
   },
-  
+
   integer: {
     validate: (value: any) => !value || Number.isInteger(Number(value)),
     message: '请输入整数',

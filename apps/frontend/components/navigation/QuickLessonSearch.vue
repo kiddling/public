@@ -2,13 +2,19 @@
   <div class="relative">
     <button
       type="button"
-      class="hidden items-center gap-2 rounded-full border border-gray-200 bg-white/80 px-4 py-2 text-sm font-medium text-gray-600 shadow-sm transition hover:border-primary-300 hover:text-primary-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-gray-800 dark:bg-gray-900/80 dark:text-gray-300 dark:hover:border-primary-400 dark:hover:text-primary-200 dark:focus-visible:ring-offset-gray-900 sm:inline-flex"
+      class="hover:border-primary-300 hover:text-primary-600 focus-visible:ring-primary-500 dark:hover:border-primary-400 dark:hover:text-primary-200 hidden items-center gap-2 rounded-full border border-gray-200 bg-white/80 px-4 py-2 text-sm font-medium text-gray-600 shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white sm:inline-flex dark:border-gray-800 dark:bg-gray-900/80 dark:text-gray-300 dark:focus-visible:ring-offset-gray-900"
       @click="openPalette"
     >
-      <Icon name="i-heroicons-magnifying-glass-20-solid" class="h-4 w-4 text-gray-400" aria-hidden="true" />
+      <Icon
+        name="i-heroicons-magnifying-glass-20-solid"
+        class="h-4 w-4 text-gray-400"
+        aria-hidden="true"
+      />
       <span class="hidden lg:inline">Quick jump</span>
       <span class="lg:hidden">Search</span>
-      <span class="flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:bg-gray-800 dark:text-gray-400">
+      <span
+        class="flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:bg-gray-800 dark:text-gray-400"
+      >
         <kbd class="font-semibold">{{ commandKey }}</kbd>
         <span class="font-semibold">K</span>
       </span>
@@ -19,16 +25,20 @@
         <div v-if="open" class="quick-search-container" role="dialog" aria-modal="true">
           <div class="quick-search-overlay" @click="closePalette"></div>
           <section class="quick-search-panel" ref="panelRef" tabindex="-1">
-            <header class="flex items-center justify-between gap-3 border-b border-gray-200 px-4 py-3 dark:border-gray-800">
+            <header
+              class="flex items-center justify-between gap-3 border-b border-gray-200 px-4 py-3 dark:border-gray-800"
+            >
               <div>
-                <p class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                <p
+                  class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400"
+                >
                   Quick Navigation
                 </p>
                 <h2 class="text-sm font-medium text-gray-900 dark:text-gray-100">Search lessons</h2>
               </div>
               <button
                 type="button"
-                class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition hover:border-gray-300 hover:text-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-600 dark:hover:text-white dark:focus-visible:ring-offset-gray-900"
+                class="focus-visible:ring-primary-500 inline-flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition hover:border-gray-300 hover:text-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-600 dark:hover:text-white dark:focus-visible:ring-offset-gray-900"
                 aria-label="Close quick search"
                 @click="closePalette"
               >
@@ -38,12 +48,16 @@
 
             <div class="px-4 py-3">
               <div class="relative">
-                <Icon name="i-heroicons-magnifying-glass-20-solid" class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" aria-hidden="true" />
+                <Icon
+                  name="i-heroicons-magnifying-glass-20-solid"
+                  class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
+                  aria-hidden="true"
+                />
                 <input
                   ref="inputRef"
                   v-model="query"
                   type="search"
-                  class="w-full rounded-xl border border-gray-200 bg-white/90 py-2 pl-9 pr-3 text-sm text-gray-900 shadow-sm focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-100 dark:border-gray-700 dark:bg-gray-900/80 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-primary-400 dark:focus:ring-primary-500/30"
+                  class="focus:border-primary-400 focus:ring-primary-100 dark:focus:border-primary-400 dark:focus:ring-primary-500/30 w-full rounded-xl border border-gray-200 bg-white/90 py-2 pl-9 pr-3 text-sm text-gray-900 shadow-sm focus:outline-none focus:ring-2 dark:border-gray-700 dark:bg-gray-900/80 dark:text-gray-100 dark:placeholder:text-gray-500"
                   placeholder="Search by lesson code or title"
                   role="combobox"
                   :aria-expanded="String(open)"
@@ -55,19 +69,24 @@
                 />
               </div>
               <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                Use ↑ ↓ to navigate, Enter to open. {{ completedLessonCount }} of {{ totalLessons }} lessons completed.
+                Use ↑ ↓ to navigate, Enter to open. {{ completedLessonCount }} of
+                {{ totalLessons }} lessons completed.
               </p>
             </div>
 
             <div class="border-t border-gray-200 px-2 pb-4 pt-2 dark:border-gray-800">
               <template v-if="hasQuery && filteredResults.length">
-                <h3 class="px-2 py-1 text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                <h3
+                  class="px-2 py-1 text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400"
+                >
                   Results
                 </h3>
               </template>
 
               <template v-else-if="!hasQuery">
-                <h3 class="px-2 py-1 text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                <h3
+                  class="px-2 py-1 text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400"
+                >
                   Recent lessons
                 </h3>
               </template>
@@ -84,7 +103,7 @@
                   role="option"
                   :aria-selected="String(activeIndex === index)"
                   :data-active="activeIndex === index ? 'true' : undefined"
-                  class="group flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2 transition hover:bg-primary-50 focus-within:bg-primary-50 dark:hover:bg-primary-500/10 dark:focus-within:bg-primary-500/10"
+                  class="hover:bg-primary-50 focus-within:bg-primary-50 dark:hover:bg-primary-500/10 dark:focus-within:bg-primary-500/10 group flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2 transition"
                   @mouseenter="setActiveIndex(index)"
                 >
                   <button
@@ -93,7 +112,7 @@
                     @click="() => selectResult(index)"
                   >
                     <span
-                      class="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-xs font-semibold uppercase tracking-wide text-gray-600 transition group-data-[active=true]:border-primary-400 group-data-[active=true]:text-primary-600 dark:border-gray-700 dark:text-gray-300 dark:group-data-[active=true]:border-primary-400 dark:group-data-[active=true]:text-primary-200"
+                      class="group-data-[active=true]:border-primary-400 group-data-[active=true]:text-primary-600 dark:group-data-[active=true]:border-primary-400 dark:group-data-[active=true]:text-primary-200 flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-xs font-semibold uppercase tracking-wide text-gray-600 transition dark:border-gray-700 dark:text-gray-300"
                     >
                       {{ item.lesson.code }}
                     </span>
@@ -107,7 +126,10 @@
                     </span>
                     <span
                       class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase"
-                      :style="{ backgroundColor: item.partBadge.background, color: item.partBadge.foreground }"
+                      :style="{
+                        backgroundColor: item.partBadge.background,
+                        color: item.partBadge.foreground,
+                      }"
                     >
                       {{ item.partBadge.label }}
                     </span>
@@ -120,10 +142,7 @@
                 </li>
               </ul>
 
-              <p
-                v-else
-                class="px-3 py-6 text-center text-sm text-gray-500 dark:text-gray-400"
-              >
+              <p v-else class="px-3 py-6 text-center text-sm text-gray-500 dark:text-gray-400">
                 No lessons found.
               </p>
             </div>
@@ -140,7 +159,11 @@ import { useEventListener } from '@vueuse/core'
 import HighlightedText from './internal/HighlightedText.vue'
 import { useNavigationStore } from '~/stores/navigation'
 import { useProgressStore } from '~/stores/progress'
-import { NAVIGATION_PART_COLORS, NAVIGATION_PART_LABELS, type NavigationLesson } from '~/types/navigation'
+import {
+  NAVIGATION_PART_COLORS,
+  NAVIGATION_PART_LABELS,
+  type NavigationLesson,
+} from '~/types/navigation'
 
 const emit = defineEmits<{
   (e: 'navigate', code: string): void
@@ -207,7 +230,7 @@ watch(
   () => route.fullPath,
   () => {
     closePalette()
-  },
+  }
 )
 
 watch(open, (value) => {
@@ -227,7 +250,7 @@ watch(
     if (activeIndex.value >= listItems.value.length) {
       activeIndex.value = Math.max(0, listItems.value.length - 1)
     }
-  },
+  }
 )
 
 onMounted(() => {
@@ -308,7 +331,7 @@ function scoreLesson(lesson: NavigationLesson, queryValue: string): number {
   if (score === 0) {
     score = Math.max(
       computeSequentialScore(code, lowerQuery) * 4,
-      computeSequentialScore(title, lowerQuery) * 3,
+      computeSequentialScore(title, lowerQuery) * 3
     )
   }
 
@@ -342,12 +365,13 @@ function createListItem(lesson: NavigationLesson) {
 
 function hexToRgba(hex: string, alpha: number, preferOpaque = false): string {
   const sanitized = hex.trim().replace(/^#/, '')
-  const full = sanitized.length === 3
-    ? sanitized
-        .split('')
-        .map((char) => char + char)
-        .join('')
-    : sanitized.padEnd(6, '0')
+  const full =
+    sanitized.length === 3
+      ? sanitized
+          .split('')
+          .map((char) => char + char)
+          .join('')
+      : sanitized.padEnd(6, '0')
   const value = Number.parseInt(full.slice(0, 6), 16)
   const r = (value >> 16) & 255
   const g = (value >> 8) & 255
@@ -364,7 +388,8 @@ function moveSelection(direction: 1 | -1) {
   if (!listItems.value.length) {
     return
   }
-  const nextIndex = (activeIndex.value + direction + listItems.value.length) % listItems.value.length
+  const nextIndex =
+    (activeIndex.value + direction + listItems.value.length) % listItems.value.length
   activeIndex.value = nextIndex
 
   nextTick(() => {
@@ -396,11 +421,9 @@ function navigateToLesson(lesson: NavigationLesson) {
   emit('navigate', lesson.code)
   progressStore.recordLessonVisit(lesson.code)
   closePalette()
-  router
-    .push({ name: 'lessons-code', params: { code: lesson.code } })
-    .catch(() => {
-      /* navigation failure ignored */
-    })
+  router.push({ name: 'lessons-code', params: { code: lesson.code } }).catch(() => {
+    /* navigation failure ignored */
+  })
 }
 
 useEventListener(
@@ -414,7 +437,7 @@ useEventListener(
       event.preventDefault()
       closePalette()
     }
-  },
+  }
 )
 
 onMounted(() => {
@@ -501,7 +524,9 @@ function handleFocus(event: FocusEvent) {
 
 .quick-search-enter-active .quick-search-panel,
 .quick-search-leave-active .quick-search-panel {
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
 }
 
 .quick-search-enter-from .quick-search-panel,

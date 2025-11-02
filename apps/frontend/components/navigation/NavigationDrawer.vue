@@ -18,12 +18,14 @@
           tabindex="-1"
           @keydown="handleKeydown"
         >
-          <header class="flex items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-gray-800">
+          <header
+            class="flex items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-gray-800"
+          >
             <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">课程大纲</p>
             <button
               ref="closeButtonRef"
               type="button"
-              class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition hover:border-gray-300 hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-600 dark:hover:text-white dark:focus-visible:ring-offset-gray-900"
+              class="focus-visible:ring-primary-500 inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition hover:border-gray-300 hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-600 dark:hover:text-white dark:focus-visible:ring-offset-gray-900"
               aria-label="关闭课程导航"
               @click="close"
             >
@@ -32,7 +34,9 @@
           </header>
 
           <div class="flex-1 overflow-y-auto px-4 pb-6 pt-4">
-            <div class="mb-4 rounded-lg border border-gray-200 bg-gray-50/50 p-3 dark:border-gray-700 dark:bg-gray-800/50">
+            <div
+              class="mb-4 rounded-lg border border-gray-200 bg-gray-50/50 p-3 dark:border-gray-700 dark:bg-gray-800/50"
+            >
               <NuxtLink
                 to="/downloads"
                 class="flex items-center gap-2 text-sm font-medium text-gray-700 transition hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400"
@@ -55,7 +59,8 @@ import { onBeforeUnmount, ref, watch } from 'vue'
 import { useSwipe } from '@vueuse/core'
 import NavigationMenu from './NavigationMenu.vue'
 
-const focusableSelector = 'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+const focusableSelector =
+  'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
 
 const props = defineProps<{
   open: boolean
@@ -95,9 +100,9 @@ const handleKeydown = (event: KeyboardEvent) => {
     return
   }
 
-  const focusable = Array.from(
-    container.querySelectorAll<HTMLElement>(focusableSelector),
-  ).filter((el) => !el.hasAttribute('disabled') && el.tabIndex !== -1)
+  const focusable = Array.from(container.querySelectorAll<HTMLElement>(focusableSelector)).filter(
+    (el) => !el.hasAttribute('disabled') && el.tabIndex !== -1
+  )
 
   if (!focusable.length) {
     event.preventDefault()
@@ -136,7 +141,7 @@ watch(
       }
     }
   },
-  { immediate: true },
+  { immediate: true }
 )
 
 useSwipe(panelRef, {

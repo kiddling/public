@@ -26,17 +26,20 @@ These routes represent key user journeys and content types in the application.
 The following budgets are enforced as **error-level assertions** (builds will fail if not met):
 
 #### Core Metrics
+
 - **Performance Score**: ≥ 90
 - **SEO Score**: ≥ 95
 - **Accessibility Score**: ≥ 95
 - **Best Practices Score**: ≥ 90
 
 #### Resource Budgets
+
 - **JavaScript Size**: ≤ 200KB (204,800 bytes)
 - **CSS Size**: ≤ 100KB (102,400 bytes)
 - **Total Resource Size**: ≤ 1MB (1,048,576 bytes)
 
 #### Core Web Vitals (Warning Level)
+
 - **First Contentful Paint (FCP)**: ≤ 1.5s
 - **Largest Contentful Paint (LCP)**: ≤ 2.5s
 - **Cumulative Layout Shift (CLS)**: ≤ 0.1
@@ -55,6 +58,7 @@ pnpm lighthouse
 ```
 
 This command will:
+
 1. Build the frontend application
 2. Start a local HTTP server
 3. Run Lighthouse audits on all configured URLs
@@ -107,11 +111,13 @@ lighthouse-results-{branch}-{run_number}-{commit_sha}
 ```
 
 Examples:
+
 - `lighthouse-results-main-123-a1b2c3d`
 - `lighthouse-results-develop-456-e4f5g6h`
 - `lighthouse-results-feature-new-ui-789-i7j8k9l`
 
 This naming provides:
+
 - **Branch identification**: Know which branch was tested
 - **Run tracking**: Sequential run numbers for comparison
 - **Commit linkage**: Direct correlation to specific commits
@@ -146,7 +152,8 @@ Error: Assertion failed
   resource-summary:script:size - Expected <= 204800, got 250000
 ```
 
-**Action**: 
+**Action**:
+
 1. Run bundle analysis: `pnpm bundle:check`
 2. Identify large dependencies
 3. Consider code splitting or lazy loading
@@ -221,7 +228,8 @@ Error: Assertion failed
 Error: startServerReadyPattern not found
 ```
 
-**Solution**: 
+**Solution**:
+
 - Check port 3000 is available
 - Verify build completes successfully
 - Check server logs in CI output
@@ -231,6 +239,7 @@ Error: startServerReadyPattern not found
 Lighthouse scores can vary slightly between runs.
 
 **Solution**:
+
 - Configuration runs each test 3 times and takes median
 - If consistent failures occur, investigate the specific metric
 - Consider network conditions in CI environment
@@ -240,6 +249,7 @@ Lighthouse scores can vary slightly between runs.
 Large applications may cause memory issues during audit.
 
 **Solution**:
+
 - Increase Node.js memory: `NODE_OPTIONS=--max_old_space_size=4096`
 - Reduce number of URLs tested
 - Test routes separately
@@ -274,6 +284,7 @@ rm -rf .lighthouseci
 ## Changelog
 
 ### 2024-11-02
+
 - ✅ Migrated from `lighthouserc.js` to `.lighthouserc.json`
 - ✅ Updated budgets: Performance ≥90, SEO ≥95
 - ✅ Added multiple critical route testing

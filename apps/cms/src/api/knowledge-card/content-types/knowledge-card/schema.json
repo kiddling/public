@@ -20,13 +20,7 @@
     },
     "type": {
       "type": "enumeration",
-      "enum": [
-        "Theory",
-        "Case Study",
-        "Student Work",
-        "AI Prompt",
-        "Extended Thinking"
-      ]
+      "enum": ["Theory", "Case Study", "Student Work", "AI Prompt", "Extended Thinking"]
     },
     "description": {
       "type": "richtext"

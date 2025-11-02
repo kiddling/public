@@ -30,6 +30,7 @@
 **位置**：`apps/frontend/server/middleware/security-headers.ts`
 
 **功能**：
+
 - HSTS（HTTP 严格传输安全）
 - CSP（内容安全策略）
 - X-Frame-Options（防止点击劫持）
@@ -54,11 +55,13 @@ if (proto === 'http' && process.env.NODE_ENV === 'production') {
 **位置**：`apps/frontend/server/middleware/rate-limit.ts`
 
 **默认配置**：
+
 - 每个 IP 每分钟最多 100 个请求
 - 静态资源路径自动跳过限制
 - 超过限制返回 429 状态码
 
 **响应标头**：
+
 ```
 X-RateLimit-Limit: 100
 X-RateLimit-Remaining: 95
@@ -158,6 +161,7 @@ Strapi 实现了两层访问频率限制：
    - 仅应用于 `/api/` 路径
 
 **位置**：
+
 - `apps/cms/src/middlewares/rate-limit.ts`
 - `apps/cms/src/middlewares/api-rate-limit.ts`
 
@@ -304,6 +308,7 @@ npm run test:smoke
 ```
 
 测试包括：
+
 - 安全标头验证
 - HTTPS 重定向测试
 - 访问频率限制测试
@@ -318,6 +323,7 @@ curl -I https://yourdomain.com
 ```
 
 检查响应标头：
+
 ```
 Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
 Content-Security-Policy: default-src 'self'; ...
@@ -334,6 +340,7 @@ curl -I http://yourdomain.com
 ```
 
 应返回：
+
 ```
 HTTP/1.1 301 Moved Permanently
 Location: https://yourdomain.com/
@@ -350,6 +357,7 @@ done
 ```
 
 第 101 个请求应返回：
+
 ```
 HTTP/1.1 429 Too Many Requests
 Retry-After: 60
@@ -360,6 +368,7 @@ X-RateLimit-Remaining: 0
 #### 4. 测试 CSP
 
 在浏览器开发者工具中：
+
 1. 打开控制台
 2. 尝试注入内联脚本
 3. 检查 CSP 违规报告
@@ -386,7 +395,7 @@ X-RateLimit-Remaining: 0
 
 - [ ] 所有安全环境变量已正确配置
 - [ ] HTTPS 证书已安装并有效
-- [ ] 反向代理正确传递 X-Forwarded-* 标头
+- [ ] 反向代理正确传递 X-Forwarded-\* 标头
 - [ ] CORS 白名单仅包含授权域名
 - [ ] 访问频率限制已启用并测试
 - [ ] CSP 策略已调整为生产配置（禁用 unsafe-eval 等）
@@ -420,6 +429,7 @@ X-RateLimit-Remaining: 0
 **症状**：控制台显示 CSP 违规错误
 
 **解决**：
+
 1. 查看具体的违规报告
 2. 更新相应的 CSP 指令
 3. 添加必要的域名或源
@@ -429,6 +439,7 @@ X-RateLimit-Remaining: 0
 **症状**：正常用户频繁遇到 429 错误
 
 **解决**：
+
 1. 分析访问模式
 2. 调整 `MAX_REQUESTS` 和 `WINDOW_MS`
 3. 考虑添加跳过路径
@@ -438,6 +449,7 @@ X-RateLimit-Remaining: 0
 **症状**：页面无限重定向
 
 **解决**：
+
 1. 检查 Nginx X-Forwarded-Proto 配置
 2. 确保应用正确读取标头
 3. 检查 SSL 终止配置

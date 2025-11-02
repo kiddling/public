@@ -47,7 +47,7 @@ export default defineEventHandler(async (event) => {
     return response
   } catch (error: any) {
     console.error('Global search proxy error:', error)
-    
+
     throw createError({
       statusCode: error.statusCode || 500,
       message: error.message || 'Failed to fetch search results',

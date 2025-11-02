@@ -77,6 +77,7 @@ open .lighthouseci/lhr-*.html
 #### CI 集成
 
 GitHub Actions 自动运行 Lighthouse CI:
+
 - 每次 PR 自动检查
 - 性能回归检测
 - 生成详细报告
@@ -116,7 +117,7 @@ module.exports = {
       },
     },
   ],
-};
+}
 ```
 
 创建 `apps/cms/src/api/health/controllers/health.js`:
@@ -128,9 +129,9 @@ module.exports = {
       status: 'ok',
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
-    };
+    }
   },
-};
+}
 ```
 
 ### 4. Docker 健康检查
@@ -139,7 +140,7 @@ Docker Compose 配置包含健康检查:
 
 ```yaml
 healthcheck:
-  test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+  test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:3000/api/health']
   interval: 30s
   timeout: 10s
   retries: 3
@@ -162,20 +163,20 @@ docker-compose ps
 
 ```typescript
 // 使用 console
-console.log('Info message');
-console.error('Error message');
+console.log('Info message')
+console.error('Error message')
 
 // 使用 Nuxt logger
-const logger = useLogger();
-logger.info('Info message');
-logger.error('Error message');
+const logger = useLogger()
+logger.info('Info message')
+logger.error('Error message')
 ```
 
 生产环境:
 
 ```typescript
 // 集成 Winston 或 Pino
-import winston from 'winston';
+import winston from 'winston'
 
 const logger = winston.createLogger({
   level: 'info',
@@ -184,7 +185,7 @@ const logger = winston.createLogger({
     new winston.transports.File({ filename: 'error.log', level: 'error' }),
     new winston.transports.File({ filename: 'combined.log' }),
   ],
-});
+})
 ```
 
 #### CMS (Strapi)
@@ -202,7 +203,7 @@ export default {
       },
     },
   ],
-};
+}
 ```
 
 ### 2. Docker 日志
@@ -235,10 +236,10 @@ docker-compose logs -t
 services:
   frontend:
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 ```
 
 ### 3. Nginx 日志
@@ -278,12 +279,12 @@ elasticsearch:
   environment:
     - discovery.type=single-node
   ports:
-    - "9200:9200"
+    - '9200:9200'
 
 kibana:
   image: docker.elastic.co/kibana/kibana:8.11.0
   ports:
-    - "5601:5601"
+    - '5601:5601'
   depends_on:
     - elasticsearch
 
@@ -325,7 +326,7 @@ scrape_configs:
 prometheus:
   image: prom/prometheus:latest
   ports:
-    - "9090:9090"
+    - '9090:9090'
   volumes:
     - ./config/prometheus:/etc/prometheus
     - prometheus_data:/prometheus
@@ -335,7 +336,7 @@ prometheus:
 grafana:
   image: grafana/grafana:latest
   ports:
-    - "3001:3000"
+    - '3001:3000'
   volumes:
     - grafana_data:/var/lib/grafana
   environment:
@@ -348,23 +349,23 @@ grafana:
 
 ```typescript
 // apps/frontend/server/api/metrics.get.ts
-import { register, Counter, Histogram } from 'prom-client';
+import { register, Counter, Histogram } from 'prom-client'
 
 const httpRequestCounter = new Counter({
   name: 'http_requests_total',
   help: 'Total number of HTTP requests',
   labelNames: ['method', 'route', 'status'],
-});
+})
 
 const httpRequestDuration = new Histogram({
   name: 'http_request_duration_seconds',
   help: 'Duration of HTTP requests in seconds',
   labelNames: ['method', 'route'],
-});
+})
 
 export default defineEventHandler(() => {
-  return register.metrics();
-});
+  return register.metrics()
+})
 ```
 
 ## 🔔 告警配置
@@ -384,7 +385,7 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: "High error rate detected"
+          summary: 'High error rate detected'
 
       - alert: HighResponseTime
         expr: http_request_duration_seconds > 1
@@ -392,7 +393,7 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: "High response time detected"
+          summary: 'High response time detected'
 
       - alert: ServiceDown
         expr: up == 0
@@ -400,7 +401,7 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: "Service is down"
+          summary: 'Service is down'
 ```
 
 ### 2. 邮件告警
@@ -443,15 +444,15 @@ pnpm add --filter cms @sentry/node
 
 ```typescript
 // apps/frontend/plugins/sentry.client.ts
-import * as Sentry from '@sentry/nuxt';
+import * as Sentry from '@sentry/nuxt'
 
 export default defineNuxtPlugin(() => {
   Sentry.init({
     dsn: process.env.NUXT_PUBLIC_SENTRY_DSN,
     environment: process.env.NODE_ENV,
     tracesSampleRate: 1.0,
-  });
-});
+  })
+})
 ```
 
 #### CMS 配置
@@ -466,7 +467,7 @@ module.exports = {
       environment: process.env.NODE_ENV,
     },
   },
-};
+}
 ```
 
 ## 🛠️ 运维工具
@@ -591,6 +592,7 @@ pm2 web
 #### 备份脚本
 
 项目提供了自动化备份脚本 `scripts/ops/backup.sh`，支持：
+
 - PostgreSQL 数据库备份（使用 `pg_dump`）
 - Strapi 上传文件备份（tar 压缩）
 - 自动清理过期备份
@@ -750,7 +752,7 @@ aliyun cms PutCustomMetric \
 name: health-check
 on:
   schedule:
-    - cron: "*/5 * * * *"  # 每 5 分钟执行
+    - cron: '*/5 * * * *' # 每 5 分钟执行
 
 jobs:
   health-check:
@@ -758,7 +760,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      
+
       - name: Health Check
         run: |
           ./scripts/ops/healthcheck.sh \
@@ -778,24 +780,24 @@ services:
   frontend:
     # ... 其他配置
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"     # 单个日志文件最大 10MB
-        max-file: "3"       # 保留最近 3 个日志文件
-        compress: "true"    # 压缩轮转的日志
-        labels: "service=frontend"
-        tag: "{{.Name}}/{{.ID}}"
-  
+        max-size: '10m' # 单个日志文件最大 10MB
+        max-file: '3' # 保留最近 3 个日志文件
+        compress: 'true' # 压缩轮转的日志
+        labels: 'service=frontend'
+        tag: '{{.Name}}/{{.ID}}'
+
   cms:
     # ... 其他配置
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
-        compress: "true"
-        labels: "service=cms"
-        tag: "{{.Name}}/{{.ID}}"
+        max-size: '10m'
+        max-file: '3'
+        compress: 'true'
+        labels: 'service=cms'
+        tag: '{{.Name}}/{{.ID}}'
 ```
 
 #### 查看日志
@@ -836,7 +838,7 @@ services:
   loki:
     image: grafana/loki:latest
     ports:
-      - "3100:3100"
+      - '3100:3100'
     volumes:
       - loki_data:/loki
       - ./config/loki:/etc/loki
@@ -868,7 +870,7 @@ pgadmin:
     PGADMIN_DEFAULT_EMAIL: admin@yourdomain.com
     PGADMIN_DEFAULT_PASSWORD: admin
   ports:
-    - "5050:80"
+    - '5050:80'
 ```
 
 ### 2. Redis 管理
@@ -880,7 +882,7 @@ pgadmin:
 redis-insight:
   image: redislabs/redisinsight:latest
   ports:
-    - "8001:8001"
+    - '8001:8001'
 ```
 
 ### 3. 容器管理
@@ -892,7 +894,7 @@ redis-insight:
 portainer:
   image: portainer/portainer-ce:latest
   ports:
-    - "9000:9000"
+    - '9000:9000'
   volumes:
     - /var/run/docker.sock:/var/run/docker.sock
     - portainer_data:/data
@@ -917,6 +919,7 @@ portainer:
 ### 自定义仪表板
 
 创建自定义面板监控:
+
 - 请求速率
 - 响应时间
 - 错误率
@@ -938,6 +941,7 @@ pnpm audit --fix
 ### 2. 漏洞扫描
 
 GitHub Actions 自动运行:
+
 - npm audit
 - Snyk 扫描
 - CodeQL 分析
@@ -959,6 +963,7 @@ sudo vim /etc/fail2ban/jail.local
 ### 移动端应用
 
 推荐工具:
+
 - Grafana Mobile App
 - Prometheus Alertmanager App
 

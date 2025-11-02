@@ -15,21 +15,21 @@ describe('Font Fallback Strategy', () => {
   it('applies font-sans class correctly', () => {
     const wrapper = mount(TestComponent)
     const div = wrapper.find('div')
-    
+
     expect(div.classes()).toContain('font-sans')
   })
 
   it('applies typography classes for Chinese text', () => {
     const wrapper = mount(TestComponent)
     const heading = wrapper.find('h1')
-    
+
     expect(heading.classes()).toContain('text-2xl')
     expect(heading.classes()).toContain('font-medium')
   })
 
   it('renders Chinese characters correctly', () => {
     const wrapper = mount(TestComponent)
-    
+
     expect(wrapper.text()).toContain('中文排版')
     expect(wrapper.text()).toContain('正文内容')
   })
@@ -37,7 +37,7 @@ describe('Font Fallback Strategy', () => {
   it('applies base text styling to body text', () => {
     const wrapper = mount(TestComponent)
     const paragraph = wrapper.find('p')
-    
+
     expect(paragraph.classes()).toContain('text-base')
   })
 
@@ -46,7 +46,7 @@ describe('Font Fallback Strategy', () => {
       // System fonts don't require loading, so they should be available immediately
       const wrapper = mount(TestComponent)
       expect(wrapper.exists()).toBe(true)
-      
+
       // Text should be rendered immediately
       expect(wrapper.text().length).toBeGreaterThan(0)
     })
@@ -57,14 +57,14 @@ describe('Font Fallback Strategy', () => {
       const wrapper = mount(TestComponent, {
         attachTo: document.body,
       })
-      
+
       const div = wrapper.find('div')
       expect(div.exists()).toBe(true)
-      
+
       // Verify the element is in the DOM and can be styled
       const element = div.element as HTMLElement
       expect(element.classList.contains('font-sans')).toBe(true)
-      
+
       wrapper.unmount()
     })
   })
@@ -81,7 +81,7 @@ describe('Font Fallback Strategy', () => {
 
       const wrapper = mount(ResponsiveComponent)
       const heading = wrapper.find('h1')
-      
+
       expect(heading.classes()).toContain('text-xl')
       expect(heading.classes()).toContain('md:text-2xl')
       expect(heading.classes()).toContain('lg:text-3xl')
@@ -103,7 +103,7 @@ describe('Font Fallback Strategy', () => {
 
       const wrapper = mount(ChineseTextComponent)
       const paragraph = wrapper.find('p')
-      
+
       expect(paragraph.exists()).toBe(true)
       expect(paragraph.text()).toContain('这是一段较长的中文文本')
     })
@@ -119,7 +119,7 @@ describe('Font Fallback Strategy', () => {
 
       const wrapper = mount(MixedTextComponent)
       const text = wrapper.text()
-      
+
       expect(text).toContain('Design')
       expect(text).toContain('设计')
       expect(text).toContain('Typography')
@@ -142,7 +142,7 @@ describe('Font Fallback Strategy', () => {
 
       const wrapper = mount(FontWeightComponent)
       const paragraphs = wrapper.findAll('p')
-      
+
       expect(paragraphs[0].classes()).toContain('font-normal')
       expect(paragraphs[1].classes()).toContain('font-medium')
       expect(paragraphs[2].classes()).toContain('font-semibold')
@@ -164,7 +164,7 @@ describe('Font Fallback Strategy', () => {
 
       const wrapper = mount(DarkModeComponent)
       const paragraph = wrapper.find('p')
-      
+
       expect(paragraph.classes()).toContain('text-gray-900')
       expect(paragraph.classes()).toContain('dark:text-gray-100')
     })

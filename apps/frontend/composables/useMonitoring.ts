@@ -80,7 +80,7 @@ export function useMonitoring() {
     onMounted(() => {
       tracker.mark(endMark)
       const duration = tracker.measure(`component-${componentName}-mount`, startMark, endMark)
-      
+
       if (duration !== null) {
         trackMetric(`component.mount.${componentName}`, duration)
       }

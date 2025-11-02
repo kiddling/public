@@ -28,7 +28,7 @@ const DESIGN_LOG_TEMPLATES_ENDPOINT = '/api/cms/design-log-templates'
 
 export function useDesignLogTemplates(options: UseCmsDataOptions = {}) {
   const key = options.key ?? 'design-log-templates'
-  
+
   return useCmsData<{ data: DesignLogTemplate[] }>(
     DESIGN_LOG_TEMPLATES_ENDPOINT,
     {},
@@ -39,12 +39,8 @@ export function useDesignLogTemplates(options: UseCmsDataOptions = {}) {
 export function useDesignLogTemplate(id: string | number, options: UseCmsDataOptions = {}) {
   const endpoint = `${DESIGN_LOG_TEMPLATES_ENDPOINT}/${id}`
   const key = options.key ?? `design-log-template-${id}`
-  
-  return useCmsData<{ data: DesignLogTemplate }>(
-    endpoint,
-    {},
-    { ...options, key }
-  )
+
+  return useCmsData<{ data: DesignLogTemplate }>(endpoint, {}, { ...options, key })
 }
 
 export function useDefaultDesignLogTemplate(options: UseCmsDataOptions = {}) {
@@ -100,6 +96,7 @@ function createFallbackTemplate(): DesignLogTemplate {
       reflection: 'Reflect on what you learned and what you would do differently',
       attachments: 'Upload images, sketches, or other files related to your design',
     },
-    guidance: 'Use this design log to document your design process. Be thorough and thoughtful in your responses.',
+    guidance:
+      'Use this design log to document your design process. Be thorough and thoughtful in your responses.',
   }
 }

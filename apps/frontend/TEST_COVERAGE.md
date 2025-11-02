@@ -9,6 +9,7 @@ We use Vitest with @vitest/coverage-v8 for test coverage reporting. The project 
 ## Running Tests
 
 ### Unit Tests
+
 ```bash
 # Run all tests
 pnpm test
@@ -26,6 +27,7 @@ pnpm test:coverage:ui
 ### Coverage Reports
 
 Coverage reports are generated in multiple formats:
+
 - **HTML**: `coverage/index.html` - Open in browser for detailed view
 - **LCOV**: `coverage/lcov.info` - For CI/CD integration
 - **JSON**: `coverage/coverage-final.json` - Machine-readable format
@@ -35,24 +37,26 @@ Coverage reports are generated in multiple formats:
 
 The following thresholds are enforced (configured in `vitest.config.ts`):
 
-| Metric | Threshold |
-|--------|-----------|
-| Lines | 70% |
-| Functions | 70% |
-| Branches | 70% |
-| Statements | 70% |
+| Metric     | Threshold |
+| ---------- | --------- |
+| Lines      | 70%       |
+| Functions  | 70%       |
+| Branches   | 70%       |
+| Statements | 70%       |
 
 Tests will fail if coverage falls below these thresholds.
 
 ## What's Covered
 
 The coverage includes:
+
 - ✅ Composables (`composables/**/*.ts`)
 - ✅ Stores (`stores/**/*.ts`)
 - ✅ Utils (`utils/**/*.ts`)
 - ✅ Components (`components/**/*.vue`)
 
 Excluded from coverage:
+
 - ❌ Tests (`tests/**`)
 - ❌ Configuration files (`**/*.config.ts`)
 - ❌ Type definitions (`**/*.d.ts`, `types/**`)
@@ -154,12 +158,14 @@ Coverage is automatically checked in CI/CD pipeline:
 ## Viewing Coverage Reports
 
 ### Locally
+
 ```bash
 pnpm test:coverage
 # Open coverage/index.html in your browser
 ```
 
 ### In CI
+
 - Check the PR comment for coverage summary
 - Download coverage artifacts from GitHub Actions
 - View detailed report in Codecov (if configured)
@@ -175,15 +181,18 @@ pnpm test:coverage
 ## Common Issues
 
 ### Coverage not updating
+
 - Run `pnpm clean` and reinstall dependencies
 - Ensure `nuxt prepare` has been run
 
 ### Tests passing locally but failing in CI
+
 - Check Node.js version matches between local and CI
 - Ensure all dependencies are in `package.json`
 - Clear test cache: `rm -rf node_modules/.vitest`
 
 ### Coverage threshold failures
+
 - Run `pnpm test:coverage` to see which files need more tests
 - Focus on files with lowest coverage first
 - Consider if some code should be excluded (e.g., dev-only code)

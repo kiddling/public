@@ -5,6 +5,7 @@ Smoke tests are a subset of critical path tests that run during deployment to ve
 ## Purpose
 
 Smoke tests serve as a gate for deployments:
+
 - Run automatically during blue/green deployments
 - Block traffic cutover if critical paths fail
 - Trigger automatic rollback on failure
@@ -13,6 +14,7 @@ Smoke tests serve as a gate for deployments:
 ## Test Categories
 
 ### Critical Path Tests (Must Pass)
+
 - Homepage loads
 - API health endpoints respond
 - User authentication works
@@ -20,6 +22,7 @@ Smoke tests serve as a gate for deployments:
 - CMS admin accessible
 
 ### Extended Tests (Warnings if Fail)
+
 - Search functionality
 - Media uploads
 - Third-party integrations
@@ -28,6 +31,7 @@ Smoke tests serve as a gate for deployments:
 ## Running Smoke Tests
 
 ### Locally
+
 ```bash
 # Run all smoke tests
 npx playwright test --grep="smoke"
@@ -40,14 +44,17 @@ CMS_BASE_URL=http://localhost:1338 npx playwright test tests/smoke/
 ```
 
 ### During Deployment
+
 Smoke tests run automatically as part of the deployment process via `post-deploy-verify.sh`.
 
 ### In CI/CD
+
 The GitHub Actions workflow runs smoke tests after deployment and triggers rollback on failure.
 
 ## Configuration
 
 ### Playwright Configuration
+
 ```typescript
 // playwright.config.ts
 export default defineConfig({
@@ -59,10 +66,11 @@ export default defineConfig({
       retries: 2,
     },
   ],
-});
+})
 ```
 
 ### Environment Variables
+
 - `PLAYWRIGHT_BASE_URL` - Frontend URL (default: http://localhost:3000)
 - `CMS_BASE_URL` - CMS URL (default: http://localhost:1337)
 
@@ -77,25 +85,27 @@ export default defineConfig({
 5. **Clear Assertions:** Make it obvious what failed
 
 ### Template
+
 ```typescript
 /**
  * Smoke Test: [Feature Name]
- * 
+ *
  * Description of what this test verifies.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from '@playwright/test'
 
 test.describe('[Feature] Smoke Tests', () => {
   test('critical functionality works', async ({ page }) => {
     // Test implementation
-    await page.goto('/');
-    await expect(page.locator('h1')).toBeVisible();
-  });
-});
+    await page.goto('/')
+    await expect(page.locator('h1')).toBeVisible()
+  })
+})
 ```
 
 ### Naming Convention
+
 - File: `[feature].smoke.spec.ts`
 - Test: Descriptive name of what is being tested
 - Tags: Use `@smoke` tag if using tag-based filtering
@@ -103,7 +113,9 @@ test.describe('[Feature] Smoke Tests', () => {
 ## Current Tests
 
 ### homepage.smoke.spec.ts
+
 Tests basic homepage functionality:
+
 - Page loads successfully
 - Title is correct
 - Navigation is functional
@@ -111,14 +123,18 @@ Tests basic homepage functionality:
 - No critical console errors
 
 ### api.smoke.spec.ts
+
 Tests API endpoint availability:
+
 - Frontend health endpoint
 - CMS health endpoint
 - API accessibility
 - Response time
 
 ### security.smoke.spec.ts
+
 Tests security configuration:
+
 - Security headers (HSTS, CSP, X-Frame-Options, etc.)
 - Rate limiting enforcement
 - HTTPS redirection
@@ -139,6 +155,7 @@ To add new smoke tests:
 ## Integration with Deployment
 
 ### Deployment Flow
+
 ```
 Preflight Checks
       ↓
@@ -154,7 +171,9 @@ Post-Cutover Monitoring
 ```
 
 ### Failure Handling
+
 If smoke tests fail:
+
 1. Deployment is marked as failed
 2. Automatic rollback is triggered
 3. Traffic remains on previous stack
@@ -164,16 +183,19 @@ If smoke tests fail:
 ## Troubleshooting
 
 ### Tests Timing Out
+
 - Increase timeout in playwright.config.ts
 - Check if application is responding
 - Verify network connectivity
 
 ### Flaky Tests
+
 - Add explicit waits for dynamic content
 - Increase retries temporarily
 - Investigate root cause of flakiness
 
 ### False Positives
+
 - Review test assertions
 - Check if test environment matches production
 - Verify test data availability

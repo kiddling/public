@@ -1,7 +1,7 @@
 <template>
   <div
     ref="containerRef"
-    class="relative select-none touch-none"
+    class="relative touch-none select-none"
     @mousedown="handleMouseDown"
     @touchstart="handleTouchStart"
   >
@@ -11,7 +11,7 @@
         v-if="after"
         :src="getImageUrl(after.url)"
         :alt="after.alternativeText || 'After image'"
-        class="w-full h-auto object-contain"
+        class="h-auto w-full object-contain"
         draggable="false"
         preset="gallery"
         sizes="sm:640px md:800px lg:1024px"
@@ -27,7 +27,7 @@
         v-if="before"
         :src="getImageUrl(before.url)"
         :alt="before.alternativeText || 'Before image'"
-        class="w-full h-auto object-contain"
+        class="h-auto w-full object-contain"
         draggable="false"
         preset="gallery"
         sizes="sm:640px md:800px lg:1024px"
@@ -36,20 +36,26 @@
 
     <!-- Slider Handle -->
     <div
-      class="absolute top-0 bottom-0 w-1 bg-white cursor-ew-resize"
+      class="absolute bottom-0 top-0 w-1 cursor-ew-resize bg-white"
       :style="{ left: `${sliderPosition}%` }"
     >
       <!-- Handle Circle -->
-      <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center">
-        <Icon name="mdi:arrow-left-right" class="text-gray-900 text-xl" />
+      <div
+        class="absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 transform items-center justify-center rounded-full bg-white shadow-lg"
+      >
+        <Icon name="mdi:arrow-left-right" class="text-xl text-gray-900" />
       </div>
     </div>
 
     <!-- Labels -->
-    <div class="absolute top-4 left-4 px-3 py-1.5 bg-black/60 text-white text-sm font-semibold rounded">
+    <div
+      class="absolute left-4 top-4 rounded bg-black/60 px-3 py-1.5 text-sm font-semibold text-white"
+    >
       之前
     </div>
-    <div class="absolute top-4 right-4 px-3 py-1.5 bg-black/60 text-white text-sm font-semibold rounded">
+    <div
+      class="absolute right-4 top-4 rounded bg-black/60 px-3 py-1.5 text-sm font-semibold text-white"
+    >
       之后
     </div>
   </div>
@@ -83,7 +89,7 @@ function getImageUrl(url: string): string {
 
 function updateSliderPosition(clientX: number) {
   if (!containerRef.value) return
-  
+
   const rect = containerRef.value.getBoundingClientRect()
   const x = clientX - rect.left
   const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100))
@@ -93,19 +99,19 @@ function updateSliderPosition(clientX: number) {
 function handleMouseDown(e: MouseEvent) {
   isDragging.value = true
   updateSliderPosition(e.clientX)
-  
+
   const handleMouseMove = (e: MouseEvent) => {
     if (isDragging.value) {
       updateSliderPosition(e.clientX)
     }
   }
-  
+
   const handleMouseUp = () => {
     isDragging.value = false
     document.removeEventListener('mousemove', handleMouseMove)
     document.removeEventListener('mouseup', handleMouseUp)
   }
-  
+
   document.addEventListener('mousemove', handleMouseMove)
   document.addEventListener('mouseup', handleMouseUp)
 }
@@ -113,20 +119,20 @@ function handleMouseDown(e: MouseEvent) {
 function handleTouchStart(e: TouchEvent) {
   isDragging.value = true
   updateSliderPosition(e.touches[0].clientX)
-  
+
   const handleTouchMove = (e: TouchEvent) => {
     if (isDragging.value) {
       e.preventDefault()
       updateSliderPosition(e.touches[0].clientX)
     }
   }
-  
+
   const handleTouchEnd = () => {
     isDragging.value = false
     document.removeEventListener('touchmove', handleTouchMove)
     document.removeEventListener('touchend', handleTouchEnd)
   }
-  
+
   document.addEventListener('touchmove', handleTouchMove, { passive: false })
   document.addEventListener('touchend', handleTouchEnd)
 }

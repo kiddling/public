@@ -57,7 +57,7 @@ export default defineEventHandler(async (event) => {
     }
   } catch (error) {
     console.error('Failed to process error report:', error)
-    
+
     return {
       success: false,
       message: 'Failed to process error report',

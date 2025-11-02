@@ -1,29 +1,39 @@
 <template>
   <div class="attachment-uploader">
     <div class="mb-4">
-      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+      <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
         Attachments
         <HelpPopover v-if="tooltip" :content="tooltip" />
       </label>
-      
+
       <div
-        class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center hover:border-blue-500 dark:hover:border-blue-400 transition-colors cursor-pointer"
-        :class="{ 'border-blue-500 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/20': isDragging }"
+        class="cursor-pointer rounded-lg border-2 border-dashed border-gray-300 p-6 text-center transition-colors hover:border-blue-500 dark:border-gray-600 dark:hover:border-blue-400"
+        :class="{
+          'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-900/20': isDragging,
+        }"
         @dragover.prevent="isDragging = true"
         @dragleave.prevent="isDragging = false"
         @drop.prevent="handleDrop"
         @click="$refs.fileInput?.click()"
       >
         <div class="flex flex-col items-center">
-          <svg class="w-12 h-12 text-gray-400 dark:text-gray-500 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+          <svg
+            class="mb-3 h-12 w-12 text-gray-400 dark:text-gray-500"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+            />
           </svg>
           <p class="text-sm text-gray-600 dark:text-gray-400">
             <span class="font-semibold">Click to upload</span> or drag and drop
           </p>
-          <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">
-            PNG, JPG, PDF up to 10MB
-          </p>
+          <p class="mt-1 text-xs text-gray-500 dark:text-gray-500">PNG, JPG, PDF up to 10MB</p>
         </div>
         <input
           ref="fileInput"
@@ -40,19 +50,32 @@
       <div
         v-for="attachment in attachments"
         :key="attachment.id"
-        class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
+        class="flex items-center justify-between rounded-lg bg-gray-50 p-3 dark:bg-gray-800"
       >
-        <div class="flex items-center space-x-3 flex-1 min-w-0">
+        <div class="flex min-w-0 flex-1 items-center space-x-3">
           <div class="flex-shrink-0">
-            <svg v-if="attachment.type.startsWith('image/')" class="w-8 h-8 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+            <svg
+              v-if="attachment.type.startsWith('image/')"
+              class="h-8 w-8 text-blue-500"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+                clip-rule="evenodd"
+              />
             </svg>
-            <svg v-else class="w-8 h-8 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" />
+            <svg v-else class="h-8 w-8 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"
+                clip-rule="evenodd"
+              />
             </svg>
           </div>
-          <div class="flex-1 min-w-0">
-            <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+          <div class="min-w-0 flex-1">
+            <p class="truncate text-sm font-medium text-gray-900 dark:text-gray-100">
               {{ attachment.name }}
             </p>
             <p class="text-xs text-gray-500 dark:text-gray-400">
@@ -66,8 +89,12 @@
           aria-label="Remove attachment"
           @click="removeAttachment(attachment.id)"
         >
-          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+          <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            />
           </svg>
         </button>
       </div>
@@ -107,7 +134,7 @@ function handleDrop(event: DragEvent) {
 }
 
 function processFiles(files: File[]) {
-  files.forEach(file => {
+  files.forEach((file) => {
     if (file.size > 10 * 1024 * 1024) {
       alert(`File ${file.name} is too large. Maximum size is 10MB.`)
       return
@@ -134,6 +161,6 @@ function formatFileSize(bytes: number): string {
   const k = 1024
   const sizes = ['Bytes', 'KB', 'MB', 'GB']
   const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i]
+  return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i]
 }
 </script>

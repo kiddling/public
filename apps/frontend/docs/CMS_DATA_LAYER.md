@@ -66,7 +66,11 @@ const { data: customLessons } = useLessons({
 **Composable**: `useKnowledgeCards()`
 
 ```typescript
-import { useKnowledgeCards, useKnowledgeCard, useKnowledgeCardsByType } from '~/composables/useKnowledgeCards'
+import {
+  useKnowledgeCards,
+  useKnowledgeCard,
+  useKnowledgeCardsByType,
+} from '~/composables/useKnowledgeCards'
 
 // Fetch all knowledge cards
 const { data: cards } = useKnowledgeCards()
@@ -92,7 +96,11 @@ const { data: featured } = useFeaturedKnowledgeCards()
 **Composable**: `useStudentWorks()`
 
 ```typescript
-import { useStudentWorks, useStudentWork, useStudentWorksByDiscipline } from '~/composables/useStudentWorks'
+import {
+  useStudentWorks,
+  useStudentWork,
+  useStudentWorksByDiscipline,
+} from '~/composables/useStudentWorks'
 
 // Fetch all student works
 const { data: works } = useStudentWorks()
@@ -149,19 +157,19 @@ All composables accept common options:
 
 ```typescript
 interface UseCmsDataOptions {
-  key?: string              // Cache key (auto-generated if not provided)
-  immediate?: boolean       // Fetch immediately (default: true)
-  server?: boolean          // Fetch on server-side (default: true)
-  lazy?: boolean            // Don't block navigation (default: false)
-  watch?: any[]             // Reactive dependencies to watch
-  cacheTime?: number        // Cache duration in ms (default: 5 minutes)
-  staleTime?: number        // Stale threshold in ms (default: 1 minute)
-  timeout?: number          // Request timeout in ms (default: 30 seconds)
+  key?: string // Cache key (auto-generated if not provided)
+  immediate?: boolean // Fetch immediately (default: true)
+  server?: boolean // Fetch on server-side (default: true)
+  lazy?: boolean // Don't block navigation (default: false)
+  watch?: any[] // Reactive dependencies to watch
+  cacheTime?: number // Cache duration in ms (default: 5 minutes)
+  staleTime?: number // Stale threshold in ms (default: 1 minute)
+  timeout?: number // Request timeout in ms (default: 30 seconds)
   retryConfig?: {
-    maxRetries: number      // Max retry attempts (default: 3)
-    baseDelay: number       // Initial delay in ms (default: 1000)
-    maxDelay: number        // Max delay in ms (default: 10000)
-    backoffFactor: number   // Backoff multiplier (default: 2)
+    maxRetries: number // Max retry attempts (default: 3)
+    baseDelay: number // Initial delay in ms (default: 1000)
+    maxDelay: number // Max delay in ms (default: 10000)
+    backoffFactor: number // Backoff multiplier (default: 2)
   }
 }
 ```
@@ -172,32 +180,51 @@ The data layer supports Strapi's filter operators:
 
 ```typescript
 // Equal
-filters: { category: { $eq: 'Video Tutorials' } }
+filters: {
+  category: {
+    $eq: 'Video Tutorials'
+  }
+}
 
 // Not equal
-filters: { category: { $ne: 'Readings' } }
+filters: {
+  category: {
+    $ne: 'Readings'
+  }
+}
 
 // In array
-filters: { type: { $in: ['Theory', 'Case Study'] } }
+filters: {
+  type: {
+    $in: ['Theory', 'Case Study']
+  }
+}
 
 // Contains (case-insensitive)
-filters: { title: { $containsi: 'design' } }
+filters: {
+  title: {
+    $containsi: 'design'
+  }
+}
 
 // Greater than / Less than
-filters: { grade: { $gte: '2023' } }
+filters: {
+  grade: {
+    $gte: '2023'
+  }
+}
 
 // Logical operators
 filters: {
-  $or: [
-    { title: { $containsi: 'design' } },
-    { description: { $containsi: 'design' } }
-  ]
+  $or: [{ title: { $containsi: 'design' } }, { description: { $containsi: 'design' } }]
 }
 
 // Nested relations
 filters: {
   lessons: {
-    code: { $eq: 'L1.1' }
+    code: {
+      $eq: 'L1.1'
+    }
   }
 }
 ```
@@ -292,12 +319,14 @@ Failed requests are automatically retried with exponential backoff:
 4. **Max retries**: 3 attempts
 
 Retryable errors:
+
 - Network errors
 - Timeout errors
 - 5xx server errors
 - 429 Too Many Requests
 
 Non-retryable errors:
+
 - 4xx client errors (except 429)
 - Invalid data errors
 
@@ -365,8 +394,8 @@ const { data: part3 } = useLessonsByPart('extended-thinking')
 // GOOD: Single request with filters
 const { data: allLessons } = useLessons({
   filters: {
-    partKey: { $in: ['foundation', 'core-blocks', 'extended-thinking'] }
-  }
+    partKey: { $in: ['foundation', 'core-blocks', 'extended-thinking'] },
+  },
 })
 ```
 
@@ -419,6 +448,7 @@ function nextPage() {
 ## Testing
 
 The data layer includes comprehensive tests. See:
+
 - `tests/composables/` for composable tests
 - `tests/utils/data-layer.spec.ts` for utility tests
 - `tests/server/` for server route tests
@@ -567,6 +597,7 @@ const { data } = useLessons()
 ## Support
 
 For issues or questions, please refer to:
+
 - [Nuxt 3 Documentation](https://nuxt.com/docs)
 - [Strapi Documentation](https://docs.strapi.io)
 - Project README.md

@@ -22,15 +22,15 @@ const page = ref(1)
 const pageSize = 20
 
 // Available parts
-const parts: NavigationPartType[] = [
-  'foundation',
-  'core-blocks',
-  'extended-thinking',
-  'appendices',
-]
+const parts: NavigationPartType[] = ['foundation', 'core-blocks', 'extended-thinking', 'appendices']
 
 // Fetch lessons based on current filters
-const { data: lessons, pending, error, refresh } = computed(() => {
+const {
+  data: lessons,
+  pending,
+  error,
+  refresh,
+} = computed(() => {
   // Use search if query is present
   if (searchQuery.value.trim()) {
     return useSearchLessons(searchQuery.value, {
@@ -112,9 +112,7 @@ async function reloadLessons() {
     <!-- Header -->
     <header class="page-header">
       <h1>Lessons</h1>
-      <button @click="reloadLessons" :disabled="pending">
-        Refresh
-      </button>
+      <button @click="reloadLessons" :disabled="pending">Refresh</button>
     </header>
 
     <!-- Filters -->
@@ -122,12 +120,7 @@ async function reloadLessons() {
       <!-- Search -->
       <div class="filter-group">
         <label for="search">Search</label>
-        <input
-          id="search"
-          v-model="searchQuery"
-          type="text"
-          placeholder="Search lessons..."
-        />
+        <input id="search" v-model="searchQuery" type="text" placeholder="Search lessons..." />
       </div>
 
       <!-- Part Filter -->
@@ -142,9 +135,7 @@ async function reloadLessons() {
       </div>
 
       <!-- Clear Filters -->
-      <button @click="clearFilters" class="btn-secondary">
-        Clear Filters
-      </button>
+      <button @click="clearFilters" class="btn-secondary">Clear Filters</button>
     </div>
 
     <!-- Loading State -->
@@ -167,11 +158,7 @@ async function reloadLessons() {
 
     <!-- Lesson List -->
     <div v-else class="lesson-list">
-      <div
-        v-for="item in lessons.data"
-        :key="item.id"
-        class="lesson-card"
-      >
+      <div v-for="item in lessons.data" :key="item.id" class="lesson-card">
         <div class="lesson-header">
           <span class="lesson-code">{{ item.attributes.code }}</span>
           <span v-if="item.attributes.partKey" class="lesson-part">
@@ -182,10 +169,7 @@ async function reloadLessons() {
         <p v-if="item.attributes.summary" class="lesson-summary">
           {{ item.attributes.summary }}
         </p>
-        <NuxtLink
-          :to="`/lessons/${item.attributes.code}`"
-          class="lesson-link"
-        >
+        <NuxtLink :to="`/lessons/${item.attributes.code}`" class="lesson-link">
           View Lesson →
         </NuxtLink>
       </div>
@@ -193,21 +177,11 @@ async function reloadLessons() {
 
     <!-- Pagination -->
     <div v-if="hasResults && totalPages > 1" class="pagination">
-      <button
-        @click="prevPage"
-        :disabled="page === 1 || pending"
-        class="btn-pagination"
-      >
+      <button @click="prevPage" :disabled="page === 1 || pending" class="btn-pagination">
         Previous
       </button>
-      <span class="page-info">
-        Page {{ page }} of {{ totalPages }}
-      </span>
-      <button
-        @click="nextPage"
-        :disabled="page === totalPages || pending"
-        class="btn-pagination"
-      >
+      <span class="page-info"> Page {{ page }} of {{ totalPages }} </span>
+      <button @click="nextPage" :disabled="page === totalPages || pending" class="btn-pagination">
         Next
       </button>
     </div>
@@ -274,8 +248,12 @@ async function reloadLessons() {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .lesson-list {

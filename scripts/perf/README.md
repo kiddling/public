@@ -40,17 +40,17 @@ STRICT_MODE=false pnpm bundle:check
 
 Current budgets (defined in `bundle-budget.mjs`):
 
-| Asset Type | Limit | Description |
-|------------|-------|-------------|
-| Entry JS | 200 KB | Initial JavaScript bundle (gzipped) |
-| Total JS | 500 KB | All JavaScript combined (gzipped) |
-| Total CSS | 100 KB | All CSS combined |
-| Max Chunk | 300 KB | Maximum size for any single chunk (gzipped) |
-| vendor-vue | 150 KB | Vue ecosystem chunk |
-| vendor-utils | 100 KB | Utility libraries chunk |
-| vendor-jspdf | 200 KB | jsPDF library chunk |
-| vendor-qrcode | 50 KB | QRCode library chunk |
-| vendor-markdown | 100 KB | Markdown renderer chunk |
+| Asset Type      | Limit  | Description                                 |
+| --------------- | ------ | ------------------------------------------- |
+| Entry JS        | 200 KB | Initial JavaScript bundle (gzipped)         |
+| Total JS        | 500 KB | All JavaScript combined (gzipped)           |
+| Total CSS       | 100 KB | All CSS combined                            |
+| Max Chunk       | 300 KB | Maximum size for any single chunk (gzipped) |
+| vendor-vue      | 150 KB | Vue ecosystem chunk                         |
+| vendor-utils    | 100 KB | Utility libraries chunk                     |
+| vendor-jspdf    | 200 KB | jsPDF library chunk                         |
+| vendor-qrcode   | 50 KB  | QRCode library chunk                        |
+| vendor-markdown | 100 KB | Markdown renderer chunk                     |
 
 #### Environment Variables
 
@@ -187,6 +187,7 @@ const budgets = {
 ```
 
 **Solution**: Run the build first
+
 ```bash
 pnpm build:frontend
 ```
@@ -199,7 +200,8 @@ pnpm build:frontend
 ❌ Budget violations detected!
 ```
 
-**Solution**: 
+**Solution**:
+
 1. Run `pnpm --filter frontend build:analyze` to visualize bundle
 2. Identify large chunks and optimize them
 3. Consider lazy loading or code splitting
