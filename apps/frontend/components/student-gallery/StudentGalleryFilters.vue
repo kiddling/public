@@ -1,38 +1,40 @@
 <template>
-  <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 space-y-4">
+  <div class="space-y-4 rounded-lg bg-gray-50 p-6 dark:bg-gray-800">
     <!-- Search Bar -->
     <div class="relative">
       <Icon
         name="mdi:magnify"
-        class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+        class="absolute left-3 top-1/2 -translate-y-1/2 transform text-gray-400"
       />
       <input
         :value="search"
         @input="$emit('update:search', ($event.target as HTMLInputElement).value)"
         type="text"
         placeholder="搜索学生姓名或作品描述..."
-        class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-shadow"
+        class="focus:ring-primary-500 w-full rounded-lg border border-gray-300 bg-white py-3 pl-10 pr-4 text-gray-900 transition-shadow focus:border-transparent focus:ring-2 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
       />
       <button
         v-if="search"
         @click="$emit('update:search', '')"
-        class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+        class="absolute right-3 top-1/2 -translate-y-1/2 transform text-gray-400 hover:text-gray-600"
       >
         <Icon name="mdi:close" />
       </button>
     </div>
 
     <!-- Filter Row -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
       <!-- Discipline Filter -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
           专业方向
         </label>
         <select
           :value="discipline"
-          @change="$emit('update:discipline', ($event.target as HTMLSelectElement).value || undefined)"
-          class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+          @change="
+            $emit('update:discipline', ($event.target as HTMLSelectElement).value || undefined)
+          "
+          class="focus:ring-primary-500 w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 focus:border-transparent focus:ring-2 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
         >
           <option value="">全部专业</option>
           <option value="环艺">环艺</option>
@@ -45,13 +47,13 @@
 
       <!-- Loop Filter -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
           课程循环
         </label>
         <select
           :value="loop"
           @change="$emit('update:loop', ($event.target as HTMLSelectElement).value || undefined)"
-          class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+          class="focus:ring-primary-500 w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 focus:border-transparent focus:ring-2 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
         >
           <option value="">全部循环</option>
           <option value="Loop 1">Loop 1</option>
@@ -62,7 +64,7 @@
 
       <!-- Grade Filter -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
           年级
         </label>
         <input
@@ -70,7 +72,7 @@
           @input="$emit('update:grade', ($event.target as HTMLInputElement).value || undefined)"
           type="text"
           placeholder="例如：2023"
-          class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+          class="focus:ring-primary-500 w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 focus:border-transparent focus:ring-2 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
         />
       </div>
     </div>
@@ -83,7 +85,7 @@
       <button
         v-if="hasActiveFilters"
         @click="clearAll"
-        class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium flex items-center gap-1"
+        class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 flex items-center gap-1 font-medium"
       >
         <Icon name="mdi:filter-remove" />
         清除筛选

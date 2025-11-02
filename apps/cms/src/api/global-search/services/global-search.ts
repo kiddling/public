@@ -140,7 +140,10 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
     }
 
     // Strip HTML if present
-    const plainText = text.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
+    const plainText = text
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
 
     if (plainText.length <= maxLength) {
       return plainText
@@ -239,10 +242,7 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
   async searchKnowledgeCards(query: string): Promise<SearchResult[]> {
     const filters = {
       publishedAt: { $notNull: true },
-      $or: [
-        this.buildSearchFilters(query, 'title'),
-        this.buildSearchFilters(query, 'description'),
-      ],
+      $or: [this.buildSearchFilters(query, 'title'), this.buildSearchFilters(query, 'description')],
     }
 
     const cards = await strapi.entityService.findMany('api::knowledge-card.knowledge-card', {
@@ -320,10 +320,7 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
   async searchResources(query: string): Promise<SearchResult[]> {
     const filters = {
       publishedAt: { $notNull: true },
-      $or: [
-        this.buildSearchFilters(query, 'title'),
-        this.buildSearchFilters(query, 'description'),
-      ],
+      $or: [this.buildSearchFilters(query, 'title'), this.buildSearchFilters(query, 'description')],
     }
 
     const resources = await strapi.entityService.findMany('api::resource.resource', {
@@ -401,12 +398,15 @@ export default ({ strapi }: { strapi: Core.Strapi }) => ({
     }
 
     // Determine which types to search
-    const searchTypes = type.length > 0 ? type : ['lesson', 'knowledge-card', 'student-work', 'resource']
+    const searchTypes =
+      type.length > 0 ? type : ['lesson', 'knowledge-card', 'student-work', 'resource']
 
     // Execute searches in parallel
     const [lessons, knowledgeCards, studentWorks, resources] = await Promise.all([
       searchTypes.includes('lesson') ? this.searchLessons(query, difficulty) : Promise.resolve([]),
-      searchTypes.includes('knowledge-card') ? this.searchKnowledgeCards(query) : Promise.resolve([]),
+      searchTypes.includes('knowledge-card')
+        ? this.searchKnowledgeCards(query)
+        : Promise.resolve([]),
       searchTypes.includes('student-work') ? this.searchStudentWorks(query) : Promise.resolve([]),
       searchTypes.includes('resource') ? this.searchResources(query) : Promise.resolve([]),
     ])

@@ -101,7 +101,7 @@ describe('StudentGalleryComparison', () => {
     })
 
     const container = wrapper.find('.relative')
-    
+
     // Mock getBoundingClientRect
     const mockRect = {
       left: 0,
@@ -117,10 +117,10 @@ describe('StudentGalleryComparison', () => {
     container.element.getBoundingClientRect = () => mockRect
 
     await container.trigger('mousedown', { clientX: 25 })
-    
+
     const slider = wrapper.find('.cursor-ew-resize')
     expect(slider.attributes('style')).toContain('25%')
-    
+
     wrapper.unmount()
   })
 
@@ -159,7 +159,7 @@ describe('StudentGalleryComparison', () => {
     })
 
     const images = wrapper.findAll('img')
-    images.forEach(img => {
+    images.forEach((img) => {
       expect(img.attributes('draggable')).toBe('false')
     })
   })

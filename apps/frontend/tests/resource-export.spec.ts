@@ -37,7 +37,9 @@ describe('Resource Export Utilities', () => {
       const csv = generateResourceCSV(mockResources)
       const lines = csv.split('\n')
 
-      expect(lines[0]).toBe('ID,Title,Category,Media Type,Disciplines,URL,Accessibility,Last Checked,Description')
+      expect(lines[0]).toBe(
+        'ID,Title,Category,Media Type,Disciplines,URL,Accessibility,Last Checked,Description'
+      )
     })
 
     it('should include all resources as rows', () => {
@@ -102,7 +104,7 @@ describe('Resource Export Utilities', () => {
 
     it('should include all resource details', () => {
       const text = generateResourcePDFText(mockResources)
-      
+
       expect(text).toContain('Test Resource 1')
       expect(text).toContain('Category: Video Tutorials')
       expect(text).toContain('Media Type: video')

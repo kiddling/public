@@ -1,0 +1,173 @@
+name: Performance Budget Check
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main]
+
+jobs:
+  performance:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build frontend with bundle analysis
+        run: |
+          cd apps/frontend
+          ANALYZE=true pnpm build
+        env:
+          NODE_ENV: production
+
+      - name: Generate performance report
+        run: |
+          cd apps/frontend
+          pnpm perf:report
+        continue-on-error: true
+
+      - name: Upload performance report
+        uses: actions/upload-artifact@v3
+        with:
+          name: performance-report
+          path: apps/frontend/performance-report.json
+
+      - name: Upload bundle analysis
+        uses: actions/upload-artifact@v3
+        with:
+          name: bundle-analysis
+          path: apps/frontend/.nuxt/analyze/
+
+      - name: Comment PR with performance results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = JSON.parse(fs.readFileSync('apps/frontend/performance-report.json', 'utf8'));
+            
+            const formatBytes = (bytes) => {
+              if (bytes === 0) return '0 Bytes';
+              const k = 1024;
+              const sizes = ['Bytes', 'KB', 'MB'];
+              const i = Math.floor(Math.log(bytes) / Math.log(k));
+              return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
+            };
+
+            const budgetStatus = (budget) => budget.passed ? '✅' : '❌';
+            
+            const comment = `## 📊 Performance Report
+            
+            ### Bundle Sizes
+            - **JavaScript**: ${formatBytes(report.javascript.gzipSize)} (gzipped)
+            - **CSS**: ${formatBytes(report.css.gzipSize)} (gzipped)
+            - **Total**: ${formatBytes(report.summary.totalGzipSize)}
+            
+            ### Performance Budgets
+            | Metric | Budget | Actual | Status |
+            |--------|--------|--------|--------|
+            | Entry JS | ${formatBytes(report.budgets.entryJS.budget)} | ${formatBytes(report.budgets.entryJS.actual)} | ${budgetStatus(report.budgets.entryJS)} |
+            | Total JS | ${formatBytes(report.budgets.totalJS.budget)} | ${formatBytes(report.budgets.totalJS.actual)} | ${budgetStatus(report.budgets.totalJS)} |
+            | Total CSS | ${formatBytes(report.budgets.totalCSS.budget)} | ${formatBytes(report.budgets.totalCSS.actual)} | ${budgetStatus(report.budgets.totalCSS)} |
+            | Total Assets | ${formatBytes(report.budgets.totalAssets.budget)} | ${formatBytes(report.budgets.totalAssets.actual)} | ${budgetStatus(report.budgets.totalAssets)} |
+            
+            ### Top 5 Largest Files
+            ${report.largestFiles.slice(0, 5).map((file, i) => 
+              `${i + 1}. \`${file.path}\` - ${formatBytes(file.gzipSize)}`
+            ).join('\n')}
+            
+            ---
+            📈 [View full bundle analysis in artifacts]
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+  lighthouse:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build frontend
+        run: pnpm build:frontend
+        env:
+          NODE_ENV: production
+
+      - name: Run Lighthouse CI
+        run: pnpm lighthouse
+        continue-on-error: true
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+      - name: Upload Lighthouse results
+        uses: actions/upload-artifact@v3
+        with:
+          name: lighthouse-results
+          path: .lighthouseci/
+
+      - name: Comment PR with Lighthouse scores
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Parse Lighthouse results and comment on PR
+            const comment = `## 🏠 Lighthouse Report
+            
+            Performance scores will be available in the artifacts.
+            
+            ---
+            📊 [View full Lighthouse report in artifacts]
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });

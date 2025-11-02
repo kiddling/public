@@ -134,7 +134,7 @@ Stale cached data is served immediately while fresh data is fetched in the backg
 // Customize cache and stale times
 const { data } = useLessons({
   cacheTime: 10 * 60 * 1000, // 10 minutes
-  staleTime: 60 * 1000,       // 1 minute
+  staleTime: 60 * 1000, // 1 minute
 })
 ```
 
@@ -238,9 +238,7 @@ async function reloadLessons() {
 </script>
 
 <template>
-  <button @click="reloadLessons" :disabled="pending">
-    Refresh
-  </button>
+  <button @click="reloadLessons" :disabled="pending">Refresh</button>
 </template>
 ```
 
@@ -255,7 +253,7 @@ async function createLesson(lessonData) {
     method: 'POST',
     body: lessonData,
   })
-  
+
   // Invalidate lessons cache
   invalidateCmsCache(/^lessons-/)
 }
@@ -269,10 +267,7 @@ async function createLesson(lessonData) {
 ```typescript
 const { data } = useLessons({
   filters: {
-    $and: [
-      { partKey: { $eq: 'foundation' } },
-      { order: { $lte: 10 } },
-    ],
+    $and: [{ partKey: { $eq: 'foundation' } }, { order: { $lte: 10 } }],
   },
 })
 ```
@@ -321,9 +316,7 @@ const { data, error } = useLessons()
 </script>
 
 <template>
-  <div v-if="error" class="error">
-    Failed to load lessons: {{ error.message }}
-  </div>
+  <div v-if="error" class="error">Failed to load lessons: {{ error.message }}</div>
 </template>
 ```
 
@@ -417,6 +410,7 @@ See the `examples/` directory for complete working examples of common use cases.
 ## Support
 
 For issues or questions:
+
 1. Check this README
 2. Check [CMS_DATA_LAYER.md](./CMS_DATA_LAYER.md)
 3. Check the project README.md

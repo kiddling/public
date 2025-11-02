@@ -1,6 +1,6 @@
 <template>
   <article
-    class="group bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden cursor-pointer transition-all hover:shadow-xl focus-within:ring-2 focus-within:ring-primary-500"
+    class="focus-within:ring-primary-500 group cursor-pointer overflow-hidden rounded-lg bg-white shadow-md transition-all focus-within:ring-2 hover:shadow-xl dark:bg-gray-800"
     tabindex="0"
     role="button"
     :aria-label="`View ${work.projectTitle || work.studentName}'s work`"
@@ -8,19 +8,21 @@
     @keydown.enter="emit('click')"
     @keydown.space.prevent="emit('click')"
   >
-    <div class="relative aspect-[3/4] bg-gray-100 dark:bg-gray-700 overflow-hidden">
-      <img
+    <div class="relative aspect-[3/4] overflow-hidden bg-gray-100 dark:bg-gray-700">
+      <NuxtImg
         v-if="thumbnailUrl"
         :src="thumbnailUrl"
         :alt="thumbnailAlt"
-        class="w-full h-full object-cover transition-transform group-hover:scale-105"
+        class="h-full w-full object-cover transition-transform group-hover:scale-105"
         loading="lazy"
+        preset="card"
+        sizes="xs:280px sm:300px md:320px lg:400px"
       />
       <div
         v-else
-        class="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-500"
+        class="flex h-full w-full items-center justify-center text-gray-400 dark:text-gray-500"
       >
-        <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="h-16 w-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -32,32 +34,32 @@
 
       <div
         v-if="work.discipline"
-        class="absolute top-2 left-2 px-2 py-1 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded text-xs font-medium text-gray-900 dark:text-gray-100"
+        class="absolute left-2 top-2 rounded bg-white/90 px-2 py-1 text-xs font-medium text-gray-900 backdrop-blur-sm dark:bg-gray-800/90 dark:text-gray-100"
       >
         {{ work.discipline }}
       </div>
 
-      <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+      <div class="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/20" />
     </div>
 
     <div class="p-4">
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1 line-clamp-2">
+      <h3 class="mb-1 line-clamp-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
         {{ work.projectTitle || work.studentName }}
       </h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+      <p class="mb-2 text-sm text-gray-600 dark:text-gray-400">
         {{ work.studentName }}
       </p>
 
-      <div class="flex flex-wrap gap-2 mb-3">
+      <div class="mb-3 flex flex-wrap gap-2">
         <span
           v-if="work.loop"
-          class="inline-flex items-center px-2 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-300 text-xs font-medium rounded"
+          class="bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-300 inline-flex items-center rounded px-2 py-1 text-xs font-medium"
         >
           {{ work.loop }}
         </span>
         <span
           v-if="work.grade"
-          class="inline-flex items-center px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 text-xs font-medium rounded"
+          class="inline-flex items-center rounded bg-gray-100 px-2 py-1 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300"
         >
           {{ work.grade }}
         </span>
@@ -66,12 +68,12 @@
       <div class="flex items-center gap-2">
         <button
           v-if="work.shareEnabled"
-          class="flex-1 px-3 py-2 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors"
+          class="bg-primary-600 hover:bg-primary-700 focus:ring-primary-500 flex-1 rounded-lg px-3 py-2 text-sm font-medium text-white transition-colors focus:outline-none focus:ring-2"
           aria-label="Share work"
           @click.stop="handleShare"
         >
           <span class="flex items-center justify-center gap-1">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -85,11 +87,11 @@
 
         <button
           v-if="work.downloadUrl"
-          class="px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors"
+          class="rounded-lg bg-gray-100 px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
           aria-label="Download work"
           @click.stop="handleDownload"
         >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"

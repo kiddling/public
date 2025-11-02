@@ -3,12 +3,14 @@
     <!-- Recent Visits -->
     <div v-if="searchStore.hasRecentVisits">
       <div class="mb-2 flex items-center justify-between px-2">
-        <h3 class="text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+        <h3
+          class="text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400"
+        >
           Recent Visits
         </h3>
         <button
           type="button"
-          class="text-[10px] font-medium text-primary-600 transition hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
+          class="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 text-[10px] font-medium transition"
           @click="clearRecentVisits"
         >
           Clear
@@ -18,7 +20,7 @@
         <li
           v-for="visit in searchStore.recentVisits"
           :key="`${visit.type}-${visit.id}`"
-          class="group rounded-xl transition hover:bg-primary-50 dark:hover:bg-primary-500/10"
+          class="hover:bg-primary-50 dark:hover:bg-primary-500/10 group rounded-xl transition"
         >
           <button
             type="button"
@@ -44,12 +46,14 @@
     <!-- Search History -->
     <div v-if="searchStore.hasHistory">
       <div class="mb-2 flex items-center justify-between px-2">
-        <h3 class="text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+        <h3
+          class="text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400"
+        >
           Recent Searches
         </h3>
         <button
           type="button"
-          class="text-[10px] font-medium text-primary-600 transition hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
+          class="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 text-[10px] font-medium transition"
           @click="clearHistory"
         >
           Clear
@@ -59,7 +63,7 @@
         <li
           v-for="item in searchStore.searchHistory"
           :key="item.query"
-          class="group rounded-xl transition hover:bg-primary-50 dark:hover:bg-primary-500/10"
+          class="hover:bg-primary-50 dark:hover:bg-primary-500/10 group rounded-xl transition"
         >
           <button
             type="button"
@@ -83,14 +87,15 @@
     </div>
 
     <!-- Empty State -->
-    <div v-if="!searchStore.hasHistory && !searchStore.hasRecentVisits" class="px-3 py-12 text-center">
+    <div
+      v-if="!searchStore.hasHistory && !searchStore.hasRecentVisits"
+      class="px-3 py-12 text-center"
+    >
       <Icon
         name="i-heroicons-magnifying-glass-20-solid"
         class="mx-auto h-12 w-12 text-gray-300 dark:text-gray-600"
       />
-      <p class="mt-3 text-sm font-medium text-gray-900 dark:text-gray-100">
-        Start Searching
-      </p>
+      <p class="mt-3 text-sm font-medium text-gray-900 dark:text-gray-100">Start Searching</p>
       <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
         Search across lessons, knowledge cards, student works, and resources
       </p>
@@ -98,13 +103,15 @@
 
     <!-- Pinned Shortcuts -->
     <div class="px-2">
-      <h3 class="mb-2 px-2 text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+      <h3
+        class="mb-2 px-2 text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400"
+      >
         Quick Actions
       </h3>
       <div class="grid grid-cols-2 gap-2 px-1">
         <button
           type="button"
-          class="flex items-center gap-2 rounded-xl border border-gray-200 bg-white/50 px-3 py-2 text-left text-xs font-medium text-gray-700 transition hover:border-primary-300 hover:bg-primary-50 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-300 dark:hover:border-primary-600 dark:hover:bg-primary-900/20"
+          class="hover:border-primary-300 hover:bg-primary-50 dark:hover:border-primary-600 dark:hover:bg-primary-900/20 flex items-center gap-2 rounded-xl border border-gray-200 bg-white/50 px-3 py-2 text-left text-xs font-medium text-gray-700 transition dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-300"
           @click="handleShortcut('lesson')"
         >
           <Icon name="i-heroicons-book-open-20-solid" class="h-4 w-4" />
@@ -112,7 +119,7 @@
         </button>
         <button
           type="button"
-          class="flex items-center gap-2 rounded-xl border border-gray-200 bg-white/50 px-3 py-2 text-left text-xs font-medium text-gray-700 transition hover:border-primary-300 hover:bg-primary-50 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-300 dark:hover:border-primary-600 dark:hover:bg-primary-900/20"
+          class="hover:border-primary-300 hover:bg-primary-50 dark:hover:border-primary-600 dark:hover:bg-primary-900/20 flex items-center gap-2 rounded-xl border border-gray-200 bg-white/50 px-3 py-2 text-left text-xs font-medium text-gray-700 transition dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-300"
           @click="handleShortcut('knowledge-card')"
         >
           <Icon name="i-heroicons-light-bulb-20-solid" class="h-4 w-4" />
@@ -120,7 +127,7 @@
         </button>
         <button
           type="button"
-          class="flex items-center gap-2 rounded-xl border border-gray-200 bg-white/50 px-3 py-2 text-left text-xs font-medium text-gray-700 transition hover:border-primary-300 hover:bg-primary-50 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-300 dark:hover:border-primary-600 dark:hover:bg-primary-900/20"
+          class="hover:border-primary-300 hover:bg-primary-50 dark:hover:border-primary-600 dark:hover:bg-primary-900/20 flex items-center gap-2 rounded-xl border border-gray-200 bg-white/50 px-3 py-2 text-left text-xs font-medium text-gray-700 transition dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-300"
           @click="handleShortcut('student-work')"
         >
           <Icon name="i-heroicons-academic-cap-20-solid" class="h-4 w-4" />
@@ -128,7 +135,7 @@
         </button>
         <button
           type="button"
-          class="flex items-center gap-2 rounded-xl border border-gray-200 bg-white/50 px-3 py-2 text-left text-xs font-medium text-gray-700 transition hover:border-primary-300 hover:bg-primary-50 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-300 dark:hover:border-primary-600 dark:hover:bg-primary-900/20"
+          class="hover:border-primary-300 hover:bg-primary-50 dark:hover:border-primary-600 dark:hover:bg-primary-900/20 flex items-center gap-2 rounded-xl border border-gray-200 bg-white/50 px-3 py-2 text-left text-xs font-medium text-gray-700 transition dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-300"
           @click="handleShortcut('resource')"
         >
           <Icon name="i-heroicons-folder-20-solid" class="h-4 w-4" />

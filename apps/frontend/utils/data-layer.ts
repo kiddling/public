@@ -1,6 +1,6 @@
 /**
  * CMS Data Layer Utilities
- * 
+ *
  * Provides caching, retry logic, request deduplication, and error handling
  * for all CMS data operations.
  */
@@ -55,10 +55,13 @@ export function generateCacheKey(url: string, params?: Record<string, any>): str
   }
   const sortedParams = Object.keys(params)
     .sort()
-    .reduce((acc, key) => {
-      acc[key] = params[key]
-      return acc
-    }, {} as Record<string, any>)
+    .reduce(
+      (acc, key) => {
+        acc[key] = params[key]
+        return acc
+      },
+      {} as Record<string, any>
+    )
   return `${url}?${JSON.stringify(sortedParams)}`
 }
 
@@ -72,7 +75,7 @@ export function getFromCache<T>(key: string, staleTime: number): T | null {
   }
 
   const now = Date.now()
-  
+
   // If expired, remove from cache
   if (now > entry.expiresAt) {
     cache.delete(key)
@@ -94,7 +97,7 @@ export function isCacheStale(key: string, staleTime: number): boolean {
 
   const now = Date.now()
   const staleAt = entry.timestamp + staleTime
-  
+
   return now > staleAt
 }
 
@@ -122,7 +125,7 @@ export function clearCacheEntry(key: string): void {
  */
 export function clearCachePattern(pattern: string | RegExp): void {
   const regex = typeof pattern === 'string' ? new RegExp(pattern) : pattern
-  
+
   for (const key of cache.keys()) {
     if (regex.test(key)) {
       cache.delete(key)
@@ -160,22 +163,22 @@ function isRetryableError(error: any): boolean {
   if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
     return true
   }
-  
+
   // Timeout errors
   if (error.name === 'AbortError') {
     return true
   }
-  
+
   // 5xx server errors
   if (error.statusCode >= 500 && error.statusCode < 600) {
     return true
   }
-  
+
   // 429 Too Many Requests
   if (error.statusCode === 429) {
     return true
   }
-  
+
   return false
 }
 
@@ -184,7 +187,7 @@ function isRetryableError(error: any): boolean {
  */
 export async function fetchWithRetry<T>(
   fetcher: () => Promise<T>,
-  options: DataLayerOptions = {},
+  options: DataLayerOptions = {}
 ): Promise<T> {
   const retryConfig = {
     ...DEFAULT_RETRY_CONFIG,
@@ -192,24 +195,24 @@ export async function fetchWithRetry<T>(
   }
 
   let lastError: any
-  
+
   for (let attempt = 0; attempt <= retryConfig.maxRetries; attempt++) {
     try {
       return await fetcher()
     } catch (error) {
       lastError = error
-      
+
       // Don't retry if not retryable or if we've exhausted retries
       if (!isRetryableError(error) || attempt === retryConfig.maxRetries) {
         throw error
       }
-      
+
       // Calculate delay and wait before retrying
       const delay = calculateBackoffDelay(attempt, retryConfig)
       await sleep(delay)
     }
   }
-  
+
   throw lastError
 }
 
@@ -219,7 +222,7 @@ export async function fetchWithRetry<T>(
  */
 export async function fetchWithDeduplication<T>(
   key: string,
-  fetcher: () => Promise<T>,
+  fetcher: () => Promise<T>
 ): Promise<T> {
   // Check if request is already in flight
   const existingRequest = activeRequests.get(key)
@@ -254,7 +257,7 @@ export function cancelRequest(key: string): void {
  */
 export function cancelRequestsPattern(pattern: string | RegExp): void {
   const regex = typeof pattern === 'string' ? new RegExp(pattern) : pattern
-  
+
   for (const key of abortControllers.keys()) {
     if (regex.test(key)) {
       cancelRequest(key)
@@ -265,13 +268,16 @@ export function cancelRequestsPattern(pattern: string | RegExp): void {
 /**
  * Create an abort controller for a request
  */
-export function createAbortController(key: string, timeout: number = DEFAULT_TIMEOUT): AbortController {
+export function createAbortController(
+  key: string,
+  timeout: number = DEFAULT_TIMEOUT
+): AbortController {
   // Cancel any existing controller for this key
   cancelRequest(key)
-  
+
   const controller = new AbortController()
   abortControllers.set(key, controller)
-  
+
   // Auto-cancel after timeout
   setTimeout(() => {
     if (abortControllers.get(key) === controller) {
@@ -279,7 +285,7 @@ export function createAbortController(key: string, timeout: number = DEFAULT_TIM
       abortControllers.delete(key)
     }
   }, timeout)
-  
+
   return controller
 }
 
@@ -289,21 +295,17 @@ export function createAbortController(key: string, timeout: number = DEFAULT_TIM
 export function transformStrapiError(error: any): Error {
   if (error.data?.error) {
     const strapiError = error.data.error
-    return new Error(
-      `${strapiError.name || 'StrapiError'}: ${strapiError.message}`,
-    )
+    return new Error(`${strapiError.name || 'StrapiError'}: ${strapiError.message}`)
   }
-  
+
   if (error.statusCode) {
-    return new Error(
-      `HTTP ${error.statusCode}: ${error.statusMessage || 'Request failed'}`,
-    )
+    return new Error(`HTTP ${error.statusCode}: ${error.statusMessage || 'Request failed'}`)
   }
-  
+
   if (error instanceof Error) {
     return error
   }
-  
+
   return new Error(String(error))
 }
 
@@ -318,58 +320,58 @@ export function transformStrapiError(error: any): Error {
 export async function fetchWithDataLayer<T>(
   url: string,
   params: Record<string, any> = {},
-  options: DataLayerOptions = {},
+  options: DataLayerOptions = {}
 ): Promise<T> {
   const cacheTime = options.cacheTime ?? DEFAULT_CACHE_TIME
   const staleTime = options.staleTime ?? DEFAULT_STALE_TIME
   const timeout = options.timeout ?? DEFAULT_TIMEOUT
-  
+
   const cacheKey = generateCacheKey(url, params)
-  
+
   // Try to get from cache
   const cachedData = getFromCache<T>(cacheKey, staleTime)
   const isStale = isCacheStale(cacheKey, staleTime)
-  
+
   // If we have non-stale cached data, return it immediately
   if (cachedData && !isStale) {
     return cachedData
   }
-  
+
   // Fetch fresh data
   const fetchFreshData = async (): Promise<T> => {
     return fetchWithDeduplication(cacheKey, async () => {
       const controller = createAbortController(cacheKey, timeout)
-      
+
       try {
-        const data = await fetchWithRetry(
-          async () => {
-            const response = await $fetch<T>(url, {
-              signal: controller.signal,
-              ...params,
-            })
-            return response
-          },
-          options,
-        )
-        
+        const data = await fetchWithRetry(async () => {
+          const response = await $fetch<T>(url, {
+            signal: controller.signal,
+            ...params,
+          })
+          return response
+        }, options)
+
         // Update cache
         setCache(cacheKey, data, cacheTime)
-        
+
         return data
       } catch (error) {
         // If we have stale cached data, return it as fallback
         if (cachedData) {
-          console.warn('Fetch failed, using stale cached data:', transformStrapiError(error).message)
+          console.warn(
+            'Fetch failed, using stale cached data:',
+            transformStrapiError(error).message
+          )
           return cachedData
         }
-        
+
         throw transformStrapiError(error)
       } finally {
         abortControllers.delete(cacheKey)
       }
     })
   }
-  
+
   // If we have stale cached data, return it immediately and revalidate in background
   if (cachedData) {
     // Stale-while-revalidate: return stale data and fetch in background
@@ -378,7 +380,7 @@ export async function fetchWithDataLayer<T>(
     })
     return cachedData
   }
-  
+
   // No cached data, must fetch
   return fetchFreshData()
 }
@@ -400,15 +402,15 @@ export function invalidateCache(pattern?: string | RegExp): void {
  */
 export function buildStrapiQuery(params: Record<string, any>): Record<string, string> {
   const query: Record<string, string> = {}
-  
+
   function flatten(obj: any, prefix = ''): void {
     for (const [key, value] of Object.entries(obj)) {
       const fullKey = prefix ? `${prefix}[${key}]` : key
-      
+
       if (value === null || value === undefined) {
         continue
       }
-      
+
       if (Array.isArray(value)) {
         value.forEach((item, index) => {
           if (typeof item === 'object') {
@@ -424,7 +426,7 @@ export function buildStrapiQuery(params: Record<string, any>): Record<string, st
       }
     }
   }
-  
+
   flatten(params)
   return query
 }

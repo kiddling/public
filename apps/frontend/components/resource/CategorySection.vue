@@ -21,7 +21,7 @@ const toggleExpanded = () => {
 <template>
   <div class="mb-8">
     <div
-      class="flex items-center justify-between mb-4 cursor-pointer"
+      class="mb-4 flex cursor-pointer items-center justify-between"
       @click="toggleExpanded"
       @keydown.enter="toggleExpanded"
       tabindex="0"
@@ -31,10 +31,10 @@ const toggleExpanded = () => {
     >
       <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
         {{ category }}
-        <span class="text-lg text-gray-500 dark:text-gray-400 ml-2">({{ resources.length }})</span>
+        <span class="ml-2 text-lg text-gray-500 dark:text-gray-400">({{ resources.length }})</span>
       </h2>
       <span
-        class="text-gray-500 dark:text-gray-400 transition-transform duration-200"
+        class="text-gray-500 transition-transform duration-200 dark:text-gray-400"
         :class="{ 'rotate-180': !isExpanded }"
         aria-hidden="true"
       >
@@ -42,7 +42,7 @@ const toggleExpanded = () => {
       </span>
     </div>
 
-    <div v-if="isExpanded" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div v-if="isExpanded" class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
       <ResourceCard
         v-for="resource in resources"
         :key="resource.id"
@@ -52,7 +52,7 @@ const toggleExpanded = () => {
       />
     </div>
 
-    <div v-else class="text-gray-500 dark:text-gray-400 text-sm italic">
+    <div v-else class="text-sm italic text-gray-500 dark:text-gray-400">
       点击展开查看 {{ resources.length }} 个资源
     </div>
   </div>

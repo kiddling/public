@@ -1,5 +1,15 @@
 <template>
-  <div ref="layoutRef" class="relative min-h-screen bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100">
+  <div
+    ref="layoutRef"
+    class="relative min-h-screen bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100"
+  >
+    <a
+      href="#main-content"
+      class="skip-to-main bg-primary-600 focus:ring-primary-500 sr-only left-4 top-4 z-[9999] rounded-md px-4 py-2 text-sm font-medium text-white focus:not-sr-only focus:absolute focus:outline-none focus:ring-2 focus:ring-offset-2"
+    >
+      跳转到主内容
+    </a>
+
     <NavigationDrawer
       :open="drawerOpen"
       @update:open="setDrawerOpen"
@@ -7,17 +17,24 @@
     />
 
     <div class="mx-auto flex min-h-screen w-full max-w-[120rem]">
-      <aside class="hidden shrink-0 border-r border-gray-200 bg-white/80 dark:border-gray-800 dark:bg-gray-900/80 lg:block">
+      <nav
+        aria-label="课程导航"
+        class="hidden shrink-0 border-r border-gray-200 bg-white/80 lg:block dark:border-gray-800 dark:bg-gray-900/80"
+      >
         <NavigationSidebar @navigate="handleSidebarNavigate" />
-      </aside>
+      </nav>
 
       <div class="flex min-h-screen flex-1 flex-col">
-        <header class="sticky top-0 z-40 border-b border-gray-200 bg-white/80 px-4 py-3 backdrop-blur-lg dark:border-gray-800 dark:bg-gray-900/80">
+        <header
+          class="sticky top-0 z-40 border-b border-gray-200 bg-white/80 px-4 py-3 backdrop-blur-lg dark:border-gray-800 dark:bg-gray-900/80"
+        >
           <div class="flex items-center justify-between gap-3">
             <button
               type="button"
-              class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition hover:border-gray-300 hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-600 dark:hover:text-white dark:focus-visible:ring-offset-gray-900 lg:hidden"
-              aria-label="Open course navigation"
+              class="focus-visible:ring-primary-500 inline-flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition hover:border-gray-300 hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white lg:hidden dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-600 dark:hover:text-white dark:focus-visible:ring-offset-gray-900"
+              aria-label="打开课程导航"
+              aria-expanded="false"
+              aria-controls="navigation-drawer"
               @click="drawerOpen = true"
             >
               <Icon name="i-heroicons-bars-3-20-solid" class="h-5 w-5" aria-hidden="true" />
@@ -33,7 +50,7 @@
           </div>
         </header>
 
-        <main class="flex-1 overflow-x-hidden">
+        <main id="main-content" tabindex="-1" class="flex-1 overflow-x-hidden focus:outline-none">
           <slot />
         </main>
       </div>
@@ -66,6 +83,16 @@ const drawerOpen = ref(false)
 const layoutRef = ref<HTMLElement | null>(null)
 let swipeStartX = 0
 let syncRequestId = 0
+
+// Update aria-expanded when drawer state changes
+watch(drawerOpen, (isOpen) => {
+  if (import.meta.client) {
+    const menuButton = document.querySelector('[aria-controls="navigation-drawer"]')
+    if (menuButton) {
+      menuButton.setAttribute('aria-expanded', String(isOpen))
+    }
+  }
+})
 
 watch(
   () => route.params.code,
@@ -102,7 +129,7 @@ watch(
         }
       })
   },
-  { immediate: true },
+  { immediate: true }
 )
 
 watch(
@@ -113,7 +140,7 @@ watch(
       route.meta.breadcrumbHomeLabel = 'Home'
     }
   },
-  { immediate: true },
+  { immediate: true }
 )
 
 const setDrawerOpen = (value: boolean) => {

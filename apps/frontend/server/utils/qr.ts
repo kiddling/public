@@ -21,11 +21,7 @@ export async function generateQRCodeDataURI(
   data: string,
   options: QRCodeOptions = {}
 ): Promise<string> {
-  const {
-    width = 200,
-    margin = 1,
-    errorCorrectionLevel = 'M',
-  } = options
+  const { width = 200, margin = 1, errorCorrectionLevel = 'M' } = options
 
   try {
     const dataURI = await QRCode.toDataURL(data, {
@@ -37,7 +33,9 @@ export async function generateQRCodeDataURI(
     return dataURI
   } catch (error) {
     console.error('Failed to generate QR code:', error)
-    throw new Error(`QR code generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    throw new Error(
+      `QR code generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+    )
   }
 }
 
@@ -51,11 +49,7 @@ export async function generateQRCodeBuffer(
   data: string,
   options: QRCodeOptions = {}
 ): Promise<Buffer> {
-  const {
-    width = 200,
-    margin = 1,
-    errorCorrectionLevel = 'M',
-  } = options
+  const { width = 200, margin = 1, errorCorrectionLevel = 'M' } = options
 
   try {
     const buffer = await QRCode.toBuffer(data, {
@@ -67,6 +61,8 @@ export async function generateQRCodeBuffer(
     return buffer
   } catch (error) {
     console.error('Failed to generate QR code buffer:', error)
-    throw new Error(`QR code generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    throw new Error(
+      `QR code generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+    )
   }
 }

@@ -1,14 +1,17 @@
 <template>
-  <div class="mb-8 bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+  <div class="mb-8 rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
+    <div class="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
       <div>
-        <label for="discipline-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label
+          for="discipline-filter"
+          class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+        >
           Discipline
         </label>
         <select
           id="discipline-filter"
           v-model="localFilters.discipline"
-          class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+          class="focus:ring-primary-500 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:border-transparent focus:ring-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
           :disabled="loading"
           @change="emitUpdate"
         >
@@ -22,13 +25,16 @@
       </div>
 
       <div>
-        <label for="loop-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label
+          for="loop-filter"
+          class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+        >
           Loop
         </label>
         <select
           id="loop-filter"
           v-model="localFilters.loop"
-          class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+          class="focus:ring-primary-500 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:border-transparent focus:ring-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
           :disabled="loading"
           @change="emitUpdate"
         >
@@ -40,7 +46,10 @@
       </div>
 
       <div>
-        <label for="grade-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label
+          for="grade-filter"
+          class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+        >
           Grade
         </label>
         <input
@@ -48,14 +57,17 @@
           v-model="localFilters.grade"
           type="text"
           placeholder="e.g., 2023"
-          class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+          class="focus:ring-primary-500 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:border-transparent focus:ring-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
           :disabled="loading"
           @input="handleDebounceInput"
         />
       </div>
 
       <div>
-        <label for="search-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label
+          for="search-filter"
+          class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+        >
           Search
         </label>
         <input
@@ -63,7 +75,7 @@
           v-model="localFilters.search"
           type="text"
           placeholder="Student name, project..."
-          class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+          class="focus:ring-primary-500 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:border-transparent focus:ring-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
           :disabled="loading"
           @input="handleDebounceInput"
         />
@@ -78,7 +90,7 @@
       </div>
       <button
         v-if="activeFilterCount > 0"
-        class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium focus:outline-none focus:underline"
+        class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 text-sm font-medium focus:underline focus:outline-none"
         :disabled="loading"
         @click="clearFilters"
       >

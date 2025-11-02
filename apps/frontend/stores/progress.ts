@@ -78,22 +78,19 @@ export const useProgressStore = defineStore('progress', () => {
     LESSON_PROGRESS_KEY,
     {},
     undefined,
-    { mergeDefaults: true },
+    { mergeDefaults: true }
   )
 
   const lastVisitedLesson = useStorage<string | null>(LAST_VISITED_KEY, null)
 
-  const recentLessonCodes = useStorage<string[]>(
-    RECENT_LESSONS_KEY,
-    [],
-    undefined,
-    { mergeDefaults: true },
-  )
+  const recentLessonCodes = useStorage<string[]>(RECENT_LESSONS_KEY, [], undefined, {
+    mergeDefaults: true,
+  })
 
   const completedLessonCodes = computed(() =>
     Object.entries(lessonProgress.value)
       .filter(([, entry]) => entry?.completed)
-      .map(([code]) => code),
+      .map(([code]) => code)
   )
 
   const completedLessonSet = computed(() => new Set(completedLessonCodes.value))
@@ -102,7 +99,9 @@ export const useProgressStore = defineStore('progress', () => {
 
   const totalLessons = computed(() => navigationStore.lessonCount ?? 0)
 
-  const completionSummary = computed(() => summariseProgress(totalLessons.value, completedCount.value))
+  const completionSummary = computed(() =>
+    summariseProgress(totalLessons.value, completedCount.value)
+  )
 
   const completionPercentage = computed(() => completionSummary.value.percentage)
 
@@ -116,7 +115,6 @@ export const useProgressStore = defineStore('progress', () => {
     }
     return lessons
   })
-
 
   function removeLessonProgress(code: string): void {
     const normalized = normalizeCode(code)
@@ -240,7 +238,7 @@ export const useProgressStore = defineStore('progress', () => {
 
   function getProgressByLoop(loopId: string): LoopProgress {
     const lessons = (navigationStore.courseStructure?.lessons ?? []).filter(
-      (lesson) => lesson.loopId === loopId,
+      (lesson) => lesson.loopId === loopId
     )
     const completed = lessons.filter((lesson) => completedLessonSet.value.has(lesson.code)).length
 

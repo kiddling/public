@@ -90,6 +90,7 @@ GET /api/global-search?query=<search-term>&type=<lesson|knowledge-card|student-w
 ```
 
 **Query Parameters:**
+
 - `query` (required): Search term (minimum 2 characters)
 - `type` (optional): Comma-separated content types to search
 - `difficulty` (optional): Filter lessons by difficulty (comma-separated)
@@ -97,6 +98,7 @@ GET /api/global-search?query=<search-term>&type=<lesson|knowledge-card|student-w
 - `pageSize` (optional): Results per page (default: 20, max: 100)
 
 **Response includes:**
+
 - Grouped results by content type
 - Highlighted match ranges for keywords
 - Search suggestions
@@ -118,6 +120,7 @@ docker-compose up -d
 ```
 
 This will start:
+
 - Strapi CMS on `http://localhost:1337`
 - PostgreSQL database on port `5432`
 
@@ -200,6 +203,7 @@ DELETE http://localhost:1337/api/[content-type]/:id
 ### Authentication
 
 Generate API tokens in the admin panel:
+
 1. Go to Settings → API Tokens
 2. Create new API token
 3. Use in requests: `Authorization: Bearer YOUR_API_TOKEN`
@@ -259,10 +263,7 @@ Create or edit `/etc/docker/daemon.json`:
 
 ```json
 {
-  "registry-mirrors": [
-    "https://docker.mirrors.ustc.edu.cn",
-    "https://registry.docker-cn.com"
-  ]
+  "registry-mirrors": ["https://docker.mirrors.ustc.edu.cn", "https://registry.docker-cn.com"]
 }
 ```
 
@@ -284,6 +285,7 @@ registry=https://registry.npmmirror.com
 ### Database Hosting
 
 Popular Chinese cloud providers:
+
 - **Alibaba Cloud** - RDS for PostgreSQL/MySQL
 - **Tencent Cloud** - TencentDB
 - **Huawei Cloud** - RDS
@@ -291,6 +293,7 @@ Popular Chinese cloud providers:
 ### CDN Configuration
 
 For media files, consider using:
+
 - Alibaba Cloud OSS
 - Tencent Cloud COS
 - Qiniu Cloud Storage
@@ -382,6 +385,7 @@ PORT=1338
 ### Database Connection Issues
 
 Check database credentials and ensure:
+
 - Database server is running
 - Firewall allows connections
 - Credentials are correct

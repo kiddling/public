@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "nuxt build",
+    "build:analyze": "ANALYZE=true nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
@@ -13,19 +14,36 @@
     "typecheck": "nuxt typecheck",
     "test": "vitest run",
     "test:unit": "vitest",
-    "clean": "rm -rf .nuxt .output dist node_modules"
+    "test:coverage": "vitest run --coverage",
+    "test:coverage:ui": "vitest --ui --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug",
+    "test:a11y": "playwright test tests/e2e/specs/accessibility.spec.ts",
+    "clean": "rm -rf .nuxt .output dist node_modules",
+    "analyze:bundle": "pnpm build:analyze && open .nuxt/analyze/.vite-inspect/reports.html",
+    "perf:report": "node scripts/performance-report.js",
+    "bundle:check": "node ../../scripts/perf/bundle-budget.mjs",
+    "bundle:check:margin": "BUDGET_MARGIN=10 node ../../scripts/perf/bundle-budget.mjs"
   },
   "dependencies": {
+    "@nuxt/image": "^1.8.1",
     "@types/archiver": "^7.0.0",
     "@types/markdown-it": "^14.1.2",
     "archiver": "^7.0.1",
     "axios": "^1.12.2",
+    "better-sqlite3": "^12.4.1",
+    "idb": "^8.0.0",
+    "jspdf": "^2.5.2",
     "markdown-it": "^14.1.0",
     "nuxt": "^4.2.0",
     "pinia": "^3.0.3",
     "qrcode": "^1.5.4",
+    "sharp": "^0.33.5",
     "vue": "^3.5.22",
-    "vue-router": "^4.6.3"
+    "vue-draggable-next": "^2.3.0",
+    "vue-router": "^4.6.3",
+    "web-vitals": "^4.2.4"
   },
   "devDependencies": {
     "@nuxt/content": "^3.7.1",
@@ -35,12 +53,16 @@
     "@nuxtjs/tailwindcss": "^6.14.0",
     "@pinia/nuxt": "^0.11.2",
     "@types/qrcode": "^1.5.5",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "@vitest/coverage-v8": "^4.0.6",
     "@vue/test-utils": "^2.4.6",
     "@vueuse/nuxt": "^14.0.0",
     "eslint": "^9.38.0",
     "happy-dom": "^15.7.4",
+    "rollup-plugin-visualizer": "^5.12.0",
     "typescript": "^5.9.3",
-    "vitest": "^2.1.1",
+    "vite-plugin-compression": "^0.5.1",
+    "vitest": "^4.0.6",
     "vue-tsc": "^3.1.2"
   }
 }

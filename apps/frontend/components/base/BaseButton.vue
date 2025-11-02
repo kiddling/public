@@ -9,12 +9,7 @@
   >
     <slot />
   </NuxtLink>
-  <button
-    v-else
-    :type="type"
-    :disabled="isDisabled"
-    @click="handleClick"
-  >
+  <button v-else :type="type" :disabled="isDisabled" @click="handleClick">
     <slot />
   </button>
 </template>
@@ -43,9 +38,7 @@ const emit = defineEmits<{
 
 const { to, type, disabled, loading } = toRefs(props)
 
-const isLink = computed(
-  () => to.value !== undefined && to.value !== null && to.value !== ''
-)
+const isLink = computed(() => to.value !== undefined && to.value !== null && to.value !== '')
 const isDisabled = computed(() => Boolean(disabled.value || loading.value))
 
 const handleClick = (event: MouseEvent) => {

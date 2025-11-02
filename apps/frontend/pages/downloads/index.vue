@@ -2,9 +2,7 @@
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
     <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
-          Download Center
-        </h1>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Download Center</h1>
         <p class="mt-2 text-gray-600 dark:text-gray-400">
           Access templates, worksheets, case materials and more with integrity checks
         </p>
@@ -14,11 +12,10 @@
         <div class="flex items-start gap-3">
           <span class="text-2xl">💡</span>
           <div class="flex-1">
-            <h3 class="font-semibold text-blue-900 dark:text-blue-200">
-              Offline Access
-            </h3>
+            <h3 class="font-semibold text-blue-900 dark:text-blue-200">Offline Access</h3>
             <p class="mt-1 text-sm text-blue-800 dark:text-blue-300">
-              Downloaded files are stored in your browser cache for offline access. Clear your browser cache to remove them.
+              Downloaded files are stored in your browser cache for offline access. Clear your
+              browser cache to remove them.
             </p>
           </div>
           <button
@@ -34,16 +31,16 @@
       <div class="grid grid-cols-1 gap-6 lg:grid-cols-4">
         <aside class="lg:col-span-1">
           <div class="sticky top-4 space-y-6">
-            <div class="rounded-lg border bg-white p-4 shadow-sm dark:bg-gray-800 dark:border-gray-700">
-              <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
-                Filters
-              </h2>
+            <div
+              class="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800"
+            >
+              <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Filters</h2>
 
               <div class="space-y-4">
                 <div>
                   <label
                     for="search"
-                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
                   >
                     Search
                   </label>
@@ -52,13 +49,13 @@
                     v-model="searchQuery"
                     type="text"
                     placeholder="Search downloads..."
-                    class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                     @input="debouncedSearch"
                   />
                 </div>
 
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Category
                   </label>
                   <div class="space-y-2">
@@ -117,14 +114,17 @@
             </button>
           </div>
 
-          <div v-else-if="items.length === 0" class="rounded-lg bg-white p-12 text-center shadow-sm dark:bg-gray-800">
+          <div
+            v-else-if="items.length === 0"
+            class="rounded-lg bg-white p-12 text-center shadow-sm dark:bg-gray-800"
+          >
             <p class="text-gray-600 dark:text-gray-400">
               No downloads found. Try adjusting your filters.
             </p>
           </div>
 
           <div v-else class="space-y-4">
-            <div class="flex items-center justify-between mb-4">
+            <div class="mb-4 flex items-center justify-between">
               <p class="text-sm text-gray-600 dark:text-gray-400">
                 Showing {{ items.length }} of {{ meta?.pagination.total || 0 }} items
               </p>
@@ -146,7 +146,10 @@
               @toggle-selection="toggleSelection"
             />
 
-            <div v-if="meta && meta.pagination.pageCount > 1" class="mt-6 flex justify-center gap-2">
+            <div
+              v-if="meta && meta.pagination.pageCount > 1"
+              class="mt-6 flex justify-center gap-2"
+            >
               <button
                 type="button"
                 class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
@@ -201,10 +204,11 @@ const selectedItems = ref(new Set<number>())
 const offlineNotice = ref(true)
 const summaryRef = ref<InstanceType<typeof DownloadSummary> | null>(null)
 
-const { items, meta, loading, error, filters, fetchDownloads, updateFilters, refresh } = useDownloads({
-  page: 1,
-  pageSize: 25,
-})
+const { items, meta, loading, error, filters, fetchDownloads, updateFilters, refresh } =
+  useDownloads({
+    page: 1,
+    pageSize: 25,
+  })
 
 let debounceTimer: NodeJS.Timeout | null = null
 

@@ -1,6 +1,6 @@
 /**
  * Composable for fetching knowledge cards from the CMS
- * 
+ *
  * Supports filtering by type, tags, and searching.
  */
 
@@ -106,10 +106,7 @@ export function useKnowledgeCards(options: UseKnowledgeCardsOptions = {}) {
 /**
  * Fetch knowledge cards by type
  */
-export function useKnowledgeCardsByType(
-  type: KnowledgeCardType,
-  options: UseCmsDataOptions = {},
-) {
+export function useKnowledgeCardsByType(type: KnowledgeCardType, options: UseCmsDataOptions = {}) {
   return useKnowledgeCards({
     type,
     ...options,

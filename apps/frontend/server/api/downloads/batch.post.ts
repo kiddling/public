@@ -29,7 +29,7 @@ interface DownloadItem {
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<BatchDownloadRequest>(event)
-  
+
   if (!body.itemIds || !Array.isArray(body.itemIds) || body.itemIds.length === 0) {
     throw createError({
       statusCode: 400,
@@ -46,19 +46,16 @@ export default defineEventHandler(async (event) => {
 
   try {
     const { baseUrl, strapiToken } = getStrapiConfig()
-    
-    const response = await fetchFromStrapi<{ data: DownloadItem[] }>(
-      '/api/download-items',
-      {
-        filters: {
-          id: { $in: body.itemIds },
-        },
-        populate: {
-          file: '*',
-        },
-        publicationState: 'live',
+
+    const response = await fetchFromStrapi<{ data: DownloadItem[] }>('/api/download-items', {
+      filters: {
+        id: { $in: body.itemIds },
       },
-    )
+      populate: {
+        file: '*',
+      },
+      publicationState: 'live',
+    })
 
     if (!response.data || response.data.length === 0) {
       throw createError({

@@ -147,7 +147,9 @@ describe('NavigationBreadcrumb', () => {
     await router.isReady()
 
     const lesson = store.setCurrentLesson('PA-01')
-    router.currentRoute.value.meta.breadcrumb = lesson ? [...lesson.navigation.breadcrumb] : undefined
+    router.currentRoute.value.meta.breadcrumb = lesson
+      ? [...lesson.navigation.breadcrumb]
+      : undefined
     router.currentRoute.value.meta.breadcrumbHomeLabel = 'Home'
 
     const wrapper = mount(NavigationBreadcrumb, {

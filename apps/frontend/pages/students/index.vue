@@ -2,9 +2,7 @@
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
     <div class="container mx-auto px-4 py-8">
       <header class="mb-8">
-        <h1 class="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-          Student Gallery
-        </h1>
+        <h1 class="mb-4 text-4xl font-bold text-gray-900 dark:text-gray-100">Student Gallery</h1>
         <p class="text-gray-600 dark:text-gray-400">
           Explore exceptional student work from our design programs
         </p>
@@ -16,7 +14,10 @@
         @update:filters="handleFiltersChange"
       />
 
-      <div v-if="error" class="my-8 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+      <div
+        v-if="error"
+        class="my-8 rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-900/20"
+      >
         <p class="text-red-800 dark:text-red-200">
           Failed to load student works. Please try again later.
         </p>
@@ -44,7 +45,12 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { parseFilterParams, buildQueryParams, buildFilterPayload, useStudentWorks } from '~/composables/useStudentWorks'
+import {
+  parseFilterParams,
+  buildQueryParams,
+  buildFilterPayload,
+  useStudentWorks,
+} from '~/composables/useStudentWorks'
 import type { StudentWork } from '~/types/cms'
 import type { StudentWorksFilterParams } from '~/composables/useStudentWorks'
 
@@ -75,27 +81,29 @@ const studentWorks = computed(() => {
     grade: item.attributes.grade,
     loop: item.attributes.loop,
     description: item.attributes.description,
-    assets: item.attributes.assets?.data?.map((media: any) => ({
-      id: media.id,
-      url: media.attributes.url,
-      alternativeText: media.attributes.alternativeText,
-      caption: media.attributes.caption,
-      width: media.attributes.width,
-      height: media.attributes.height,
-    })) || [],
-    beforeAfterMedia: item.attributes.beforeAfterMedia?.map((pair: any) => ({
-      id: pair.id,
-      beforeMedia: {
-        url: pair.beforeMedia?.data?.attributes?.url || '',
-        alternativeText: pair.beforeMedia?.data?.attributes?.alternativeText,
-      },
-      afterMedia: {
-        url: pair.afterMedia?.data?.attributes?.url || '',
-        alternativeText: pair.afterMedia?.data?.attributes?.alternativeText,
-      },
-      beforeLabel: pair.beforeLabel || 'Before',
-      afterLabel: pair.afterLabel || 'After',
-    })) || [],
+    assets:
+      item.attributes.assets?.data?.map((media: any) => ({
+        id: media.id,
+        url: media.attributes.url,
+        alternativeText: media.attributes.alternativeText,
+        caption: media.attributes.caption,
+        width: media.attributes.width,
+        height: media.attributes.height,
+      })) || [],
+    beforeAfterMedia:
+      item.attributes.beforeAfterMedia?.map((pair: any) => ({
+        id: pair.id,
+        beforeMedia: {
+          url: pair.beforeMedia?.data?.attributes?.url || '',
+          alternativeText: pair.beforeMedia?.data?.attributes?.alternativeText,
+        },
+        afterMedia: {
+          url: pair.afterMedia?.data?.attributes?.url || '',
+          alternativeText: pair.afterMedia?.data?.attributes?.alternativeText,
+        },
+        beforeLabel: pair.beforeLabel || 'Before',
+        afterLabel: pair.afterLabel || 'After',
+      })) || [],
     downloadUrl: item.attributes.downloadUrl,
     shareEnabled: item.attributes.shareEnabled ?? true,
     displayOrder: item.attributes.displayOrder ?? 0,
@@ -151,7 +159,7 @@ watch(
   () => route.query,
   (newQuery) => {
     filters.value = parseFilterParams(newQuery)
-    
+
     if (newQuery.work && studentWorks.value.length > 0) {
       const work = studentWorks.value.find(
         (w) => w.slug === newQuery.work || String(w.id) === newQuery.work

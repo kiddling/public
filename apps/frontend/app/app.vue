@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div lang="zh-CN">
     <NuxtPage />
+    <UiNotificationContainer />
   </div>
 </template>

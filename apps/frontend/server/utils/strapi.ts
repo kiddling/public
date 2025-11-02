@@ -46,7 +46,7 @@ export function getStrapiConfig() {
 export function buildStrapiUrl(
   baseUrl: string,
   endpoint: string,
-  options: StrapiQueryOptions = {},
+  options: StrapiQueryOptions = {}
 ): string {
   const url = new URL(endpoint, baseUrl)
 
@@ -130,7 +130,7 @@ function addSortToUrl(url: URL, sort: string | string[]): void {
  */
 function addPaginationToUrl(
   url: URL,
-  pagination: NonNullable<StrapiQueryOptions['pagination']>,
+  pagination: NonNullable<StrapiQueryOptions['pagination']>
 ): void {
   if (pagination.page !== undefined) {
     url.searchParams.set('pagination[page]', String(pagination.page))
@@ -152,7 +152,7 @@ function addPaginationToUrl(
 function addPopulateToUrl(
   url: URL,
   populate: string | string[] | Record<string, any>,
-  prefix = 'populate',
+  prefix = 'populate'
 ): void {
   if (typeof populate === 'string') {
     url.searchParams.set(prefix, populate)
@@ -178,7 +178,7 @@ function addPopulateToUrl(
  */
 export async function fetchFromStrapi<T>(
   endpoint: string,
-  options: StrapiQueryOptions = {},
+  options: StrapiQueryOptions = {}
 ): Promise<T> {
   const { baseUrl, strapiToken } = getStrapiConfig()
   const url = buildStrapiUrl(baseUrl, endpoint, options)
