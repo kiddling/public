@@ -1,22 +1,27 @@
 <template>
   <div class="knowledge-card-detail min-h-screen bg-gray-50 dark:bg-gray-900">
     <!-- Loading State -->
-    <div v-if="pending" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div v-if="pending" class="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
       <div class="animate-pulse space-y-6">
-        <div class="h-8 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
-        <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
-        <div class="h-64 bg-gray-200 dark:bg-gray-700 rounded"></div>
+        <div class="h-8 w-3/4 rounded bg-gray-200 dark:bg-gray-700"></div>
+        <div class="h-4 w-1/2 rounded bg-gray-200 dark:bg-gray-700"></div>
+        <div class="h-64 rounded bg-gray-200 dark:bg-gray-700"></div>
         <div class="space-y-3">
-          <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
-          <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
-          <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
+          <div class="h-4 rounded bg-gray-200 dark:bg-gray-700"></div>
+          <div class="h-4 rounded bg-gray-200 dark:bg-gray-700"></div>
+          <div class="h-4 w-5/6 rounded bg-gray-200 dark:bg-gray-700"></div>
         </div>
       </div>
     </div>
 
     <!-- Error State -->
-    <div v-else-if="error" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
-      <svg class="mx-auto h-16 w-16 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div v-else-if="error" class="mx-auto max-w-4xl px-4 py-16 text-center sm:px-6 lg:px-8">
+      <svg
+        class="mx-auto h-16 w-16 text-red-500"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -30,17 +35,22 @@
       </p>
       <NuxtLink
         to="/knowledge-cards"
-        class="mt-6 inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+        class="bg-primary-600 hover:bg-primary-700 mt-6 inline-flex items-center rounded-lg px-4 py-2 text-white transition-colors"
       >
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        <svg class="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M10 19l-7-7m0 0l7-7m-7 7h18"
+          />
         </svg>
         Back to Knowledge Cards
       </NuxtLink>
     </div>
 
     <!-- Card Content -->
-    <div v-else-if="card" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div v-else-if="card" class="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
       <!-- Breadcrumb -->
       <nav class="no-print mb-6 text-sm text-gray-600 dark:text-gray-400">
         <ol class="flex items-center space-x-2">
@@ -49,28 +59,33 @@
           </li>
           <li>/</li>
           <li>
-            <NuxtLink to="/knowledge-cards" class="hover:text-primary-600">Knowledge Cards</NuxtLink>
+            <NuxtLink to="/knowledge-cards" class="hover:text-primary-600"
+              >Knowledge Cards</NuxtLink
+            >
           </li>
           <li>/</li>
-          <li class="text-gray-900 dark:text-gray-100 truncate max-w-xs">{{ card.title }}</li>
+          <li class="max-w-xs truncate text-gray-900 dark:text-gray-100">{{ card.title }}</li>
         </ol>
       </nav>
 
       <!-- Header -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
-        <div class="flex flex-wrap justify-between items-start gap-4 mb-4">
+      <div class="mb-6 rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800">
+        <div class="mb-4 flex flex-wrap items-start justify-between gap-4">
           <div class="flex-1">
-            <div class="flex items-center space-x-3 mb-3">
-              <span
-                :class="[
-                  'px-3 py-1 text-sm font-semibold rounded-full',
-                  typeColorClass,
-                ]"
-              >
+            <div class="mb-3 flex items-center space-x-3">
+              <span :class="['rounded-full px-3 py-1 text-sm font-semibold', typeColorClass]">
                 {{ card.type }}
               </span>
-              <div v-if="card.publishedAt || card.createdAt" class="text-sm text-gray-500 dark:text-gray-400">
-                <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div
+                v-if="card.publishedAt || card.createdAt"
+                class="text-sm text-gray-500 dark:text-gray-400"
+              >
+                <svg
+                  class="mr-1 inline h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -81,14 +96,14 @@
                 {{ formatDate(card.publishedAt || card.createdAt) }}
               </div>
             </div>
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-3">
+            <h1 class="mb-3 text-3xl font-bold text-gray-900 dark:text-gray-100">
               {{ card.title }}
             </h1>
             <div v-if="card.tags && card.tags.length > 0" class="flex flex-wrap gap-2">
               <span
                 v-for="tag in card.tags"
                 :key="tag"
-                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
+                class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-300"
               >
                 {{ tag }}
               </span>
@@ -99,25 +114,27 @@
           <div class="no-print flex items-center space-x-2">
             <button
               v-if="card.qrLink"
-              class="p-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+              class="rounded-lg bg-gray-100 p-2 text-gray-700 transition-colors hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
               title="Show QR code"
               @click="showQr = true"
             >
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fill-rule="evenodd"
                   d="M3 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm2 2V5h1v1H5zM3 13a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3zm2 2v-1h1v1H5zM13 3a1 1 0 00-1 1v3a1 1 0 001 1h3a1 1 0 001-1V4a1 1 0 00-1-1h-3zm1 2v1h1V5h-1z"
                   clip-rule="evenodd"
                 />
-                <path d="M11 4a1 1 0 10-2 0v1a1 1 0 002 0V4zM10 7a1 1 0 011 1v1h2a1 1 0 110 2h-3a1 1 0 01-1-1V8a1 1 0 011-1zM16 9a1 1 0 100 2 1 1 0 000-2zM9 13a1 1 0 011-1h1a1 1 0 110 2v2a1 1 0 11-2 0v-3zM7 11a1 1 0 100-2H4a1 1 0 100 2h3zM17 13a1 1 0 01-1 1h-2a1 1 0 110-2h2a1 1 0 011 1zM16 17a1 1 0 100-2h-3a1 1 0 100 2h3z" />
+                <path
+                  d="M11 4a1 1 0 10-2 0v1a1 1 0 002 0V4zM10 7a1 1 0 011 1v1h2a1 1 0 110 2h-3a1 1 0 01-1-1V8a1 1 0 011-1zM16 9a1 1 0 100 2 1 1 0 000-2zM9 13a1 1 0 011-1h1a1 1 0 110 2v2a1 1 0 11-2 0v-3zM7 11a1 1 0 100-2H4a1 1 0 100 2h3zM17 13a1 1 0 01-1 1h-2a1 1 0 110-2h2a1 1 0 011 1zM16 17a1 1 0 100-2h-3a1 1 0 100 2h3z"
+                />
               </svg>
             </button>
             <button
-              class="p-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+              class="rounded-lg bg-gray-100 p-2 text-gray-700 transition-colors hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
               title="Share"
               @click="handleShare"
             >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -127,11 +144,11 @@
               </svg>
             </button>
             <button
-              class="p-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+              class="rounded-lg bg-gray-100 p-2 text-gray-700 transition-colors hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
               title="Print"
               @click="handlePrint"
             >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -145,23 +162,25 @@
       </div>
 
       <!-- Media Gallery -->
-      <div v-if="card.media && card.media.length > 0" class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
-        <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Media</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div v-for="(media, index) in card.media" :key="index" class="relative group">
+      <div
+        v-if="card.media && card.media.length > 0"
+        class="mb-6 rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800"
+      >
+        <h2 class="mb-4 text-xl font-semibold text-gray-900 dark:text-gray-100">Media</h2>
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div v-for="(media, index) in card.media" :key="index" class="group relative">
             <img
               v-if="media.mime?.startsWith('image/')"
               :src="media.url"
               :alt="media.alternativeText || `Media ${index + 1}`"
-              class="w-full h-64 object-cover rounded-lg cursor-pointer transition-transform group-hover:scale-105"
+              class="h-64 w-full cursor-pointer rounded-lg object-cover transition-transform group-hover:scale-105"
               @click="openLightbox(index)"
             />
-            <div v-else-if="media.mime?.startsWith('video/')" class="relative h-64 bg-gray-900 rounded-lg overflow-hidden">
-              <video
-                :src="media.url"
-                controls
-                class="w-full h-full object-contain"
-              >
+            <div
+              v-else-if="media.mime?.startsWith('video/')"
+              class="relative h-64 overflow-hidden rounded-lg bg-gray-900"
+            >
+              <video :src="media.url" controls class="h-full w-full object-contain">
                 Your browser does not support the video tag.
               </video>
             </div>
@@ -169,10 +188,15 @@
               v-else-if="media.mime === 'application/pdf'"
               :href="media.url"
               target="_blank"
-              class="block h-64 bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900 dark:to-red-800 rounded-lg flex items-center justify-center hover:opacity-80 transition-opacity"
+              class="block flex h-64 items-center justify-center rounded-lg bg-gradient-to-br from-red-100 to-red-200 transition-opacity hover:opacity-80 dark:from-red-900 dark:to-red-800"
             >
               <div class="text-center">
-                <svg class="w-16 h-16 mx-auto text-red-600 dark:text-red-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg
+                  class="mx-auto h-16 w-16 text-red-600 dark:text-red-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -188,23 +212,26 @@
       </div>
 
       <!-- Description / Content -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
-        <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+      <div class="mb-6 rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800">
+        <h2 class="mb-4 text-xl font-semibold text-gray-900 dark:text-gray-100">
           {{ contentTitle }}
         </h2>
 
         <!-- AI Prompt specific -->
         <div v-if="card.type === 'AI Prompt' && card.promptText" class="mb-6">
           <div class="relative">
-            <pre class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 text-sm font-mono text-gray-800 dark:text-gray-200 overflow-x-auto whitespace-pre-wrap">{{ card.promptText }}</pre>
+            <pre
+              class="overflow-x-auto whitespace-pre-wrap rounded-lg bg-gray-50 p-4 font-mono text-sm text-gray-800 dark:bg-gray-900 dark:text-gray-200"
+              >{{ card.promptText }}</pre
+            >
             <button
-              class="absolute top-2 right-2 p-2 bg-white dark:bg-gray-700 rounded hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+              class="absolute right-2 top-2 rounded bg-white p-2 transition-colors hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600"
               :title="copied ? 'Copied!' : 'Copy prompt'"
               @click="copyPrompt"
             >
               <svg
                 v-if="!copied"
-                class="w-5 h-5 text-gray-600 dark:text-gray-300"
+                class="h-5 w-5 text-gray-600 dark:text-gray-300"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -216,8 +243,19 @@
                   d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
                 />
               </svg>
-              <svg v-else class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              <svg
+                v-else
+                class="h-5 w-5 text-green-600 dark:text-green-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
             </button>
           </div>
@@ -225,18 +263,16 @@
 
         <!-- Description -->
         <div v-if="card.description" class="prose prose-lg dark:prose-invert max-w-none">
-          <p class="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{{ card.description }}</p>
+          <p class="whitespace-pre-wrap text-gray-700 dark:text-gray-300">{{ card.description }}</p>
         </div>
 
-        <div v-else class="text-gray-500 dark:text-gray-400 italic">
-          No description available.
-        </div>
+        <div v-else class="italic text-gray-500 dark:text-gray-400">No description available.</div>
       </div>
 
       <!-- Related Content placeholder -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
-        <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Related Content</h2>
-        <p class="text-gray-600 dark:text-gray-400 text-sm">
+      <div class="mb-6 rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800">
+        <h2 class="mb-4 text-xl font-semibold text-gray-900 dark:text-gray-100">Related Content</h2>
+        <p class="text-sm text-gray-600 dark:text-gray-400">
           Related lessons and resources will be displayed here when implemented.
         </p>
       </div>
@@ -245,10 +281,15 @@
       <div class="no-print">
         <NuxtLink
           to="/knowledge-cards"
-          class="inline-flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+          class="inline-flex items-center rounded-lg bg-gray-100 px-4 py-2 text-gray-700 transition-colors hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
         >
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          <svg class="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            />
           </svg>
           Back to Knowledge Cards
         </NuxtLink>
@@ -256,11 +297,7 @@
     </div>
 
     <!-- QR Code Modal -->
-    <KnowledgeCardQrModal
-      :show="showQr"
-      :card="card"
-      @close="showQr = false"
-    />
+    <KnowledgeCardQrModal :show="showQr" :card="card" @close="showQr = false" />
   </div>
 </template>
 

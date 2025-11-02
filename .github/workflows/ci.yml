@@ -1,0 +1,556 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: '8'
+
+jobs:
+  # Code Quality Checks
+  quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate environment variables
+        run: pnpm check:env
+        env:
+          APP_KEYS: ${{ secrets.APP_KEYS || 'ci-test-key-1,ci-test-key-2,ci-test-key-3,ci-test-key-4' }}
+          API_TOKEN_SALT: ${{ secrets.API_TOKEN_SALT || 'ci-test-salt-123' }}
+          ADMIN_JWT_SECRET: ${{ secrets.ADMIN_JWT_SECRET || 'ci-test-admin-secret' }}
+          TRANSFER_TOKEN_SALT: ${{ secrets.TRANSFER_TOKEN_SALT || 'ci-test-transfer-salt' }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET || 'ci-test-jwt-secret' }}
+          DATABASE_CLIENT: sqlite
+          DATABASE_FILENAME: .tmp/data.db
+          CLIENT_URL: http://localhost:3000
+          NUXT_PUBLIC_STRAPI_URL: ${{ secrets.NUXT_PUBLIC_STRAPI_URL || 'http://localhost:1337' }}
+          NUXT_STRAPI_API_TOKEN: ${{ secrets.NUXT_STRAPI_API_TOKEN || 'ci-test-token' }}
+          NUXT_PUBLIC_API_BASE_URL: ${{ secrets.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:1337' }}
+
+      - name: Lint check
+        run: pnpm lint
+
+      - name: Format check
+        run: pnpm format:check
+
+      - name: Type check
+        run: pnpm typecheck
+
+  # Unit Tests
+  test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run tests with coverage
+        run: pnpm --filter frontend test:coverage
+
+      - name: Check coverage thresholds
+        run: |
+          echo "Checking coverage thresholds..."
+          pnpm --filter frontend test:coverage || echo "::error::Coverage thresholds not met"
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        if: always()
+        with:
+          files: ./apps/frontend/coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: apps/frontend/coverage
+          retention-days: 7
+
+      - name: Comment coverage on PR
+        uses: romeovs/lcov-reporter-action@v0.3.1
+        if: github.event_name == 'pull_request'
+        with:
+          lcov-file: ./apps/frontend/coverage/lcov.info
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  # Build Frontend
+  build-frontend:
+    name: Build Frontend
+    runs-on: ubuntu-latest
+    needs: [quality, test]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build frontend
+        run: pnpm build:frontend
+        env:
+          NUXT_PUBLIC_API_BASE_URL: ${{ secrets.NUXT_PUBLIC_API_BASE_URL }}
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: apps/frontend/.output
+          retention-days: 7
+
+  # Build CMS
+  build-cms:
+    name: Build CMS
+    runs-on: ubuntu-latest
+    needs: [quality, test]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build CMS
+        run: pnpm build:cms
+        env:
+          NODE_ENV: production
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: cms-build
+          path: apps/cms/dist
+          retention-days: 7
+
+  # Lighthouse CI
+  lighthouse:
+    name: Lighthouse CI
+    runs-on: ubuntu-latest
+    needs: [build-frontend]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Download frontend build
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-build
+          path: apps/frontend/.output
+
+      - name: Run Lighthouse CI
+        run: pnpm lighthouse
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+      - name: Upload Lighthouse results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-results-${{ github.ref_name }}-${{ github.run_number }}-${{ github.sha }}
+          path: .lighthouseci
+          retention-days: 7
+
+  # E2E Tests
+  e2e:
+    name: E2E Tests - ${{ matrix.project }}
+    runs-on: ubuntu-latest
+    needs: [quality, test]
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [chromium, firefox, webkit, mobile-chrome]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps ${{ matrix.project }}
+        working-directory: apps/frontend
+
+      - name: Run E2E tests
+        run: pnpm test:e2e --project=${{ matrix.project }}
+        env:
+          CI: true
+          E2E_BASE_URL: http://localhost:3456
+          E2E_STRAPI_URL: http://localhost:3457
+          E2E_STRAPI_PORT: 3457
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-results-${{ matrix.project }}
+          path: apps/frontend/test-results
+          retention-days: 7
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-${{ matrix.project }}
+          path: apps/frontend/playwright-report
+          retention-days: 7
+
+      - name: Upload traces
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-traces-${{ matrix.project }}
+          path: apps/frontend/test-results/**/*trace.zip
+          retention-days: 7
+
+  # Docker Build
+  docker:
+    name: Docker Build
+    runs-on: ubuntu-latest
+    needs: [build-frontend, build-cms]
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    strategy:
+      matrix:
+        service: [frontend, cms]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.CONTAINER_REGISTRY }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ secrets.CONTAINER_REGISTRY }}/${{ github.repository }}/${{ matrix.service }}
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix={{branch}}-
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ matrix.service == 'frontend' && '.' || './apps/cms' }}
+          file: ${{ matrix.service == 'frontend' && './apps/frontend/Dockerfile' || './apps/cms/Dockerfile' }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=registry,ref=${{ secrets.CONTAINER_REGISTRY }}/${{ github.repository }}/${{ matrix.service }}:buildcache
+          cache-to: type=registry,ref=${{ secrets.CONTAINER_REGISTRY }}/${{ github.repository }}/${{ matrix.service }}:buildcache,mode=max
+
+  # Blue/Green Deployment with Automated Rollback
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [docker, lighthouse]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment:
+      name: production
+      url: https://your-domain.com
+    outputs:
+      deployment-color: ${{ steps.deploy.outputs.color }}
+      deployment-status: ${{ steps.deploy.outputs.status }}
+      deployment-version: ${{ steps.deploy.outputs.version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Setup deployment environment
+        run: |
+          chmod +x scripts/deploy/*.sh
+          mkdir -p logs backups
+
+      - name: Configure SSH (if using remote deployment)
+        if: vars.DEPLOY_HOST != ''
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Validate deployment environment variables
+        run: pnpm check:env
+        env:
+          APP_KEYS: ${{ secrets.APP_KEYS }}
+          API_TOKEN_SALT: ${{ secrets.API_TOKEN_SALT }}
+          ADMIN_JWT_SECRET: ${{ secrets.ADMIN_JWT_SECRET }}
+          TRANSFER_TOKEN_SALT: ${{ secrets.TRANSFER_TOKEN_SALT }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          DATABASE_CLIENT: ${{ secrets.DATABASE_CLIENT || 'postgres' }}
+          DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
+          DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
+          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+          DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+          CLIENT_URL: ${{ secrets.CLIENT_URL || 'https://your-domain.com' }}
+          NUXT_PUBLIC_STRAPI_URL: ${{ secrets.NUXT_PUBLIC_STRAPI_URL }}
+          NUXT_STRAPI_API_TOKEN: ${{ secrets.NUXT_STRAPI_API_TOKEN }}
+          NUXT_PUBLIC_API_BASE_URL: ${{ secrets.NUXT_PUBLIC_API_BASE_URL }}
+
+      - name: Run preflight checks
+        id: preflight
+        run: |
+          echo "Running preflight deployment checks..."
+          bash scripts/deploy/preflight.sh || exit 1
+          echo "status=passed" >> $GITHUB_OUTPUT
+
+      - name: Wait for manual approval
+        uses: trstringer/manual-approval@v1
+        if: vars.REQUIRE_MANUAL_APPROVAL == 'true'
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: ${{ vars.DEPLOYMENT_APPROVERS }}
+          minimum-approvals: 1
+          issue-title: "Deploy ${{ github.sha }} to production"
+          issue-body: |
+            Please review and approve deployment to production
+            
+            **Version:** ${{ github.sha }}
+            **Branch:** ${{ github.ref_name }}
+            **Triggered by:** ${{ github.actor }}
+            
+            **Changes:** See commit history
+            
+            **Preflight Status:** ✅ Passed
+            
+            Review the deployment plan in [DEPLOYMENT_STRATEGY.md](../blob/main/docs/DEPLOYMENT_STRATEGY.md)
+
+      - name: Execute blue/green deployment
+        id: deploy
+        env:
+          VERSION: ${{ github.sha }}
+          DEPLOYMENT_ENV: production
+          DATABASE_BACKUP: 'true'
+          # These would come from secrets in actual deployment
+          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+          DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+          APP_KEYS: ${{ secrets.APP_KEYS }}
+          API_TOKEN_SALT: ${{ secrets.API_TOKEN_SALT }}
+          ADMIN_JWT_SECRET: ${{ secrets.ADMIN_JWT_SECRET }}
+          TRANSFER_TOKEN_SALT: ${{ secrets.TRANSFER_TOKEN_SALT }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          NUXT_STRAPI_API_TOKEN: ${{ secrets.NUXT_STRAPI_API_TOKEN }}
+        run: |
+          echo "Starting blue/green deployment..."
+          
+          # For remote deployment, would SSH and run commands
+          # For local/CI testing, run directly
+          if bash scripts/deploy/blue-green-deploy.sh --version "$VERSION"; then
+            echo "status=success" >> $GITHUB_OUTPUT
+            
+            # Determine which color was deployed
+            DEPLOYED_COLOR=$(cat /tmp/active-deployment-color 2>/dev/null || echo "unknown")
+            echo "color=$DEPLOYED_COLOR" >> $GITHUB_OUTPUT
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+            
+            echo "✅ Deployment successful to $DEPLOYED_COLOR stack"
+          else
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "❌ Deployment failed"
+            exit 1
+          fi
+
+      - name: Run post-deployment smoke tests
+        id: smoke-tests
+        if: steps.deploy.outputs.status == 'success'
+        run: |
+          echo "Running post-deployment smoke tests..."
+          
+          # Get the deployed color and ports
+          DEPLOYED_COLOR="${{ steps.deploy.outputs.color }}"
+          
+          if [ "$DEPLOYED_COLOR" = "blue" ]; then
+            FRONTEND_PORT=3000
+            CMS_PORT=1337
+          else
+            FRONTEND_PORT=3001
+            CMS_PORT=1338
+          fi
+          
+          # Run verification
+          if bash scripts/deploy/post-deploy-verify.sh \
+            --target-color "$DEPLOYED_COLOR" \
+            --frontend-port "$FRONTEND_PORT" \
+            --cms-port "$CMS_PORT"; then
+            echo "status=passed" >> $GITHUB_OUTPUT
+            echo "✅ Smoke tests passed"
+          else
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "❌ Smoke tests failed"
+            exit 1
+          fi
+
+      - name: Upload deployment logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-logs
+          path: |
+            logs/deployment_*.log
+            logs/verification_*.log
+            logs/verification_*.json
+          retention-days: 30
+
+      - name: Automatic rollback on failure
+        if: failure() && steps.deploy.outputs.status == 'success'
+        run: |
+          echo "⚠️ Deployment or smoke tests failed - initiating automatic rollback"
+          
+          # Rollback to previous color
+          bash scripts/deploy/rollback.sh --force --skip-db
+          
+          echo "🔄 Rollback completed"
+          
+          # Notify about rollback
+          echo "::error::Deployment failed and was automatically rolled back"
+
+      - name: Upload rollback logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rollback-logs
+          path: logs/rollback_*.log
+          retention-days: 30
+
+      - name: Post deployment summary
+        if: always()
+        run: |
+          echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ${{ steps.deploy.outputs.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Version:** ${{ steps.deploy.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Deployment Color:** ${{ steps.deploy.outputs.color }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Smoke Tests:** ${{ steps.smoke-tests.outputs.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ steps.deploy.outputs.status }}" = "success" ] && [ "${{ steps.smoke-tests.outputs.status }}" = "passed" ]; then
+            echo "✅ **Deployment completed successfully**" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **Deployment failed and was rolled back**" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "- Monitor application metrics" >> $GITHUB_STEP_SUMMARY
+          echo "- Review deployment logs" >> $GITHUB_STEP_SUMMARY
+          echo "- Verify production functionality" >> $GITHUB_STEP_SUMMARY
+
+      - name: Notify deployment status
+        if: always()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: |
+            Deployment ${{ job.status }}
+            Version: ${{ github.sha }}
+            Color: ${{ steps.deploy.outputs.color }}
+            Smoke Tests: ${{ steps.smoke-tests.outputs.status }}
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}

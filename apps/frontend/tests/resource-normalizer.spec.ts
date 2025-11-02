@@ -13,7 +13,12 @@ import {
   getResourcesNeedingAttention,
   calculateResourceStats,
 } from '~/utils/resource-normalizer'
-import type { Resource, StrapiCollectionItem, ResourceAttributes, StrapiResourceResponse } from '~/types/cms'
+import type {
+  Resource,
+  StrapiCollectionItem,
+  ResourceAttributes,
+  StrapiResourceResponse,
+} from '~/types/cms'
 
 describe('Resource Normalizer', () => {
   const mockStrapiItem: StrapiCollectionItem<ResourceAttributes> = {
@@ -148,9 +153,33 @@ describe('Resource Normalizer', () => {
   describe('groupResourcesByCategory', () => {
     it('should group resources by category', () => {
       const resources: Resource[] = [
-        { id: 1, title: 'Resource 1', category: 'Video Tutorials', url: 'https://example.com', accessibilityFlag: true, disciplines: [], mediaType: 'video' },
-        { id: 2, title: 'Resource 2', category: 'Video Tutorials', url: 'https://example.com', accessibilityFlag: true, disciplines: [], mediaType: 'video' },
-        { id: 3, title: 'Resource 3', category: 'Tool Links', url: 'https://example.com', accessibilityFlag: true, disciplines: [], mediaType: 'link' },
+        {
+          id: 1,
+          title: 'Resource 1',
+          category: 'Video Tutorials',
+          url: 'https://example.com',
+          accessibilityFlag: true,
+          disciplines: [],
+          mediaType: 'video',
+        },
+        {
+          id: 2,
+          title: 'Resource 2',
+          category: 'Video Tutorials',
+          url: 'https://example.com',
+          accessibilityFlag: true,
+          disciplines: [],
+          mediaType: 'video',
+        },
+        {
+          id: 3,
+          title: 'Resource 3',
+          category: 'Tool Links',
+          url: 'https://example.com',
+          accessibilityFlag: true,
+          disciplines: [],
+          mediaType: 'link',
+        },
       ]
 
       const result = groupResourcesByCategory(resources)
@@ -162,7 +191,15 @@ describe('Resource Normalizer', () => {
 
     it('should handle uncategorized resources', () => {
       const resources: Resource[] = [
-        { id: 1, title: 'Resource', category: null, url: 'https://example.com', accessibilityFlag: true, disciplines: [], mediaType: 'link' },
+        {
+          id: 1,
+          title: 'Resource',
+          category: null,
+          url: 'https://example.com',
+          accessibilityFlag: true,
+          disciplines: [],
+          mediaType: 'link',
+        },
       ]
 
       const result = groupResourcesByCategory(resources)
@@ -174,8 +211,26 @@ describe('Resource Normalizer', () => {
 
   describe('filterResourcesBySearch', () => {
     const resources: Resource[] = [
-      { id: 1, title: 'Video Tutorial', category: 'Video Tutorials', description: 'Learn video editing', url: 'https://example.com', accessibilityFlag: true, disciplines: [], mediaType: 'video' },
-      { id: 2, title: 'Tool Link', category: 'Tool Links', description: 'Design tool', url: 'https://example.com', accessibilityFlag: true, disciplines: [], mediaType: 'link' },
+      {
+        id: 1,
+        title: 'Video Tutorial',
+        category: 'Video Tutorials',
+        description: 'Learn video editing',
+        url: 'https://example.com',
+        accessibilityFlag: true,
+        disciplines: [],
+        mediaType: 'video',
+      },
+      {
+        id: 2,
+        title: 'Tool Link',
+        category: 'Tool Links',
+        description: 'Design tool',
+        url: 'https://example.com',
+        accessibilityFlag: true,
+        disciplines: [],
+        mediaType: 'link',
+      },
     ]
 
     it('should filter by title', () => {
@@ -207,8 +262,26 @@ describe('Resource Normalizer', () => {
 
   describe('sortResources', () => {
     const resources: Resource[] = [
-      { id: 1, title: 'B Resource', category: 'Tool Links', url: 'https://example.com', accessibilityFlag: true, disciplines: [], mediaType: 'link', createdAt: '2024-01-02T00:00:00.000Z' },
-      { id: 2, title: 'A Resource', category: 'Video Tutorials', url: 'https://example.com', accessibilityFlag: true, disciplines: [], mediaType: 'video', createdAt: '2024-01-01T00:00:00.000Z' },
+      {
+        id: 1,
+        title: 'B Resource',
+        category: 'Tool Links',
+        url: 'https://example.com',
+        accessibilityFlag: true,
+        disciplines: [],
+        mediaType: 'link',
+        createdAt: '2024-01-02T00:00:00.000Z',
+      },
+      {
+        id: 2,
+        title: 'A Resource',
+        category: 'Video Tutorials',
+        url: 'https://example.com',
+        accessibilityFlag: true,
+        disciplines: [],
+        mediaType: 'video',
+        createdAt: '2024-01-01T00:00:00.000Z',
+      },
     ]
 
     it('should sort by title ascending', () => {
@@ -242,8 +315,24 @@ describe('Resource Normalizer', () => {
   describe('getResourcesNeedingAttention', () => {
     it('should return resources with accessibility issues', () => {
       const resources: Resource[] = [
-        { id: 1, title: 'Good', url: 'https://example.com', accessibilityFlag: true, lastChecked: new Date().toISOString(), disciplines: [], mediaType: 'link' },
-        { id: 2, title: 'Bad', url: 'https://example.com', accessibilityFlag: false, lastChecked: null, disciplines: [], mediaType: 'link' },
+        {
+          id: 1,
+          title: 'Good',
+          url: 'https://example.com',
+          accessibilityFlag: true,
+          lastChecked: new Date().toISOString(),
+          disciplines: [],
+          mediaType: 'link',
+        },
+        {
+          id: 2,
+          title: 'Bad',
+          url: 'https://example.com',
+          accessibilityFlag: false,
+          lastChecked: null,
+          disciplines: [],
+          mediaType: 'link',
+        },
       ]
 
       const result = getResourcesNeedingAttention(resources)
@@ -255,7 +344,15 @@ describe('Resource Normalizer', () => {
     it('should return resources needing revalidation', () => {
       const oldDate = new Date(Date.now() - 100 * 24 * 60 * 60 * 1000).toISOString()
       const resources: Resource[] = [
-        { id: 1, title: 'Old', url: 'https://example.com', accessibilityFlag: true, lastChecked: oldDate, disciplines: [], mediaType: 'link' },
+        {
+          id: 1,
+          title: 'Old',
+          url: 'https://example.com',
+          accessibilityFlag: true,
+          lastChecked: oldDate,
+          disciplines: [],
+          mediaType: 'link',
+        },
       ]
 
       const result = getResourcesNeedingAttention(resources, 90)
@@ -267,9 +364,36 @@ describe('Resource Normalizer', () => {
   describe('calculateResourceStats', () => {
     it('should calculate comprehensive statistics', () => {
       const resources: Resource[] = [
-        { id: 1, title: 'R1', category: 'Video Tutorials', url: 'https://example.com', accessibilityFlag: true, lastChecked: new Date().toISOString(), disciplines: ['环艺'], mediaType: 'video' },
-        { id: 2, title: 'R2', category: 'Video Tutorials', url: 'https://example.com', accessibilityFlag: false, lastChecked: null, disciplines: ['产品'], mediaType: 'pdf' },
-        { id: 3, title: 'R3', category: 'Tool Links', url: 'https://example.com', accessibilityFlag: true, lastChecked: null, disciplines: ['环艺'], mediaType: 'link' },
+        {
+          id: 1,
+          title: 'R1',
+          category: 'Video Tutorials',
+          url: 'https://example.com',
+          accessibilityFlag: true,
+          lastChecked: new Date().toISOString(),
+          disciplines: ['环艺'],
+          mediaType: 'video',
+        },
+        {
+          id: 2,
+          title: 'R2',
+          category: 'Video Tutorials',
+          url: 'https://example.com',
+          accessibilityFlag: false,
+          lastChecked: null,
+          disciplines: ['产品'],
+          mediaType: 'pdf',
+        },
+        {
+          id: 3,
+          title: 'R3',
+          category: 'Tool Links',
+          url: 'https://example.com',
+          accessibilityFlag: true,
+          lastChecked: null,
+          disciplines: ['环艺'],
+          mediaType: 'link',
+        },
       ]
 
       const result = calculateResourceStats(resources)

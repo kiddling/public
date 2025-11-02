@@ -56,7 +56,7 @@ describe('Search Highlight Utilities', () => {
       const { highlightSearchTerm } = await import('~/utils/search-highlight')
       const text = 'This is a test string'
       const result = highlightSearchTerm(text, 'test')
-      
+
       expect(result).toContain('<mark')
       expect(result).toContain('test')
     })
@@ -65,7 +65,7 @@ describe('Search Highlight Utilities', () => {
       const { highlightSearchTerm } = await import('~/utils/search-highlight')
       const text = 'This is a TEST string'
       const result = highlightSearchTerm(text, 'test')
-      
+
       expect(result).toContain('<mark')
     })
 
@@ -73,7 +73,7 @@ describe('Search Highlight Utilities', () => {
       const { highlightSearchTerm } = await import('~/utils/search-highlight')
       const text = 'This is a test string'
       const result = highlightSearchTerm(text, '')
-      
+
       expect(result).toBe(text)
     })
 
@@ -81,7 +81,7 @@ describe('Search Highlight Utilities', () => {
       const { highlightSearchTerm } = await import('~/utils/search-highlight')
       const text = '<script>alert("xss")</script>'
       const result = highlightSearchTerm(text, 'alert')
-      
+
       expect(result).toContain('&lt;')
       expect(result).toContain('&gt;')
     })
@@ -90,7 +90,7 @@ describe('Search Highlight Utilities', () => {
       const { highlightSearchTerm } = await import('~/utils/search-highlight')
       const text = 'Cost is $50 (approx.)'
       const result = highlightSearchTerm(text, '$50')
-      
+
       expect(result).toContain('$50')
     })
   })
@@ -100,7 +100,7 @@ describe('Search Highlight Utilities', () => {
       const { stripHtml } = await import('~/utils/search-highlight')
       const html = '<p>This is <strong>bold</strong> text</p>'
       const result = stripHtml(html)
-      
+
       expect(result).toBe('This is bold text')
     })
 
@@ -108,14 +108,14 @@ describe('Search Highlight Utilities', () => {
       const { stripHtml } = await import('~/utils/search-highlight')
       const html = '<div><p>Nested <span>content</span></p></div>'
       const result = stripHtml(html)
-      
+
       expect(result).toBe('Nested content')
     })
 
     it('should return empty string for empty input', async () => {
       const { stripHtml } = await import('~/utils/search-highlight')
       const result = stripHtml('')
-      
+
       expect(result).toBe('')
     })
   })
@@ -125,7 +125,7 @@ describe('Search Highlight Utilities', () => {
       const { truncateText } = await import('~/utils/search-highlight')
       const text = 'This is a very long text that should be truncated'
       const result = truncateText(text, 20)
-      
+
       expect(result.length).toBeLessThanOrEqual(23)
       expect(result).toContain('...')
     })
@@ -134,7 +134,7 @@ describe('Search Highlight Utilities', () => {
       const { truncateText } = await import('~/utils/search-highlight')
       const text = 'Short text'
       const result = truncateText(text, 20)
-      
+
       expect(result).toBe(text)
       expect(result).not.toContain('...')
     })
@@ -143,7 +143,7 @@ describe('Search Highlight Utilities', () => {
       const { truncateText } = await import('~/utils/search-highlight')
       const text = 'Exactly twenty chars'
       const result = truncateText(text, 20)
-      
+
       expect(result).toBe(text)
     })
   })
@@ -151,9 +151,10 @@ describe('Search Highlight Utilities', () => {
   describe('getSearchExcerpt', () => {
     it('should extract excerpt around search term', async () => {
       const { getSearchExcerpt } = await import('~/utils/search-highlight')
-      const html = '<p>This is a very long paragraph with the word important in the middle of it</p>'
+      const html =
+        '<p>This is a very long paragraph with the word important in the middle of it</p>'
       const result = getSearchExcerpt(html, 'important', 50)
-      
+
       expect(result).toContain('important')
       expect(result.length).toBeLessThanOrEqual(55)
     })
@@ -162,7 +163,7 @@ describe('Search Highlight Utilities', () => {
       const { getSearchExcerpt } = await import('~/utils/search-highlight')
       const html = '<p>This is <strong>important</strong> text</p>'
       const result = getSearchExcerpt(html, 'important')
-      
+
       expect(result).not.toContain('<strong>')
       expect(result).toContain('important')
     })
@@ -171,7 +172,7 @@ describe('Search Highlight Utilities', () => {
       const { getSearchExcerpt } = await import('~/utils/search-highlight')
       const html = '<p>Start of text with important word in the middle and more text at the end</p>'
       const result = getSearchExcerpt(html, 'important', 30)
-      
+
       expect(result).toMatch(/\.\.\..*important.*\.\.\./)
     })
 
@@ -179,7 +180,7 @@ describe('Search Highlight Utilities', () => {
       const { getSearchExcerpt } = await import('~/utils/search-highlight')
       const html = '<p>This text has no matching words</p>'
       const result = getSearchExcerpt(html, 'nonexistent', 20)
-      
+
       expect(result.length).toBeLessThanOrEqual(23)
     })
 
@@ -187,7 +188,7 @@ describe('Search Highlight Utilities', () => {
       const { getSearchExcerpt } = await import('~/utils/search-highlight')
       const html = '<p>Some text here</p>'
       const result = getSearchExcerpt(html, '', 20)
-      
+
       expect(result).toBe('Some text here')
     })
   })

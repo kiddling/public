@@ -7,18 +7,18 @@
   >
     <header class="flex items-start justify-between gap-3">
       <div>
-        <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+        <p
+          class="text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400"
+        >
           Progress
         </p>
-        <h2 class="text-base font-semibold text-gray-900 dark:text-gray-50">
-          Course Progress
-        </h2>
+        <h2 class="text-base font-semibold text-gray-900 dark:text-gray-50">Course Progress</h2>
         <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
           {{ summaryText }}
         </p>
       </div>
       <span
-        class="inline-flex h-9 items-center justify-center rounded-full bg-primary-500/10 px-3 text-sm font-semibold text-primary-600 dark:bg-primary-500/20 dark:text-primary-200"
+        class="bg-primary-500/10 text-primary-600 dark:bg-primary-500/20 dark:text-primary-200 inline-flex h-9 items-center justify-center rounded-full px-3 text-sm font-semibold"
       >
         {{ completionPercentage }}%
       </span>
@@ -27,20 +27,19 @@
     <div class="mt-4">
       <div class="h-2 w-full rounded-full bg-gray-200/70 dark:bg-gray-800">
         <div
-          class="h-2 rounded-full bg-primary-500 transition-[width] duration-500 ease-out dark:bg-primary-400"
+          class="bg-primary-500 dark:bg-primary-400 h-2 rounded-full transition-[width] duration-500 ease-out"
           :style="{ width: `${completionPercentage}%` }"
         ></div>
       </div>
-      <div class="mt-3 flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-wide">
+      <div
+        class="mt-3 flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-wide"
+      >
         <span
           v-for="part in partProgressSummaries"
           :key="part.partType"
           class="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs text-gray-600 ring-1 ring-gray-200 dark:text-gray-300 dark:ring-gray-700"
         >
-          <span
-            class="h-2 w-2 rounded-full"
-            :style="{ backgroundColor: part.color }"
-          ></span>
+          <span class="h-2 w-2 rounded-full" :style="{ backgroundColor: part.color }"></span>
           {{ part.label }} {{ part.percentage }}%
         </span>
       </div>
@@ -62,7 +61,9 @@
     >
       <section>
         <div class="flex items-center justify-between">
-          <h3 class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+          <h3
+            class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400"
+          >
             Completed
           </h3>
           <span class="text-xs text-gray-400 dark:text-gray-500">
@@ -80,23 +81,27 @@
             v-for="lesson in completedLessonsLimited"
             :key="`completed-${lesson.code}`"
             :data-current="lesson.code === currentLessonCodeNormalized ? 'true' : undefined"
-            class="group flex items-center justify-between gap-3 rounded-xl border border-gray-200 bg-white/80 px-3 py-2 text-sm shadow-sm transition focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 focus-within:ring-offset-white dark:border-gray-800 dark:bg-gray-900/70 dark:focus-within:ring-offset-gray-900"
+            class="focus-within:ring-primary-500 group flex items-center justify-between gap-3 rounded-xl border border-gray-200 bg-white/80 px-3 py-2 text-sm shadow-sm transition focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-white dark:border-gray-800 dark:bg-gray-900/70 dark:focus-within:ring-offset-gray-900"
           >
             <button
               type="button"
               class="flex flex-1 flex-col truncate text-left"
               @click="handleLessonSelect(lesson.code)"
             >
-              <span class="text-[11px] font-semibold uppercase tracking-wide text-gray-500 group-data-[current=true]:text-primary-600 dark:text-gray-400 dark:group-data-[current=true]:text-primary-300">
+              <span
+                class="group-data-[current=true]:text-primary-600 dark:group-data-[current=true]:text-primary-300 text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400"
+              >
                 {{ lesson.code }}
               </span>
-              <span class="truncate text-sm font-medium text-gray-900 group-data-[current=true]:text-primary-600 dark:text-gray-100 dark:group-data-[current=true]:text-primary-300">
+              <span
+                class="group-data-[current=true]:text-primary-600 dark:group-data-[current=true]:text-primary-300 truncate text-sm font-medium text-gray-900 dark:text-gray-100"
+              >
                 {{ lesson.title }}
               </span>
             </button>
             <button
               type="button"
-              class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition hover:border-red-300 hover:text-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-gray-700 dark:text-gray-400 dark:hover:border-red-400 dark:hover:text-red-300 dark:focus-visible:ring-offset-gray-900"
+              class="focus-visible:ring-primary-500 inline-flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition hover:border-red-300 hover:text-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-gray-700 dark:text-gray-400 dark:hover:border-red-400 dark:hover:text-red-300 dark:focus-visible:ring-offset-gray-900"
               :aria-label="`Mark ${lesson.code} as incomplete`"
               @click.stop="toggleLessonCompletion(lesson.code)"
             >
@@ -108,7 +113,9 @@
 
       <section>
         <div class="flex items-center justify-between">
-          <h3 class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+          <h3
+            class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400"
+          >
             Remaining
           </h3>
           <span class="text-xs text-gray-400 dark:text-gray-500">
@@ -126,23 +133,27 @@
             v-for="lesson in remainingLessonsLimited"
             :key="`remaining-${lesson.code}`"
             :data-current="lesson.code === currentLessonCodeNormalized ? 'true' : undefined"
-            class="group flex items-center justify-between gap-3 rounded-xl border border-gray-200 bg-white/80 px-3 py-2 text-sm shadow-sm transition hover:border-primary-300 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 focus-within:ring-offset-white dark:border-gray-800 dark:bg-gray-900/70 dark:hover:border-primary-400/60 dark:focus-within:ring-offset-gray-900"
+            class="hover:border-primary-300 focus-within:ring-primary-500 dark:hover:border-primary-400/60 group flex items-center justify-between gap-3 rounded-xl border border-gray-200 bg-white/80 px-3 py-2 text-sm shadow-sm transition focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-white dark:border-gray-800 dark:bg-gray-900/70 dark:focus-within:ring-offset-gray-900"
           >
             <button
               type="button"
               class="flex flex-1 flex-col truncate text-left"
               @click="handleLessonSelect(lesson.code)"
             >
-              <span class="text-[11px] font-semibold uppercase tracking-wide text-gray-500 group-data-[current=true]:text-primary-600 dark:text-gray-400 dark:group-data-[current=true]:text-primary-300">
+              <span
+                class="group-data-[current=true]:text-primary-600 dark:group-data-[current=true]:text-primary-300 text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400"
+              >
                 {{ lesson.code }}
               </span>
-              <span class="truncate text-sm font-medium text-gray-900 group-data-[current=true]:text-primary-600 dark:text-gray-100 dark:group-data-[current=true]:text-primary-300">
+              <span
+                class="group-data-[current=true]:text-primary-600 dark:group-data-[current=true]:text-primary-300 truncate text-sm font-medium text-gray-900 dark:text-gray-100"
+              >
                 {{ lesson.title }}
               </span>
             </button>
             <button
               type="button"
-              class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition hover:border-emerald-300 hover:text-emerald-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-gray-700 dark:text-gray-400 dark:hover:border-emerald-400 dark:hover:text-emerald-300 dark:focus-visible:ring-offset-gray-900"
+              class="focus-visible:ring-primary-500 inline-flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition hover:border-emerald-300 hover:text-emerald-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-gray-700 dark:text-gray-400 dark:hover:border-emerald-400 dark:hover:text-emerald-300 dark:focus-visible:ring-offset-gray-900"
               :aria-label="`Mark ${lesson.code} as complete`"
               @click.stop="toggleLessonCompletion(lesson.code)"
             >
@@ -161,14 +172,16 @@
         <li
           v-for="lesson in recentLessons"
           :key="`recent-${lesson.code}`"
-          class="flex items-center justify-between gap-3 rounded-lg border border-gray-200 bg-white/70 px-3 py-2 transition hover:border-primary-300 dark:border-gray-800 dark:bg-gray-900/70 dark:hover:border-primary-400/60"
+          class="hover:border-primary-300 dark:hover:border-primary-400/60 flex items-center justify-between gap-3 rounded-lg border border-gray-200 bg-white/70 px-3 py-2 transition dark:border-gray-800 dark:bg-gray-900/70"
         >
           <button
             type="button"
             class="flex flex-1 flex-col truncate text-left"
             @click="handleLessonSelect(lesson.code)"
           >
-            <span class="text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+            <span
+              class="text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400"
+            >
               {{ lesson.code }}
             </span>
             <span class="truncate text-sm font-medium text-gray-900 dark:text-gray-100">
@@ -191,7 +204,13 @@ import { computed } from 'vue'
 import LoopSpiralVisualization from './LoopSpiralVisualization.vue'
 import { useNavigationStore } from '~/stores/navigation'
 import { useProgressStore } from '~/stores/progress'
-import { NAVIGATION_PART_COLORS, NAVIGATION_PART_LABELS, NAVIGATION_PART_TYPES, type NavigationLesson, type NavigationPartType } from '~/types/navigation'
+import {
+  NAVIGATION_PART_COLORS,
+  NAVIGATION_PART_LABELS,
+  NAVIGATION_PART_TYPES,
+  type NavigationLesson,
+  type NavigationPartType,
+} from '~/types/navigation'
 
 const props = defineProps<{
   currentLessonCode?: string | null
@@ -214,17 +233,21 @@ const hasLessons = computed(() => lessons.value.length > 0)
 const completedLessonCodes = computed(() => progressStore.completedLessonCodes)
 const completionPercentage = computed(() => progressStore.completionPercentage)
 const completedLessons = computed(() =>
-  lessons.value.filter((lesson) => progressStore.isLessonComplete(lesson.code)),
+  lessons.value.filter((lesson) => progressStore.isLessonComplete(lesson.code))
 )
 const remainingLessons = computed(() =>
-  lessons.value.filter((lesson) => !progressStore.isLessonComplete(lesson.code)),
+  lessons.value.filter((lesson) => !progressStore.isLessonComplete(lesson.code))
 )
 
 const completedLimit = computed(() => (variant.value === 'compact' ? 3 : 6))
 const remainingLimit = computed(() => (variant.value === 'compact' ? 4 : 6))
 
-const completedLessonsLimited = computed(() => completedLessons.value.slice(0, completedLimit.value))
-const remainingLessonsLimited = computed(() => remainingLessons.value.slice(0, remainingLimit.value))
+const completedLessonsLimited = computed(() =>
+  completedLessons.value.slice(0, completedLimit.value)
+)
+const remainingLessonsLimited = computed(() =>
+  remainingLessons.value.slice(0, remainingLimit.value)
+)
 
 const recentLessons = computed(() => progressStore.recentLessons.slice(0, 5))
 
@@ -267,7 +290,7 @@ const partProgressSummaries = computed(() => {
 const containerClass = computed(() =>
   variant.value === 'compact'
     ? 'rounded-xl border border-gray-200 bg-white/80 p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900/80'
-    : 'rounded-2xl border border-gray-200 bg-white/90 p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900/80',
+    : 'rounded-2xl border border-gray-200 bg-white/90 p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900/80'
 )
 
 const currentLessonCodeNormalized = computed(() => {

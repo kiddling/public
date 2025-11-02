@@ -1,3 +1,3 @@
-import { factories } from '@strapi/strapi';
+import { factories } from '@strapi/strapi'
 
-export default factories.createCoreService('api::student-work.student-work');
+export default factories.createCoreService('api::student-work.student-work')

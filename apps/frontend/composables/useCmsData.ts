@@ -1,6 +1,6 @@
 /**
  * Base composable factory for CMS data fetching
- * 
+ *
  * Provides a consistent interface for fetching CMS data with caching,
  * error handling, and request management.
  */
@@ -24,7 +24,7 @@ export interface UseCmsDataOptions extends DataLayerOptions {
 export function useCmsData<T>(
   endpoint: string,
   params: Record<string, any> = {},
-  options: UseCmsDataOptions = {},
+  options: UseCmsDataOptions = {}
 ) {
   const {
     key,
@@ -47,7 +47,7 @@ export function useCmsData<T>(
   return useAsyncData<T>(
     cacheKey,
     () => fetchWithDataLayer<T>(endpoint, params, dataLayerOptions),
-    asyncDataOptions,
+    asyncDataOptions
   )
 }
 

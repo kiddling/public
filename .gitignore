@@ -10,6 +10,13 @@ coverage/
 *.lcov
 .nyc_output
 
+# Playwright / E2E Tests
+test-results/
+playwright-report/
+playwright/.cache/
+apps/frontend/test-results/
+apps/frontend/playwright-report/
+
 # Production build files
 dist/
 .output/
@@ -47,6 +54,10 @@ apps/frontend/.cache
 
 # Docker
 *.env.docker
+.env.docker
+
+# Lighthouse CI
+.lighthouseci/
 
 # Logs
 logs/
@@ -97,3 +108,13 @@ temp/
 # Lock files (keep pnpm-lock.yaml if using pnpm)
 # package-lock.json
 # yarn.lock
+
+# Backups
+backups/
+*.backup_*
+*.sql.gz
+*.tar.gz
+
+# Docker volumes and data directories
+data/
+database/backups/

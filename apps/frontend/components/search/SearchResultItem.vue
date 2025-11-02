@@ -4,7 +4,7 @@
     role="option"
     :aria-selected="String(isActive)"
     :data-active="isActive ? 'true' : undefined"
-    class="group relative rounded-xl transition hover:bg-primary-50 focus-within:bg-primary-50 dark:hover:bg-primary-500/10 dark:focus-within:bg-primary-500/10"
+    class="hover:bg-primary-50 focus-within:bg-primary-50 dark:hover:bg-primary-500/10 dark:focus-within:bg-primary-500/10 group relative rounded-xl transition"
   >
     <button
       type="button"
@@ -55,22 +55,34 @@
           </template>
 
           <!-- Lesson code -->
-          <span v-if="result.type === 'lesson' && result.meta.code" class="text-[10px] font-mono text-gray-500 dark:text-gray-400">
+          <span
+            v-if="result.type === 'lesson' && result.meta.code"
+            class="font-mono text-[10px] text-gray-500 dark:text-gray-400"
+          >
             {{ result.meta.code }}
           </span>
 
           <!-- Knowledge card type -->
-          <span v-if="result.type === 'knowledge-card' && result.meta.type" class="text-[10px] text-gray-500 dark:text-gray-400">
+          <span
+            v-if="result.type === 'knowledge-card' && result.meta.type"
+            class="text-[10px] text-gray-500 dark:text-gray-400"
+          >
             {{ result.meta.type }}
           </span>
 
           <!-- Student work discipline -->
-          <span v-if="result.type === 'student-work' && result.meta.discipline" class="text-[10px] text-gray-500 dark:text-gray-400">
+          <span
+            v-if="result.type === 'student-work' && result.meta.discipline"
+            class="text-[10px] text-gray-500 dark:text-gray-400"
+          >
             {{ result.meta.discipline }}
           </span>
 
           <!-- Resource category -->
-          <span v-if="result.type === 'resource' && result.meta.category" class="text-[10px] text-gray-500 dark:text-gray-400">
+          <span
+            v-if="result.type === 'resource' && result.meta.category"
+            class="text-[10px] text-gray-500 dark:text-gray-400"
+          >
             {{ result.meta.category }}
           </span>
         </div>

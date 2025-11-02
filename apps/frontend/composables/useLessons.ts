@@ -1,6 +1,6 @@
 /**
  * Composable for fetching lessons from the CMS
- * 
+ *
  * Supports filtering, sorting, pagination, and full population of relations.
  */
 
@@ -35,9 +35,14 @@ export function useLesson(code: string, options: UseCmsDataOptions = {}) {
     return base.endsWith('/') ? base.slice(0, -1) : base
   })
 
-  const { data: rawData, pending, error, refresh } = useCmsData<{ data: StrapiCollectionItem<Record<string, any>>, meta?: any }>(
-    endpoint, 
-    {}, 
+  const {
+    data: rawData,
+    pending,
+    error,
+    refresh,
+  } = useCmsData<{ data: StrapiCollectionItem<Record<string, any>>; meta?: any }>(
+    endpoint,
+    {},
     { ...options, key }
   )
 
@@ -61,14 +66,7 @@ export function useLesson(code: string, options: UseCmsDataOptions = {}) {
  * Fetch multiple lessons with optional filtering, sorting, and pagination
  */
 export function useLessons(options: UseLessonsOptions = {}) {
-  const {
-    code,
-    populate = true,
-    filters,
-    sort,
-    pagination,
-    ...restOptions
-  } = options
+  const { code, populate = true, filters, sort, pagination, ...restOptions } = options
 
   // Build query parameters
   const queryParams: QueryParams = {}

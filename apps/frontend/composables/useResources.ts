@@ -1,10 +1,15 @@
 /**
  * Composable for fetching resources from the CMS
- * 
+ *
  * Supports filtering by category, accessibility, discipline, mediaType, and searching.
  */
 
-import type { QueryParams, ResourceCategory, ResourceDiscipline, ResourceMediaType } from '~/types/cms'
+import type {
+  QueryParams,
+  ResourceCategory,
+  ResourceDiscipline,
+  ResourceMediaType,
+} from '~/types/cms'
 import type { UseCmsDataOptions } from './useCmsData'
 import { useCmsData } from './useCmsData'
 import { buildStrapiQuery } from '~/utils/data-layer'
@@ -132,7 +137,7 @@ export function useResources(options: UseResourcesOptions = {}) {
  */
 export function useResourcesByCategory(
   category: ResourceCategory,
-  options: UseCmsDataOptions = {},
+  options: UseCmsDataOptions = {}
 ) {
   return useResources({
     category,
@@ -192,7 +197,7 @@ export function useResourcesGroupedByCategory(options: UseCmsDataOptions = {}) {
     useResourcesByCategory(category, {
       ...options,
       accessibleOnly: true,
-    }),
+    })
   )
 }
 

@@ -53,7 +53,7 @@ describe('StudentGalleryPagination', () => {
       },
     })
 
-    const prevButton = wrapper.findAll('button').find(b => b.text().includes('上一页'))
+    const prevButton = wrapper.findAll('button').find((b) => b.text().includes('上一页'))
     expect(prevButton?.attributes('disabled')).toBeDefined()
   })
 
@@ -67,7 +67,7 @@ describe('StudentGalleryPagination', () => {
       },
     })
 
-    const prevButton = wrapper.findAll('button').find(b => b.text().includes('上一页'))
+    const prevButton = wrapper.findAll('button').find((b) => b.text().includes('上一页'))
     expect(prevButton?.attributes('disabled')).toBeUndefined()
   })
 
@@ -81,7 +81,7 @@ describe('StudentGalleryPagination', () => {
       },
     })
 
-    const nextButton = wrapper.findAll('button').find(b => b.text().includes('下一页'))
+    const nextButton = wrapper.findAll('button').find((b) => b.text().includes('下一页'))
     expect(nextButton?.attributes('disabled')).toBeDefined()
   })
 
@@ -95,7 +95,7 @@ describe('StudentGalleryPagination', () => {
       },
     })
 
-    const nextButton = wrapper.findAll('button').find(b => b.text().includes('下一页'))
+    const nextButton = wrapper.findAll('button').find((b) => b.text().includes('下一页'))
     expect(nextButton?.attributes('disabled')).toBeUndefined()
   })
 
@@ -109,7 +109,7 @@ describe('StudentGalleryPagination', () => {
       },
     })
 
-    const prevButton = wrapper.findAll('button').find(b => b.text().includes('上一页'))
+    const prevButton = wrapper.findAll('button').find((b) => b.text().includes('上一页'))
     await prevButton?.trigger('click')
 
     expect(wrapper.emitted('update:modelValue')).toBeTruthy()
@@ -126,7 +126,7 @@ describe('StudentGalleryPagination', () => {
       },
     })
 
-    const nextButton = wrapper.findAll('button').find(b => b.text().includes('下一页'))
+    const nextButton = wrapper.findAll('button').find((b) => b.text().includes('下一页'))
     await nextButton?.trigger('click')
 
     expect(wrapper.emitted('update:modelValue')).toBeTruthy()
@@ -144,9 +144,9 @@ describe('StudentGalleryPagination', () => {
     })
 
     // Should show page number buttons
-    const pageButtons = wrapper.findAll('button').filter(b => 
-      !b.text().includes('上一页') && !b.text().includes('下一页')
-    )
+    const pageButtons = wrapper
+      .findAll('button')
+      .filter((b) => !b.text().includes('上一页') && !b.text().includes('下一页'))
     expect(pageButtons.length).toBeGreaterThan(0)
   })
 
@@ -160,11 +160,11 @@ describe('StudentGalleryPagination', () => {
       },
     })
 
-    const pageButtons = wrapper.findAll('button').filter(b => 
-      !b.text().includes('上一页') && !b.text().includes('下一页')
-    )
-    
-    const currentButton = pageButtons.find(b => b.text() === '3')
+    const pageButtons = wrapper
+      .findAll('button')
+      .filter((b) => !b.text().includes('上一页') && !b.text().includes('下一页'))
+
+    const currentButton = pageButtons.find((b) => b.text() === '3')
     expect(currentButton?.classes()).toContain('bg-primary-500')
   })
 
@@ -178,11 +178,11 @@ describe('StudentGalleryPagination', () => {
       },
     })
 
-    const pageButtons = wrapper.findAll('button').filter(b => 
-      !b.text().includes('上一页') && !b.text().includes('下一页')
-    )
-    
-    const page3Button = pageButtons.find(b => b.text() === '3')
+    const pageButtons = wrapper
+      .findAll('button')
+      .filter((b) => !b.text().includes('上一页') && !b.text().includes('下一页'))
+
+    const page3Button = pageButtons.find((b) => b.text() === '3')
     await page3Button?.trigger('click')
 
     expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([3])
@@ -198,10 +198,10 @@ describe('StudentGalleryPagination', () => {
       },
     })
 
-    const pageButtons = wrapper.findAll('button').filter(b => 
-      !b.text().includes('上一页') && !b.text().includes('下一页')
-    )
-    
+    const pageButtons = wrapper
+      .findAll('button')
+      .filter((b) => !b.text().includes('上一页') && !b.text().includes('下一页'))
+
     // Should show max 5 page numbers
     expect(pageButtons.length).toBeLessThanOrEqual(5)
   })
@@ -216,7 +216,7 @@ describe('StudentGalleryPagination', () => {
       },
     })
 
-    const prevButton = wrapper.findAll('button').find(b => b.text().includes('上一页'))
+    const prevButton = wrapper.findAll('button').find((b) => b.text().includes('上一页'))
     await prevButton?.trigger('click')
 
     expect(wrapper.emitted('update:modelValue')).toBeFalsy()
@@ -232,7 +232,7 @@ describe('StudentGalleryPagination', () => {
       },
     })
 
-    const nextButton = wrapper.findAll('button').find(b => b.text().includes('下一页'))
+    const nextButton = wrapper.findAll('button').find((b) => b.text().includes('下一页'))
     await nextButton?.trigger('click')
 
     expect(wrapper.emitted('update:modelValue')).toBeFalsy()

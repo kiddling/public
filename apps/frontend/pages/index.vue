@@ -1,23 +1,23 @@
 <template>
   <div class="min-h-screen bg-white dark:bg-gray-900">
     <div class="container mx-auto px-4 py-16">
-      <div class="max-w-3xl mx-auto text-center">
-        <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+      <div class="mx-auto max-w-3xl text-center">
+        <h1 class="mb-4 text-4xl font-bold text-gray-900 dark:text-white">
           欢迎使用 Nuxt + Strapi
         </h1>
-        <p class="text-lg text-gray-600 dark:text-gray-300 mb-8">
+        <p class="mb-8 text-lg text-gray-600 dark:text-gray-300">
           一个现代化的全栈 Web 应用，使用 Nuxt 3 和 Strapi CMS 构建
         </p>
 
-        <div class="flex gap-4 justify-center mb-8">
+        <div class="mb-8 flex justify-center gap-4">
           <button
-            class="px-6 py-3 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
+            class="bg-primary-500 hover:bg-primary-600 rounded-lg px-6 py-3 text-white transition-colors"
             @click="exampleStore.increment"
           >
             点击计数: {{ exampleStore.count }}
           </button>
           <button
-            class="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+            class="rounded-lg bg-gray-200 px-6 py-3 text-gray-900 transition-colors hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
             @click="toggleDark"
           >
             切换主题
@@ -35,16 +35,22 @@
             <li>✅ 深色模式</li>
             <li>✅ Strapi CMS 集成</li>
           </ul>
-          
+
           <h2>页面</h2>
           <ul class="text-left">
             <li>
-              <NuxtLink to="/resources" class="text-primary-500 hover:text-primary-600 dark:text-primary-400 dark:hover:text-primary-300">
+              <NuxtLink
+                to="/resources"
+                class="text-primary-500 hover:text-primary-600 dark:text-primary-400 dark:hover:text-primary-300"
+              >
                 资源库 (Resources Hub)
               </NuxtLink>
             </li>
             <li>
-              <NuxtLink to="/knowledge-cards" class="text-primary-500 hover:text-primary-600 dark:text-primary-400 dark:hover:text-primary-300">
+              <NuxtLink
+                to="/knowledge-cards"
+                class="text-primary-500 hover:text-primary-600 dark:text-primary-400 dark:hover:text-primary-300"
+              >
                 知识卡片 (Knowledge Cards)
               </NuxtLink>
             </li>

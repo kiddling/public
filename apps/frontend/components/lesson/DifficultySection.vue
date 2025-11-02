@@ -21,12 +21,16 @@
       </span>
     </div>
 
-    <div v-if="blockContentHtml" class="prose max-w-none text-gray-700 dark:prose-invert" v-html="blockContentHtml"></div>
+    <div
+      v-if="blockContentHtml"
+      class="prose dark:prose-invert max-w-none text-gray-700"
+      v-html="blockContentHtml"
+    ></div>
 
     <div v-if="block.media.length" class="grid gap-6 md:grid-cols-2">
-      <figure 
-        v-for="media in block.media" 
-        :key="media.id ?? media.url" 
+      <figure
+        v-for="media in block.media"
+        :key="media.id ?? media.url"
         class="overflow-hidden rounded-xl border border-gray-100 bg-gray-50 shadow-sm dark:border-gray-800 dark:bg-gray-800/60"
       >
         <video
@@ -36,20 +40,28 @@
           class="h-64 w-full object-cover"
           :aria-label="media.alternativeText ?? media.caption ?? '视频 Video'"
         ></video>
-        <img
+        <NuxtImg
           v-else
           :src="media.url"
           :alt="media.alternativeText ?? media.caption ?? '图片 Image'"
           class="h-64 w-full object-cover"
           loading="lazy"
+          preset="gallery"
+          sizes="sm:640px md:400px lg:500px"
         />
-        <figcaption v-if="media.caption || media.alternativeText" class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300">
+        <figcaption
+          v-if="media.caption || media.alternativeText"
+          class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300"
+        >
           {{ media.caption ?? media.alternativeText }}
         </figcaption>
       </figure>
     </div>
 
-    <div v-if="block.attachments.length" class="rounded-xl border border-gray-100 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-800/40">
+    <div
+      v-if="block.attachments.length"
+      class="rounded-xl border border-gray-100 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-800/40"
+    >
       <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100">下载 Downloads</h3>
       <ul class="mt-3 space-y-2">
         <li v-for="attachment in block.attachments" :key="attachment.id">
@@ -57,7 +69,7 @@
             :href="attachment.url"
             target="_blank"
             rel="noopener"
-            class="inline-flex items-center gap-2 text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-300 dark:hover:text-primary-200"
+            class="text-primary-600 hover:text-primary-700 dark:text-primary-300 dark:hover:text-primary-200 inline-flex items-center gap-2 text-sm font-medium"
           >
             <Icon name="i-heroicons-arrow-down-tray" class="h-4 w-4" />
             {{ attachment.name }}
@@ -69,17 +81,22 @@
       </ul>
     </div>
 
-    <div v-if="block.prompts.length" class="rounded-xl border border-dashed border-primary-200 bg-primary-50 p-4 dark:border-primary-400/60 dark:bg-primary-500/10">
-      <h3 class="text-sm font-semibold text-primary-700 dark:text-primary-200">
+    <div
+      v-if="block.prompts.length"
+      class="border-primary-200 bg-primary-50 dark:border-primary-400/60 dark:bg-primary-500/10 rounded-xl border border-dashed p-4"
+    >
+      <h3 class="text-primary-700 dark:text-primary-200 text-sm font-semibold">
         拓展思考 Extended Thinking
       </h3>
       <ul class="mt-3 space-y-3">
         <li
           v-for="prompt in block.prompts"
           :key="prompt.id"
-          class="rounded-lg bg-white/80 p-3 text-sm text-gray-700 shadow-sm ring-1 ring-primary-100 backdrop-blur dark:bg-gray-900/70 dark:text-gray-200 dark:ring-primary-400/40"
+          class="ring-primary-100 dark:ring-primary-400/40 rounded-lg bg-white/80 p-3 text-sm text-gray-700 shadow-sm ring-1 backdrop-blur dark:bg-gray-900/70 dark:text-gray-200"
         >
-          <p class="font-medium text-gray-900 dark:text-gray-100">{{ prompt.title ?? 'Reflection' }}</p>
+          <p class="font-medium text-gray-900 dark:text-gray-100">
+            {{ prompt.title ?? 'Reflection' }}
+          </p>
           <p v-if="prompt.description" class="mt-1 text-sm text-gray-600 dark:text-gray-300">
             {{ prompt.description }}
           </p>

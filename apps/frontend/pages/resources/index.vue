@@ -58,7 +58,7 @@ const initializeFromQuery = () => {
 
 const updateQueryParams = useDebounceFn(() => {
   const query: Record<string, any> = {}
-  
+
   if (selectedCategory.value) {
     query.category = selectedCategory.value
   }
@@ -78,13 +78,16 @@ const updateQueryParams = useDebounceFn(() => {
   router.push({ query })
 }, 300)
 
-watch([selectedCategory, selectedDisciplines, selectedMediaTypes, accessibleOnly, searchQuery], () => {
-  updateQueryParams()
-})
+watch(
+  [selectedCategory, selectedDisciplines, selectedMediaTypes, accessibleOnly, searchQuery],
+  () => {
+    updateQueryParams()
+  }
+)
 
 const resourceFilters = computed(() => {
   const filters: any = {}
-  
+
   if (selectedCategory.value) {
     filters.category = selectedCategory.value
   }
@@ -109,7 +112,11 @@ const resourceFilters = computed(() => {
   return filters
 })
 
-const { data: resourcesData, pending, error } = useResources({
+const {
+  data: resourcesData,
+  pending,
+  error,
+} = useResources({
   ...resourceFilters.value,
   key: computed(() => `resources-${JSON.stringify(resourceFilters.value)}`),
 })
@@ -118,7 +125,7 @@ const getCachedData = () => {
   if (process.client) {
     const cached = localStorage.getItem(CACHE_KEY)
     const timestamp = localStorage.getItem(CACHE_TIMESTAMP_KEY)
-    
+
     if (cached && timestamp) {
       const age = Date.now() - parseInt(timestamp, 10)
       if (age < CACHE_TTL) {
@@ -159,18 +166,18 @@ const resources = computed(() => {
       updatedAt: item.attributes.updatedAt,
       publishedAt: item.attributes.publishedAt,
     }))
-    
+
     setCachedData(normalized)
     return normalized
   }
-  
+
   const cached = getCachedData()
   return cached || []
 })
 
 const resourcesByCategory = computed(() => {
   const grouped = new Map<ResourceCategory, Resource[]>()
-  
+
   allCategories.forEach((category) => {
     grouped.set(category, [])
   })
@@ -204,7 +211,7 @@ const exportResources = async (format: 'csv' | 'pdf') => {
 
   try {
     const query: Record<string, any> = { format }
-    
+
     if (selectedCategory.value) {
       query.category = selectedCategory.value
     }
@@ -223,7 +230,7 @@ const exportResources = async (format: 'csv' | 'pdf') => {
 
     const queryString = new URLSearchParams(query).toString()
     const url = `/api/resources/export?${queryString}`
-    
+
     window.open(url, '_blank')
   } catch (err) {
     exportError.value = err instanceof Error ? err.message : 'Export failed'
@@ -255,15 +262,13 @@ useHead({
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
     <div class="container mx-auto px-4 py-8">
       <header class="mb-8">
-        <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-          资源库
-        </h1>
+        <h1 class="mb-2 text-4xl font-bold text-gray-900 dark:text-white">资源库</h1>
         <p class="text-lg text-gray-600 dark:text-gray-400">
           浏览教学资源，包括视频教程、工具链接、案例数据库等
         </p>
       </header>
 
-      <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <div class="grid grid-cols-1 gap-8 lg:grid-cols-4">
         <aside class="lg:col-span-1">
           <ResourceFilterPanel
             :categories="allCategories"
@@ -276,27 +281,25 @@ useHead({
             @update:search="(value) => (searchQuery = value)"
           />
 
-          <div class="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              导出
-            </h3>
+          <div class="mt-6 rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">
+            <h3 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">导出</h3>
             <div class="space-y-3">
               <button
                 @click="exportResources('csv')"
                 :disabled="isExporting || resources.length === 0"
-                class="w-full px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded-lg transition-colors"
+                class="w-full rounded-lg bg-green-600 px-4 py-2 text-white transition-colors hover:bg-green-700 disabled:bg-gray-400"
               >
                 {{ isExporting ? '导出中...' : '导出为 CSV' }}
               </button>
               <button
                 @click="exportResources('pdf')"
                 :disabled="isExporting || resources.length === 0"
-                class="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white rounded-lg transition-colors"
+                class="w-full rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700 disabled:bg-gray-400"
               >
                 {{ isExporting ? '导出中...' : '导出为文本' }}
               </button>
             </div>
-            <p v-if="exportError" class="text-sm text-red-600 dark:text-red-400 mt-2">
+            <p v-if="exportError" class="mt-2 text-sm text-red-600 dark:text-red-400">
               {{ exportError }}
             </p>
           </div>
@@ -304,16 +307,20 @@ useHead({
 
         <main class="lg:col-span-3">
           <div v-if="pending" class="flex items-center justify-center py-12">
-            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
+            <div class="h-12 w-12 animate-spin rounded-full border-b-2 border-blue-600" />
           </div>
 
-          <div v-else-if="error" class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
-            <p class="text-red-800 dark:text-red-200">
-              加载资源时出错: {{ error.message }}
-            </p>
+          <div
+            v-else-if="error"
+            class="rounded-lg border border-red-200 bg-red-50 p-6 dark:border-red-800 dark:bg-red-900/20"
+          >
+            <p class="text-red-800 dark:text-red-200">加载资源时出错: {{ error.message }}</p>
           </div>
 
-          <div v-else-if="resources.length === 0" class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6">
+          <div
+            v-else-if="resources.length === 0"
+            class="rounded-lg border border-yellow-200 bg-yellow-50 p-6 dark:border-yellow-800 dark:bg-yellow-900/20"
+          >
             <p class="text-yellow-800 dark:text-yellow-200">
               未找到匹配的资源。请尝试调整筛选条件。
             </p>
