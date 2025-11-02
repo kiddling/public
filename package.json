@@ -50,7 +50,8 @@
     "docker:logs": "docker-compose logs -f",
     "docker:dev": "docker-compose -f docker-compose.dev.yml up -d",
     "bundle:check": "pnpm --filter frontend bundle:check",
-    "bundle:check:margin": "pnpm --filter frontend bundle:check:margin"
+    "bundle:check:margin": "pnpm --filter frontend bundle:check:margin",
+    "validate:env": "bash scripts/ops/validate-env.sh"
   },
   "dependencies": {
     "@nuxt/content": "^2.13.2",
