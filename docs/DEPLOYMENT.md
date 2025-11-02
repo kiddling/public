@@ -6,6 +6,8 @@
 > 
 > **✅ Production Readiness:** For comprehensive go-live checklist covering security, performance, backups, and compliance, see [PRODUCTION_CHECKLIST.md](./PRODUCTION_CHECKLIST.md)
 > 
+> **🇨🇳 China Deployment:** For complete production deployment guide covering Alibaba Cloud/Tencent Cloud, ICP filing, domain setup, SSL certificates, Nginx configuration, and deployment best practices for China, see [PRODUCTION_DEPLOYMENT_CN.md](./PRODUCTION_DEPLOYMENT_CN.md)
+> 
 > **🇨🇳 China Compliance:** For ICP filing, data residency, privacy protection, and regulatory requirements for operating in China, see [COMPLIANCE_CHECKLIST_CN.md](./COMPLIANCE_CHECKLIST_CN.md)
 
 ## 📋 目录
