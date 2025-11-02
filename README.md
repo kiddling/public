@@ -486,6 +486,7 @@ Visit `/downloads` to:
 ## 📚 Documentation
 
 ### Deployment
+- **[PRODUCTION_DEPLOYMENT_CN.md](./docs/PRODUCTION_DEPLOYMENT_CN.md)** - 🇨🇳 **Complete China production deployment guide** (Alibaba Cloud/Tencent Cloud, ICP filing, SSL, Nginx, Docker/PM2)
 - **[DEPLOYMENT_STRATEGY.md](./docs/DEPLOYMENT_STRATEGY.md)** - Blue/green deployment with zero-downtime
 - **[PRODUCTION_CHECKLIST.md](./docs/PRODUCTION_CHECKLIST.md)** - Production go-live readiness checklist (Chinese)
 - **[DEPLOYMENT_CHECKLIST.md](./docs/DEPLOYMENT_CHECKLIST.md)** - Deployment execution checklist
