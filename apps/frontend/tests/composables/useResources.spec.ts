@@ -109,10 +109,7 @@ describe('useResources composable', () => {
       const searchQuery = 'tutorial'
 
       const expectedFilters = {
-        $or: [
-          { title: { $containsi: 'tutorial' } },
-          { description: { $containsi: 'tutorial' } },
-        ],
+        $or: [{ title: { $containsi: 'tutorial' } }, { description: { $containsi: 'tutorial' } }],
       }
 
       expect(expectedFilters.$or).toHaveLength(2)

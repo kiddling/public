@@ -10,18 +10,25 @@
       >
         <div class="global-search-overlay" @click="close"></div>
         <section ref="panelRef" class="global-search-panel" tabindex="-1">
-          <header class="flex items-center justify-between gap-3 border-b border-gray-200 px-4 py-3 dark:border-gray-800">
+          <header
+            class="flex items-center justify-between gap-3 border-b border-gray-200 px-4 py-3 dark:border-gray-800"
+          >
             <div>
-              <p class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+              <p
+                class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400"
+              >
                 Global Search
               </p>
-              <h2 id="global-search-title" class="text-sm font-medium text-gray-900 dark:text-gray-100">
+              <h2
+                id="global-search-title"
+                class="text-sm font-medium text-gray-900 dark:text-gray-100"
+              >
                 Search across all content
               </h2>
             </div>
             <button
               type="button"
-              class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition hover:border-gray-300 hover:text-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-600 dark:hover:text-white dark:focus-visible:ring-offset-gray-900"
+              class="focus-visible:ring-primary-500 inline-flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition hover:border-gray-300 hover:text-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-600 dark:hover:text-white dark:focus-visible:ring-offset-gray-900"
               aria-label="Close search"
               @click="close"
             >
@@ -36,18 +43,25 @@
             </p>
           </div>
 
-          <div class="max-h-[60vh] overflow-y-auto border-t border-gray-200 px-2 pb-4 pt-2 dark:border-gray-800">
+          <div
+            class="max-h-[60vh] overflow-y-auto border-t border-gray-200 px-2 pb-4 pt-2 dark:border-gray-800"
+          >
             <!-- Loading State -->
             <div v-if="searchStore.isLoading" class="flex items-center justify-center py-12">
               <div class="flex flex-col items-center gap-3">
-                <div class="h-8 w-8 animate-spin rounded-full border-4 border-primary-200 border-t-primary-600"></div>
+                <div
+                  class="border-primary-200 border-t-primary-600 h-8 w-8 animate-spin rounded-full border-4"
+                ></div>
                 <p class="text-sm text-gray-500 dark:text-gray-400">Searching...</p>
               </div>
             </div>
 
             <!-- Error State -->
             <div v-else-if="searchStore.error" class="px-3 py-6 text-center">
-              <Icon name="i-heroicons-exclamation-triangle-20-solid" class="mx-auto h-12 w-12 text-red-500" />
+              <Icon
+                name="i-heroicons-exclamation-triangle-20-solid"
+                class="mx-auto h-12 w-12 text-red-500"
+              />
               <p class="mt-2 text-sm text-gray-900 dark:text-gray-100">Search Error</p>
               <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ searchStore.error }}</p>
             </div>
@@ -57,8 +71,13 @@
 
             <!-- Empty State -->
             <div v-else-if="searchStore.showEmptyState" class="px-3 py-12 text-center">
-              <Icon name="i-heroicons-magnifying-glass-20-solid" class="mx-auto h-12 w-12 text-gray-300 dark:text-gray-600" />
-              <p class="mt-3 text-sm font-medium text-gray-900 dark:text-gray-100">No results found</p>
+              <Icon
+                name="i-heroicons-magnifying-glass-20-solid"
+                class="mx-auto h-12 w-12 text-gray-300 dark:text-gray-600"
+              />
+              <p class="mt-3 text-sm font-medium text-gray-900 dark:text-gray-100">
+                No results found
+              </p>
               <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
                 Try adjusting your search terms
               </p>
@@ -92,9 +111,9 @@ const handleSelect = (result: any) => {
     title: result.title,
     url: result.url,
   })
-  
+
   close()
-  
+
   router.push(result.url).catch(() => {
     /* navigation failure ignored */
   })
@@ -111,13 +130,16 @@ const close = () => {
 }
 
 // Watch for open state changes
-watch(() => searchStore.isOpen, (isOpen) => {
-  if (isOpen) {
-    nextTick(() => {
-      panelRef.value?.focus()
-    })
+watch(
+  () => searchStore.isOpen,
+  (isOpen) => {
+    if (isOpen) {
+      nextTick(() => {
+        panelRef.value?.focus()
+      })
+    }
   }
-})
+)
 
 // Focus trap handler
 const handleFocus = (event: FocusEvent) => {

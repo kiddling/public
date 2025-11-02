@@ -8,4 +8,4 @@ export default ({ env }) => ({
     },
   },
   // TODO: Configure Aliyun/Tencent OSS provider for production
-});
+})

@@ -112,4 +112,72 @@ describe('useNavigationStore', () => {
     await store.loadStructure({ force: true })
     expect(fetchCourseNavigationMock).toHaveBeenCalledTimes(1)
   })
+
+  it('getLessonsByPart returns lessons for a specific part', async () => {
+    const store = useNavigationStore()
+    await store.loadStructure({ data: mockNavigationResponse })
+
+    const foundationLessons = store.getLessonsByPart('foundation')
+    expect(foundationLessons.length).toBeGreaterThan(0)
+    expect(foundationLessons.every((lesson) => lesson.part === 'foundation')).toBe(true)
+
+    const coreBlocksLessons = store.getLessonsByPart('core-blocks')
+    expect(coreBlocksLessons.length).toBeGreaterThan(0)
+    expect(coreBlocksLessons.every((lesson) => lesson.part === 'core-blocks')).toBe(true)
+  })
+
+  it('handles empty lesson codes in setCurrentLesson', async () => {
+    const store = useNavigationStore()
+    await store.loadStructure({ data: mockNavigationResponse })
+
+    store.setCurrentLesson('P-00')
+    expect(store.currentLesson).not.toBeNull()
+
+    store.setCurrentLesson('')
+    expect(store.currentLesson).toBeNull()
+
+    store.setCurrentLesson('P-00')
+    store.setCurrentLesson('   ')
+    expect(store.currentLesson).toBeNull()
+  })
+
+  it('tracks loading state during structure load', async () => {
+    const store = useNavigationStore()
+    expect(store.isLoading).toBe(false)
+
+    const loadPromise = store.loadStructure({ data: mockNavigationResponse })
+    // Note: depending on timing, isLoading might be true or already false
+    await loadPromise
+
+    expect(store.isLoading).toBe(false)
+    expect(store.lastLoadedAt).not.toBeNull()
+  })
+
+  it('refreshes current lesson when reloading structure', async () => {
+    const store = useNavigationStore()
+    await store.loadStructure({ data: mockNavigationResponse })
+
+    store.setCurrentLesson('P-00')
+    const originalLesson = store.currentLesson
+
+    await store.loadStructure({ force: true, data: mockNavigationResponse })
+
+    expect(store.currentLesson?.code).toBe(originalLesson?.code)
+    expect(store.activePart).toBe(originalLesson?.part)
+  })
+
+  it('getLessonByCode handles case-insensitive lookups', async () => {
+    const store = useNavigationStore()
+    await store.loadStructure({ data: mockNavigationResponse })
+
+    const upperCase = store.getLessonByCode('P-00')
+    const lowerCase = store.getLessonByCode('p-00')
+    const mixedCase = store.getLessonByCode('P-00')
+
+    expect(upperCase).toBeDefined()
+    expect(lowerCase).toBeDefined()
+    expect(mixedCase).toBeDefined()
+    expect(upperCase?.code).toBe(lowerCase?.code)
+    expect(upperCase?.code).toBe(mixedCase?.code)
+  })
 })

@@ -25,10 +25,7 @@ describe('Downloads API', () => {
     it('should build URL with search filters', () => {
       const url = buildStrapiUrl(baseUrl, endpoint, {
         filters: {
-          $or: [
-            { title: { $containsi: 'design' } },
-            { description: { $containsi: 'design' } },
-          ],
+          $or: [{ title: { $containsi: 'design' } }, { description: { $containsi: 'design' } }],
         },
       })
 
@@ -129,7 +126,7 @@ describe('Downloads API', () => {
 
     it('should limit batch size validation', () => {
       const itemIds = Array.from({ length: 51 }, (_, i) => i + 1)
-      
+
       expect(itemIds.length).toBeGreaterThan(50)
     })
   })
@@ -160,12 +157,7 @@ describe('Downloads API', () => {
     })
 
     it('should validate MIME type format', () => {
-      const validMimeTypes = [
-        'application/pdf',
-        'image/png',
-        'text/plain',
-        'application/zip',
-      ]
+      const validMimeTypes = ['application/pdf', 'image/png', 'text/plain', 'application/zip']
 
       validMimeTypes.forEach((mimeType) => {
         expect(mimeType).toMatch(/^[a-z]+\/[a-z0-9\-\+\.]+$/i)

@@ -37,7 +37,7 @@ interface StrapiResponse {
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
-  
+
   const page = Number(query.page) || 1
   const pageSize = Number(query.pageSize) || 25
   const category = query.category as string | undefined
@@ -69,10 +69,7 @@ export default defineEventHandler(async (event) => {
   }
 
   if (search) {
-    filters.$or = [
-      { title: { $containsi: search } },
-      { description: { $containsi: search } },
-    ]
+    filters.$or = [{ title: { $containsi: search } }, { description: { $containsi: search } }]
   }
 
   if (lessonId) {
@@ -86,10 +83,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const response = await fetchFromStrapi<StrapiResponse>(
-      '/api/download-items',
-      strapiOptions,
-    )
+    const response = await fetchFromStrapi<StrapiResponse>('/api/download-items', strapiOptions)
 
     return {
       data: response.data,

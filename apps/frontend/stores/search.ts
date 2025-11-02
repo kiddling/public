@@ -54,7 +54,7 @@ export const useSearchStore = defineStore('search', () => {
   const isOpen = ref(false)
   const searchHistory = ref<SearchHistoryItem[]>([])
   const recentVisits = ref<RecentVisit[]>([])
-  
+
   // Debounce timer
   let debounceTimer: ReturnType<typeof setTimeout> | null = null
   const DEBOUNCE_DELAY = 300
@@ -136,7 +136,7 @@ export const useSearchStore = defineStore('search', () => {
   const addToRecentVisits = (item: Omit<RecentVisit, 'timestamp'>) => {
     // Remove existing entry if present
     recentVisits.value = recentVisits.value.filter(
-      (visit) => !(visit.id === item.id && visit.type === item.type),
+      (visit) => !(visit.id === item.id && visit.type === item.type)
     )
 
     // Add to beginning
@@ -166,12 +166,15 @@ export const useSearchStore = defineStore('search', () => {
   }
 
   // Perform search with debouncing
-  const search = async (searchQuery: string, options: {
-    type?: string[]
-    difficulty?: string[]
-    page?: number
-    pageSize?: number
-  } = {}) => {
+  const search = async (
+    searchQuery: string,
+    options: {
+      type?: string[]
+      difficulty?: string[]
+      page?: number
+      pageSize?: number
+    } = {}
+  ) => {
     // Clear existing timer
     if (debounceTimer) {
       clearTimeout(debounceTimer)
@@ -218,7 +221,7 @@ export const useSearchStore = defineStore('search', () => {
           }
 
           const response = await $fetch<SearchResponse>(`/api/search/global?${params.toString()}`)
-          
+
           results.value = response
           addToHistory(searchQuery)
           clearTimeout(loadingTimer)
@@ -262,7 +265,9 @@ export const useSearchStore = defineStore('search', () => {
   const hasResults = computed(() => results.value && results.value.results.length > 0)
   const hasHistory = computed(() => searchHistory.value.length > 0)
   const hasRecentVisits = computed(() => recentVisits.value.length > 0)
-  const showEmptyState = computed(() => query.value.trim().length >= 2 && !isLoading.value && !hasResults.value)
+  const showEmptyState = computed(
+    () => query.value.trim().length >= 2 && !isLoading.value && !hasResults.value
+  )
 
   return {
     // State

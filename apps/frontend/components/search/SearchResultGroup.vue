@@ -2,7 +2,9 @@
   <div class="px-2">
     <div class="mb-2 flex items-center gap-2 px-2">
       <Icon :name="icon" class="h-4 w-4 text-gray-500 dark:text-gray-400" />
-      <h3 class="text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+      <h3
+        class="text-[11px] font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400"
+      >
         {{ title }} ({{ results.length }})
       </h3>
     </div>

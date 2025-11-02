@@ -88,7 +88,7 @@ export function useDownloads(initialFilters: DownloadFilters = {}) {
 
     try {
       const params = new URLSearchParams()
-      
+
       if (filters.value.page) {
         params.append('page', String(filters.value.page))
       }
@@ -106,7 +106,7 @@ export function useDownloads(initialFilters: DownloadFilters = {}) {
       }
 
       const response = await $fetch<{ data: DownloadItem[]; meta: DownloadMeta }>(
-        `/api/downloads?${params.toString()}`,
+        `/api/downloads?${params.toString()}`
       )
 
       items.value = response.data
@@ -144,7 +144,7 @@ export function useDownloads(initialFilters: DownloadFilters = {}) {
 export function useDownloadHistory() {
   const getHistory = (): DownloadHistory[] => {
     if (typeof window === 'undefined') return []
-    
+
     try {
       const stored = localStorage.getItem(HISTORY_STORAGE_KEY)
       return stored ? JSON.parse(stored) : []
@@ -157,16 +157,16 @@ export function useDownloadHistory() {
     if (typeof window === 'undefined') return
 
     const history = getHistory()
-    
+
     const newEntry: DownloadHistory = {
       ...item,
       downloadedAt: new Date().toISOString(),
     }
 
-    const updatedHistory = [
-      newEntry,
-      ...history.filter((h) => h.itemId !== item.itemId),
-    ].slice(0, MAX_HISTORY_ITEMS)
+    const updatedHistory = [newEntry, ...history.filter((h) => h.itemId !== item.itemId)].slice(
+      0,
+      MAX_HISTORY_ITEMS
+    )
 
     try {
       localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(updatedHistory))
@@ -177,7 +177,7 @@ export function useDownloadHistory() {
 
   const clearHistory = () => {
     if (typeof window === 'undefined') return
-    
+
     try {
       localStorage.removeItem(HISTORY_STORAGE_KEY)
     } catch (e) {
@@ -202,7 +202,7 @@ export async function verifyChecksum(file: File, expectedChecksum: string): Prom
     const hashBuffer = await window.crypto.subtle.digest('SHA-256', buffer)
     const hashArray = Array.from(new Uint8Array(hashBuffer))
     const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('')
-    
+
     return hashHex === expectedChecksum
   } catch (e) {
     console.error('Checksum verification failed:', e)
@@ -212,10 +212,10 @@ export async function verifyChecksum(file: File, expectedChecksum: string): Prom
 
 export function formatFileSize(bytes: number): string {
   if (bytes === 0) return '0 B'
-  
+
   const k = 1024
   const sizes = ['B', 'KB', 'MB', 'GB']
   const i = Math.floor(Math.log(bytes) / Math.log(k))
-  
+
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`
 }

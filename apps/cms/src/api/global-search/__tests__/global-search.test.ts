@@ -105,7 +105,8 @@ describe('Global Search Service', () => {
     })
 
     it('should add ellipsis for truncated text', () => {
-      const text = 'A very long text that needs to be truncated because it exceeds the maximum length'
+      const text =
+        'A very long text that needs to be truncated because it exceeds the maximum length'
       const excerpt = service.createExcerpt(text, 'truncated', 50)
       expect(excerpt).toMatch(/\.{3}/)
     })
@@ -201,10 +202,21 @@ describe('Global Search Service', () => {
     it('should generate suggestions', async () => {
       mockStrapi.entityService.findMany.mockResolvedValue([
         { id: 1, title: 'Design Thinking', code: 'L001', summary: 'Test', publishedAt: new Date() },
-        { id: 2, title: 'Design Principles', code: 'L002', summary: 'Test', publishedAt: new Date() },
+        {
+          id: 2,
+          title: 'Design Principles',
+          code: 'L002',
+          summary: 'Test',
+          publishedAt: new Date(),
+        },
       ])
 
-      const result = await service.search({ query: 'Design', type: ['lesson'], page: 1, pageSize: 20 })
+      const result = await service.search({
+        query: 'Design',
+        type: ['lesson'],
+        page: 1,
+        pageSize: 20,
+      })
       expect(result.suggestions).toBeInstanceOf(Array)
     })
   })

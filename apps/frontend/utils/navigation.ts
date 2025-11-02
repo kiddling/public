@@ -58,7 +58,7 @@ export function normalizePartType(raw?: string | null): NavigationPartType {
 }
 
 export function transformNavigationData(
-  response: StrapiNavigationResponse | null | undefined,
+  response: StrapiNavigationResponse | null | undefined
 ): NavigationData {
   if (!response?.data?.length) {
     return {
@@ -98,7 +98,7 @@ export function transformNavigationData(
       partTitle,
       partDescription,
       partColor,
-      partOrder,
+      partOrder
     )
 
     const loopData = attributes.loop?.data ?? null
@@ -159,7 +159,7 @@ export function transformNavigationData(
   }
 
   const sortedLessons = [...lessons].sort((a, b) =>
-    compareSortKeys(lessonSortKeys.get(a.code), lessonSortKeys.get(b.code)),
+    compareSortKeys(lessonSortKeys.get(a.code), lessonSortKeys.get(b.code))
   )
 
   const byPart: NavigationLookupMaps['byPart'] = {
@@ -228,7 +228,7 @@ export function transformNavigationData(
 
 function resolvePartType(
   attributes: StrapiNavigationLessonAttributes,
-  partAttributes: StrapiNavigationPartAttributes | null,
+  partAttributes: StrapiNavigationPartAttributes | null
 ): NavigationPartType {
   const candidates = [partAttributes?.key, attributes.partKey, attributes.partTitle]
 
@@ -249,7 +249,7 @@ function resolvePartType(
 function resolvePartTitle(
   partType: NavigationPartType,
   attributes: StrapiNavigationLessonAttributes,
-  partAttributes: StrapiNavigationPartAttributes | null,
+  partAttributes: StrapiNavigationPartAttributes | null
 ): string {
   return (
     partAttributes?.title ??
@@ -262,7 +262,7 @@ function resolvePartTitle(
 function resolvePartColor(
   partType: NavigationPartType,
   attributes: StrapiNavigationLessonAttributes,
-  partAttributes: StrapiNavigationPartAttributes | null,
+  partAttributes: StrapiNavigationPartAttributes | null
 ): string {
   return (
     partAttributes?.color ??
@@ -275,35 +275,35 @@ function resolvePartColor(
 function resolvePartOrder(
   partType: NavigationPartType,
   attributes: StrapiNavigationLessonAttributes,
-  partAttributes: StrapiNavigationPartAttributes | null,
+  partAttributes: StrapiNavigationPartAttributes | null
 ): number {
   return getOrderValue(partAttributes?.order, attributes.partOrder, NAVIGATION_PART_ORDER[partType])
 }
 
 function resolveLoopTitle(
   attributes: StrapiNavigationLessonAttributes,
-  loopAttributes: StrapiNavigationLoopAttributes | null,
+  loopAttributes: StrapiNavigationLoopAttributes | null
 ): string | null {
   return loopAttributes?.title ?? attributes.loopTitle ?? null
 }
 
 function resolveLoopCode(
   attributes: StrapiNavigationLessonAttributes,
-  loopAttributes: StrapiNavigationLoopAttributes | null,
+  loopAttributes: StrapiNavigationLoopAttributes | null
 ): string | null {
   return loopAttributes?.code ?? attributes.loopCode ?? null
 }
 
 function resolveLoopDescription(
   attributes: StrapiNavigationLessonAttributes,
-  loopAttributes: StrapiNavigationLoopAttributes | null,
+  loopAttributes: StrapiNavigationLoopAttributes | null
 ): string | null {
   return loopAttributes?.description ?? attributes.loopDescription ?? null
 }
 
 function resolveLoopOrder(
   attributes: StrapiNavigationLessonAttributes,
-  loopAttributes: StrapiNavigationLoopAttributes | null,
+  loopAttributes: StrapiNavigationLoopAttributes | null
 ): number {
   return getOrderValue(loopAttributes?.order, attributes.loopOrder)
 }
@@ -319,7 +319,7 @@ function ensurePartContext(
   title: string,
   description: string | null,
   color: string,
-  order: number,
+  order: number
 ): PartContext {
   const existing = map.get(partId)
 
@@ -363,7 +363,7 @@ function ensureLoop(
   code: string | null,
   title: string | null,
   description: string | null,
-  order: number,
+  order: number
 ): NavigationLoop {
   const existing = context.loops.get(loopId)
 
@@ -394,7 +394,7 @@ function ensureLoop(
 function buildBreadcrumb(
   lesson: NavigationLesson,
   part: NavigationPart | undefined,
-  loop: NavigationLoop | undefined,
+  loop: NavigationLoop | undefined
 ): NavigationBreadcrumbItem[] {
   const breadcrumb: NavigationBreadcrumbItem[] = []
 
@@ -475,7 +475,7 @@ function deriveLoopId(
   partId: string,
   loopData: StrapiCollectionItem<StrapiNavigationLoopAttributes> | null,
   loopCode: string | null,
-  loopTitle: string | null,
+  loopTitle: string | null
 ): string | null {
   if (loopData?.id) {
     return String(loopData.id)

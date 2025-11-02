@@ -1,13 +1,73 @@
-.git
-.cache
-.tmp
-.strapi
-build
+# Dependencies
 node_modules
-.env
-.env.local
-*.log
+.pnpm-store
+
+# Build artifacts
+.tmp
+.cache
+build
 dist
-.output
+
+# Git
+.git
+.gitignore
+.github
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+logs
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Testing
 coverage
+*.test.js
+*.spec.js
+*.test.ts
+*.spec.ts
+__tests__
+__mocks__
+jest.config.js
+.jest
+
+# SQLite development databases
+*.db
+*.sqlite
+*.sqlite3
+*.db-shm
+*.db-wal
+database/*.sqlite*
+
+# Documentation
+*.md
+README.md
+CHANGELOG.md
+!docs
+
+# System files
 .DS_Store
+Thumbs.db
+
+# Data directories
+data
+exports
+uploads
+backups
+
+# Docker
+Dockerfile
+docker-compose*.yml
+.dockerignore

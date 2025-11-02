@@ -11,6 +11,7 @@ The `/lessons/[code]` page has been refactored to provide a rich, interactive le
 ### 1. CMS Schema Updates
 
 #### Loop Collection Type
+
 - **Location**: `/apps/cms/src/api/loop/content-types/loop/schema.json`
 - **Fields**:
   - `title` (string, localized) - Loop name
@@ -20,6 +21,7 @@ The `/lessons/[code]` page has been refactored to provide a rich, interactive le
   - `lessons` (relation) - OneToMany relation to lessons
 
 #### Enhanced Difficulty Block Component
+
 - **Location**: `/apps/cms/src/components/lesson/difficulty-block.json`
 - **New Fields**:
   - `summary` (text, localized) - Brief description of the difficulty level
@@ -28,12 +30,14 @@ The `/lessons/[code]` page has been refactored to provide a rich, interactive le
   - `prompts` (component, repeatable) - Extended thinking questions
 
 #### Prompt Component
+
 - **Location**: `/apps/cms/src/components/lesson/prompt.json`
 - **Fields**:
   - `title` (string, localized) - Prompt heading
   - `description` (text, localized) - Prompt body
 
 #### Lesson Schema Update
+
 - **Location**: `/apps/cms/src/api/lesson/content-types/lesson/schema.json`
 - **Changes**:
   - Added `loop` relation (manyToOne to Loop)
@@ -41,6 +45,7 @@ The `/lessons/[code]` page has been refactored to provide a rich, interactive le
   - Updated `difficulty_specific_fields` to use enhanced difficulty-block component
 
 #### Data Migration
+
 - **Location**: `/database/migrations/001-migrate-loop-references.js`
 - **Purpose**: Migrates existing `loop_reference` strings to Loop collection entries
 - **Usage**: `STRAPI_URL=http://localhost:1337 STRAPI_TOKEN=<token> node database/migrations/001-migrate-loop-references.js`
@@ -48,6 +53,7 @@ The `/lessons/[code]` page has been refactored to provide a rich, interactive le
 ### 2. Frontend Data Layer
 
 #### Lesson Normalizer
+
 - **Location**: `/apps/frontend/utils/lesson-normalizer.ts`
 - **Purpose**: Converts raw Strapi lesson data to normalized Lesson DTOs
 - **Features**:
@@ -58,18 +64,21 @@ The `/lessons/[code]` page has been refactored to provide a rich, interactive le
   - Supports markdown rendering in content
 
 #### Refactored useLesson Composable
+
 - **Location**: `/apps/frontend/composables/useLessons.ts`
 - **Changes**:
   - Uses `normalizeLesson` utility for data transformation
   - Returns both raw data and normalized lesson DTO
   - Automatically resolves asset base URLs
 - **Usage**:
+
 ```typescript
 const { lesson, pending, error, refresh } = useLesson(code)
 // lesson.value is a fully normalized Lesson object
 ```
 
 #### Markdown Support
+
 - **Location**: `/apps/frontend/composables/useMarkdown.ts`
 - **Features**:
   - SSR-safe markdown rendering using markdown-it
@@ -80,6 +89,7 @@ const { lesson, pending, error, refresh } = useLesson(code)
 ### 3. Server Utilities
 
 #### Local QR Code Generation
+
 - **Location**: `/apps/frontend/server/utils/qr.ts`
 - **Purpose**: Generate QR codes as data URIs without external API calls
 - **Functions**:
@@ -88,9 +98,11 @@ const { lesson, pending, error, refresh } = useLesson(code)
 - **Options**: width, margin, errorCorrectionLevel
 
 #### QR Code API Endpoint
+
 - **Location**: `/apps/frontend/server/api/qr.get.ts`
 - **Endpoint**: `GET /api/qr?data=<url>&size=<width>`
 - **Response**:
+
 ```json
 {
   "dataURI": "data:image/png;base64,...",
@@ -102,6 +114,7 @@ const { lesson, pending, error, refresh } = useLesson(code)
 ### 4. Component Refactoring
 
 #### LessonHeader Component
+
 - **Location**: `/apps/frontend/components/lesson/Header.vue`
 - **Features**:
   - Lesson metadata display (code, title, summary)
@@ -113,6 +126,7 @@ const { lesson, pending, error, refresh } = useLesson(code)
   - Bilingual Chinese/English labels
 
 #### LessonDifficultySection Component
+
 - **Location**: `/apps/frontend/components/lesson/DifficultySection.vue`
 - **Features**:
   - Renders content for one difficulty level
@@ -123,6 +137,7 @@ const { lesson, pending, error, refresh } = useLesson(code)
   - Bilingual labels
 
 #### LessonSidebar Component
+
 - **Location**: `/apps/frontend/components/lesson/Sidebar.vue`
 - **Features**:
   - Progress tracker widget
@@ -132,6 +147,7 @@ const { lesson, pending, error, refresh } = useLesson(code)
   - Bilingual labels
 
 #### Enhanced DifficultyToggle Component
+
 - **Location**: `/apps/frontend/components/lesson/DifficultyToggle.vue`
 - **Updates**:
   - Chinese/English bilingual tooltips
@@ -140,6 +156,7 @@ const { lesson, pending, error, refresh } = useLesson(code)
 ### 5. Page Experience
 
 #### Refactored Lesson Detail Page
+
 - **Location**: `/apps/frontend/pages/lessons/[code].vue`
 - **Key Changes**:
   - Uses `useLesson` composable (eliminates ad-hoc $fetch)
@@ -151,6 +168,7 @@ const { lesson, pending, error, refresh } = useLesson(code)
   - SEO-friendly with dynamic meta tags
 
 #### Auto-Complete Feature
+
 - **Implementation**: `useIntersectionObserver` on sentinel element at page bottom
 - **Behavior**:
   - Automatically marks lesson as complete when scrolled to bottom
@@ -159,6 +177,7 @@ const { lesson, pending, error, refresh } = useLesson(code)
   - Threshold: 1.0 (fully visible)
 
 #### Print Layout
+
 - **CSS**: Scoped print media queries
 - **Features**:
   - Hides interactive controls (.no-print class)
@@ -170,6 +189,7 @@ const { lesson, pending, error, refresh } = useLesson(code)
 ### 6. Accessibility & Performance
 
 #### Media Tags
+
 - All images have `alt` attributes (localized Chinese/English)
 - Lazy loading enabled for all images and QR codes
 - Responsive containers with object-cover
@@ -177,6 +197,7 @@ const { lesson, pending, error, refresh } = useLesson(code)
 - ARIA labels for media elements
 
 #### Keyboard Navigation
+
 - Focusable difficulty toggle buttons
 - Proper button roles and aria-pressed states
 - Focus ring styling (focus-visible)
@@ -185,6 +206,7 @@ const { lesson, pending, error, refresh } = useLesson(code)
 ### 7. Testing
 
 #### Unit Tests
+
 - **Lesson Normalizer** (`/tests/lesson-normalizer.spec.ts`):
   - Base/Advance/Stretch permutations
   - Missing difficulty blocks
@@ -244,6 +266,7 @@ const { lesson, pending, error, refresh } = useLesson(code)
 ### For Frontend Developers
 
 1. **Using the Lesson Composable**:
+
 ```typescript
 import { useLesson } from '~/composables/useLessons'
 
@@ -253,6 +276,7 @@ const { lesson, pending, error, refresh } = useLesson('L1')
 ```
 
 2. **Rendering Markdown**:
+
 ```typescript
 import { useMarkdown } from '~/composables/useMarkdown'
 
@@ -261,6 +285,7 @@ const html = useMarkdown('# Hello **World**')
 ```
 
 3. **Generating QR Codes**:
+
 ```vue
 <img :src="`/api/qr?data=${encodeURIComponent(url)}&size=200`" alt="QR code" />
 ```
@@ -284,6 +309,7 @@ const html = useMarkdown('# Hello **World**')
 ## Files Created/Modified
 
 ### Created:
+
 - `/apps/cms/src/api/loop/content-types/loop/schema.json`
 - `/apps/cms/src/components/lesson/prompt.json`
 - `/database/migrations/001-migrate-loop-references.js`
@@ -299,6 +325,7 @@ const html = useMarkdown('# Hello **World**')
 - `/apps/frontend/tests/server/qr.spec.ts`
 
 ### Modified:
+
 - `/apps/cms/src/components/lesson/difficulty-block.json`
 - `/apps/cms/src/api/lesson/content-types/lesson/schema.json`
 - `/apps/frontend/composables/useLessons.ts`

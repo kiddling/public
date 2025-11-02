@@ -18,7 +18,7 @@ describe('QR Code Server Utility', () => {
 
       expect(smallQR).toMatch(/^data:image\/png;base64,/)
       expect(largeQR).toMatch(/^data:image\/png;base64,/)
-      
+
       // Larger QR codes should have more data
       expect(largeQR.length).toBeGreaterThan(smallQR.length)
     })
@@ -46,7 +46,7 @@ describe('QR Code Server Utility', () => {
 
       expect(lowEC).toMatch(/^data:image\/png;base64,/)
       expect(highEC).toMatch(/^data:image\/png;base64,/)
-      
+
       // Both should generate valid QR codes
       expect(lowEC.length).toBeGreaterThan(100)
       expect(highEC.length).toBeGreaterThan(100)
@@ -69,7 +69,7 @@ describe('QR Code Server Utility', () => {
 
       expect(smallBuffer).toBeInstanceOf(Buffer)
       expect(largeBuffer).toBeInstanceOf(Buffer)
-      
+
       // Larger QR codes should have more data
       expect(largeBuffer.length).toBeGreaterThan(smallBuffer.length)
     })

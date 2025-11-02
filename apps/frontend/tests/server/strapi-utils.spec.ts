@@ -179,10 +179,7 @@ describe('Strapi Server Utils', () => {
     it('should handle OR filters', () => {
       const url = buildStrapiUrl(baseUrl, endpoint, {
         filters: {
-          $or: [
-            { title: { $containsi: 'design' } },
-            { summary: { $containsi: 'design' } },
-          ],
+          $or: [{ title: { $containsi: 'design' } }, { summary: { $containsi: 'design' } }],
         },
       })
 
@@ -193,10 +190,7 @@ describe('Strapi Server Utils', () => {
     it('should handle AND filters', () => {
       const url = buildStrapiUrl(baseUrl, endpoint, {
         filters: {
-          $and: [
-            { partKey: { $eq: 'foundation' } },
-            { order: { $lte: 10 } },
-          ],
+          $and: [{ partKey: { $eq: 'foundation' } }, { order: { $lte: 10 } }],
         },
       })
 

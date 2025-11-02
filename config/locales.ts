@@ -3,4 +3,4 @@ export default {
     defaultLocale: 'zh-Hans',
     locales: ['zh-Hans', 'en'],
   },
-};
+}

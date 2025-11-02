@@ -3,12 +3,8 @@
     <div class="container mx-auto px-4 py-8">
       <!-- Page Header -->
       <div class="mb-8">
-        <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-          学生作品展示
-        </h1>
-        <p class="text-lg text-gray-600 dark:text-gray-300">
-          浏览学生优秀作品，探索创意与灵感
-        </p>
+        <h1 class="mb-2 text-4xl font-bold text-gray-900 dark:text-white">学生作品展示</h1>
+        <p class="text-lg text-gray-600 dark:text-gray-300">浏览学生优秀作品，探索创意与灵感</p>
       </div>
 
       <!-- Filter Controls -->
@@ -27,43 +23,34 @@
       </div>
 
       <!-- Error State -->
-      <div v-else-if="error" class="text-center py-16">
-        <div class="text-red-500 mb-4">
+      <div v-else-if="error" class="py-16 text-center">
+        <div class="mb-4 text-red-500">
           <Icon name="mdi:alert-circle" class="text-6xl" />
         </div>
-        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-          加载失败
-        </h3>
-        <p class="text-gray-600 dark:text-gray-400 mb-4">
+        <h3 class="mb-2 text-xl font-semibold text-gray-900 dark:text-white">加载失败</h3>
+        <p class="mb-4 text-gray-600 dark:text-gray-400">
           {{ error.message }}
         </p>
         <button
           @click="refresh"
-          class="px-6 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
+          class="bg-primary-500 hover:bg-primary-600 rounded-lg px-6 py-2 text-white transition-colors"
         >
           重试
         </button>
       </div>
 
       <!-- Empty State -->
-      <div v-else-if="!works || works.length === 0" class="text-center py-16">
-        <div class="text-gray-400 dark:text-gray-600 mb-4">
+      <div v-else-if="!works || works.length === 0" class="py-16 text-center">
+        <div class="mb-4 text-gray-400 dark:text-gray-600">
           <Icon name="mdi:image-search" class="text-6xl" />
         </div>
-        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-          暂无作品
-        </h3>
-        <p class="text-gray-600 dark:text-gray-400">
-          尝试调整筛选条件以查看更多作品
-        </p>
+        <h3 class="mb-2 text-xl font-semibold text-gray-900 dark:text-white">暂无作品</h3>
+        <p class="text-gray-600 dark:text-gray-400">尝试调整筛选条件以查看更多作品</p>
       </div>
 
       <!-- Gallery Grid -->
       <div v-else>
-        <StudentGalleryGrid
-          :works="works"
-          @open="openLightbox"
-        />
+        <StudentGalleryGrid :works="works" @open="openLightbox" />
 
         <!-- Pagination -->
         <div v-if="meta?.pagination && meta.pagination.pageCount > 1" class="mt-8">
@@ -76,8 +63,8 @@
         </div>
       </div>
 
-      <!-- Lightbox Modal -->
-      <StudentGalleryLightbox
+      <!-- Lightbox Modal - Lazy loaded for better performance -->
+      <LazyStudentGalleryLightbox
         v-if="lightboxOpen"
         :works="works"
         :initial-index="lightboxIndex"
@@ -99,10 +86,10 @@ const route = useRoute()
 const router = useRouter()
 
 // Filter states
-const search = ref(route.query.search as string || '')
-const discipline = ref(route.query.discipline as StudentWorkDiscipline || undefined)
-const loop = ref(route.query.loop as StudentWorkLoop || undefined)
-const grade = ref(route.query.grade as string || undefined)
+const search = ref((route.query.search as string) || '')
+const discipline = ref((route.query.discipline as StudentWorkDiscipline) || undefined)
+const loop = ref((route.query.loop as StudentWorkLoop) || undefined)
+const grade = ref((route.query.grade as string) || undefined)
 const page = ref(Number(route.query.page) || 1)
 const pageSize = ref(24)
 
@@ -113,26 +100,26 @@ const lightboxIndex = ref(0)
 // Build filters for API
 const filters = computed(() => {
   const f: any = {}
-  
+
   if (search.value) {
     f.$or = [
       { studentName: { $containsi: search.value } },
       { description: { $containsi: search.value } },
     ]
   }
-  
+
   if (discipline.value) {
     f.discipline = { $eq: discipline.value }
   }
-  
+
   if (loop.value) {
     f.loop = { $eq: loop.value }
   }
-  
+
   if (grade.value) {
     f.grade = { $eq: grade.value }
   }
-  
+
   return Object.keys(f).length > 0 ? f : undefined
 })
 
@@ -154,13 +141,13 @@ const meta = computed(() => data.value?.meta)
 // Watch filters and update URL
 watch([search, discipline, loop, grade, page], () => {
   const query: any = {}
-  
+
   if (search.value) query.search = search.value
   if (discipline.value) query.discipline = discipline.value
   if (loop.value) query.loop = loop.value
   if (grade.value) query.grade = grade.value
   if (page.value > 1) query.page = page.value
-  
+
   router.push({ query })
 })
 
@@ -183,7 +170,7 @@ if (workId && works.value.length > 0) {
 function openLightbox(index: number) {
   lightboxIndex.value = index
   lightboxOpen.value = true
-  
+
   // Update URL with work ID
   const work = works.value[index]
   if (work) {
@@ -198,7 +185,7 @@ function openLightbox(index: number) {
 
 function closeLightbox() {
   lightboxOpen.value = false
-  
+
   // Remove work ID from URL
   const query = { ...route.query }
   delete query.work

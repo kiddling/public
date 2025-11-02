@@ -110,7 +110,9 @@ describe('normalizeLesson', () => {
     const result = normalizeLesson(rawLesson, 'L3', assetBase)
 
     expect(result.difficultyBlocks.base?.media).toHaveLength(1)
-    expect(result.difficultyBlocks.base?.media[0].url).toBe('https://cdn.example.com/uploads/image.png')
+    expect(result.difficultyBlocks.base?.media[0].url).toBe(
+      'https://cdn.example.com/uploads/image.png'
+    )
     expect(result.difficultyBlocks.base?.media[0].alternativeText).toBe('Test image')
     expect(result.difficultyBlocks.base?.media[0].caption).toBe('A test image')
   })
@@ -147,7 +149,9 @@ describe('normalizeLesson', () => {
 
     expect(result.difficultyBlocks.base?.attachments).toHaveLength(1)
     expect(result.difficultyBlocks.base?.attachments[0].name).toBe('Worksheet')
-    expect(result.difficultyBlocks.base?.attachments[0].url).toBe('https://cdn.example.com/uploads/worksheet.pdf')
+    expect(result.difficultyBlocks.base?.attachments[0].url).toBe(
+      'https://cdn.example.com/uploads/worksheet.pdf'
+    )
     expect(result.difficultyBlocks.base?.attachments[0].size).toBe(102400)
   })
 

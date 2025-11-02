@@ -83,9 +83,7 @@
     "printable_attachments": {
       "type": "media",
       "multiple": true,
-      "allowedTypes": [
-        "files"
-      ]
+      "allowedTypes": ["files"]
     },
     "downloadItems": {
       "type": "relation",
