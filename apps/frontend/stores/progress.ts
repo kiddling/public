@@ -193,6 +193,13 @@ export const useProgressStore = defineStore('progress', () => {
     }
 
     recordLessonVisit(normalized)
+
+    // Track analytics event
+    if (import.meta.client) {
+      const lesson = navigationStore.getLessonByCode(normalized)
+      const analytics = useAnalytics()
+      analytics.trackProgressMark(normalized, true, lesson?.title || normalized)
+    }
   }
 
   function markLessonIncomplete(code: string): void {
@@ -218,6 +225,13 @@ export const useProgressStore = defineStore('progress', () => {
     lessonProgress.value = {
       ...lessonProgress.value,
       [normalized]: next,
+    }
+
+    // Track analytics event
+    if (import.meta.client) {
+      const lesson = navigationStore.getLessonByCode(normalized)
+      const analytics = useAnalytics()
+      analytics.trackProgressMark(normalized, false, lesson?.title || normalized)
     }
   }
 

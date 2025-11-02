@@ -105,6 +105,12 @@ temp/
 .temp
 .tmp
 
+# Analytics data
+data/
+*.db
+*.db-shm
+*.db-wal
+
 # Lock files (keep pnpm-lock.yaml if using pnpm)
 # package-lock.json
 # yarn.lock
