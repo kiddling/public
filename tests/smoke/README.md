@@ -117,6 +117,15 @@ Tests API endpoint availability:
 - API accessibility
 - Response time
 
+### security.smoke.spec.ts
+Tests security configuration:
+- Security headers (HSTS, CSP, X-Frame-Options, etc.)
+- Rate limiting enforcement
+- HTTPS redirection
+- CORS policies
+- Cookie security
+- CSP validation
+
 ## Extending Smoke Tests
 
 To add new smoke tests:
