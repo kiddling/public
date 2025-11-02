@@ -22,7 +22,9 @@
     "test:a11y": "playwright test tests/e2e/specs/accessibility.spec.ts",
     "clean": "rm -rf .nuxt .output dist node_modules",
     "analyze:bundle": "pnpm build:analyze && open .nuxt/analyze/.vite-inspect/reports.html",
-    "perf:report": "node scripts/performance-report.js"
+    "perf:report": "node scripts/performance-report.js",
+    "bundle:check": "node ../../scripts/perf/bundle-budget.mjs",
+    "bundle:check:margin": "BUDGET_MARGIN=10 node ../../scripts/perf/bundle-budget.mjs"
   },
   "dependencies": {
     "@nuxt/image": "^1.8.1",

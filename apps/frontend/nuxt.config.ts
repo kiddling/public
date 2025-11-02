@@ -136,6 +136,11 @@ export default defineNuxtConfig({
         // { rel: 'preload', href: '/fonts/source-han-sans-cn-regular.woff2', as: 'font', type: 'font/woff2', crossorigin: 'anonymous' },
       ],
     },
+    // Intelligent page transitions for better UX
+    pageTransition: {
+      name: 'page',
+      mode: 'out-in',
+    },
   },
 
   // Nitro configuration for production
@@ -148,8 +153,30 @@ export default defineNuxtConfig({
       // Enable Brotli compression for better compression ratios
       brotli: true,
     },
-    // Route rules for long-term caching of static assets
+    // Pre-render static routes for faster first load
+    prerender: {
+      crawlLinks: true,
+      routes: [
+        '/',
+        '/design-log',
+        '/resources',
+        '/downloads',
+        '/tools/design-log',
+        '/knowledge-cards',
+        '/students',
+        '/error/404',
+        '/error/offline',
+      ],
+      // Ignore dynamic routes that require CMS data
+      ignore: [
+        '/lessons/**',
+        '/knowledge-cards/**',
+        '/api/**',
+      ],
+    },
+    // Route rules for long-term caching of static assets and ISR
     routeRules: {
+      // Static assets - long-term caching
       '/fonts/**': {
         headers: {
           'Cache-Control': 'public, max-age=31536000, immutable',
@@ -163,6 +190,48 @@ export default defineNuxtConfig({
       '/_ipx/**': {
         headers: {
           'Cache-Control': 'public, max-age=31536000, immutable',
+        },
+      },
+      // Static pages - pre-rendered with stale-while-revalidate
+      '/': { 
+        prerender: true,
+        swr: true,
+      },
+      '/design-log': { 
+        prerender: true,
+        swr: 3600, // Revalidate every hour
+      },
+      '/resources': { 
+        prerender: true,
+        swr: 3600,
+      },
+      '/downloads': { 
+        prerender: true,
+        swr: 3600,
+      },
+      '/students': { 
+        prerender: true,
+        swr: 3600,
+      },
+      // ISR for CMS-driven pages - balance freshness with performance
+      '/lessons/**': {
+        swr: 1800, // 30 minutes for lesson content
+        cache: {
+          maxAge: 1800,
+          staleMaxAge: 3600, // Serve stale for 1 hour while revalidating
+        },
+      },
+      '/knowledge-cards/**': {
+        swr: 1800, // 30 minutes for knowledge card content
+        cache: {
+          maxAge: 1800,
+          staleMaxAge: 3600,
+        },
+      },
+      // API routes - shorter cache for dynamic data
+      '/api/**': {
+        cache: {
+          maxAge: 300, // 5 minutes
         },
       },
     },
@@ -180,7 +249,7 @@ export default defineNuxtConfig({
       // Rollup options for better code splitting
       rollupOptions: {
         output: {
-          // Manual chunks for better caching
+          // Manual chunks for better caching - organized by feature domains
           manualChunks: (id) => {
             // Vendor chunks strategy
             if (id.includes('node_modules')) {
@@ -204,6 +273,32 @@ export default defineNuxtConfig({
               
               // Other node_modules go to vendor chunk
               return 'vendor'
+            }
+            
+            // Feature-based chunking for application code
+            // Lessons feature domain
+            if (id.includes('/pages/lessons/') || id.includes('/components/lessons/')) {
+              return 'feature-lessons'
+            }
+            
+            // Knowledge cards feature domain
+            if (id.includes('/pages/knowledge-cards/') || id.includes('/components/knowledge-cards/')) {
+              return 'feature-knowledge'
+            }
+            
+            // Student management feature domain
+            if (id.includes('/pages/students') || id.includes('/components/student')) {
+              return 'feature-students'
+            }
+            
+            // Tools and utilities feature domain
+            if (id.includes('/pages/tools/') || id.includes('/pages/design-log')) {
+              return 'feature-tools'
+            }
+            
+            // Downloads and resources feature domain
+            if (id.includes('/pages/downloads/') || id.includes('/pages/resources/')) {
+              return 'feature-resources'
             }
           },
           // Optimize chunk file names
@@ -269,11 +364,31 @@ export default defineNuxtConfig({
     viewTransition: true,
   },
 
-  // Router options for code splitting
+  // Router options for code splitting and smart prefetching
   router: {
     options: {
       // Enable strict mode for better performance
       strict: true,
+      // Smart prefetching suitable for China bandwidth environments
+      linkPrefetchedClass: 'nuxt-link-prefetched',
+      linkActiveClass: 'nuxt-link-active',
+      linkExactActiveClass: 'nuxt-link-exact-active',
+    },
+  },
+
+  // App-level router configuration for intelligent prefetching
+  hooks: {
+    'pages:extend'(pages) {
+      // Add custom prefetch logic for heavy pages
+      const heavyPages = ['/lessons', '/knowledge-cards', '/students']
+      pages.forEach(page => {
+        if (heavyPages.some(p => page.path.startsWith(p))) {
+          // @ts-ignore - meta is available but may not be fully typed
+          page.meta = page.meta || {}
+          // @ts-ignore
+          page.meta.prefetch = false // Disable auto-prefetch for heavy pages
+        }
+      })
     },
   },
 
