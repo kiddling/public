@@ -18,6 +18,7 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     '@nuxt/eslint',
     '@nuxt/image',
+    '@vite-pwa/nuxt',
   ],
 
   // SSR configuration for China hosting
@@ -122,15 +123,21 @@ export default defineNuxtConfig({
   app: {
     head: {
       charset: 'utf-8',
-      viewport: 'width=device-width, initial-scale=1',
-      title: 'Nuxt + Strapi App',
+      viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover',
+      title: '学习平台 - 离线学习助手',
       htmlAttrs: {
         lang: 'zh-CN',
       },
       meta: [
-        { name: 'description', content: 'A modern web application built with Nuxt 3 and Strapi' },
+        { name: 'description', content: '一个支持离线学习的现代化教育平台' },
+        { name: 'theme-color', content: '#3b82f6' },
+        { name: 'apple-mobile-web-app-capable', content: 'yes' },
+        { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
+        { name: 'apple-mobile-web-app-title', content: '学习平台' },
+        { name: 'format-detection', content: 'telephone=no' },
       ],
       link: [
+        { rel: 'apple-touch-icon', href: '/icons/apple-touch-icon.png' },
         // Preload critical fonts for faster rendering
         // Add font preloads here when self-hosted fonts are configured
         // { rel: 'preload', href: '/fonts/source-han-sans-cn-regular.woff2', as: 'font', type: 'font/woff2', crossorigin: 'anonymous' },
@@ -283,5 +290,87 @@ export default defineNuxtConfig({
     analyze: process.env.ANALYZE === 'true',
     // Transpile specific packages if needed
     transpile: [],
+  },
+
+  // PWA Configuration
+  pwa: {
+    registerType: 'autoUpdate',
+    manifest: {
+      name: '学习平台 - 离线学习助手',
+      short_name: '学习平台',
+      description: '一个支持离线学习的现代化教育平台',
+      theme_color: '#3b82f6',
+      background_color: '#ffffff',
+      display: 'standalone',
+      orientation: 'portrait',
+      scope: '/',
+      start_url: '/',
+      lang: 'zh-CN',
+      icons: [
+        {
+          src: '/icons/icon-192x192.png',
+          sizes: '192x192',
+          type: 'image/png',
+          purpose: 'any maskable',
+        },
+        {
+          src: '/icons/icon-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+          purpose: 'any maskable',
+        },
+      ],
+    },
+    workbox: {
+      navigateFallback: '/',
+      globPatterns: ['**/*.{js,css,html,png,svg,ico,woff,woff2}'],
+      runtimeCaching: [
+        {
+          urlPattern: /^https:\/\/.*\.(?:png|jpg|jpeg|svg|gif|webp)$/,
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'images-cache',
+            expiration: {
+              maxEntries: 100,
+              maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+            },
+          },
+        },
+        {
+          urlPattern: /^https?:\/\/.*\/api\/.*/,
+          handler: 'NetworkFirst',
+          options: {
+            cacheName: 'api-cache',
+            expiration: {
+              maxEntries: 50,
+              maxAgeSeconds: 60 * 60 * 24, // 1 day
+            },
+            networkTimeoutSeconds: 10,
+          },
+        },
+        {
+          urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/,
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'google-fonts-cache',
+            expiration: {
+              maxEntries: 10,
+              maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
+            },
+          },
+        },
+      ],
+      cleanupOutdatedCaches: true,
+      skipWaiting: true,
+      clientsClaim: true,
+    },
+    client: {
+      installPrompt: true,
+      periodicSyncForUpdates: 3600, // Check for updates every hour
+    },
+    devOptions: {
+      enabled: true,
+      type: 'module',
+    },
   },
 })

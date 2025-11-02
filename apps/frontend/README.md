@@ -24,6 +24,7 @@ Modern web application built with Nuxt 3, TypeScript, and Tailwind CSS, optimize
 - ✅ Nuxt Content for markdown-based content
 - ✅ ESLint configuration for code quality
 - ✅ Optimized for China hosting (domestic fonts and CDNs)
+- ✅ **Progressive Web App (PWA) support** - Offline access, installable, auto-updates
 
 ## 🔧 Environment Setup
 
@@ -477,6 +478,67 @@ The app is optimized for CDN deployment:
 - Efficient compression
 - Optimized for China hosting
 
+## 📱 Progressive Web App (PWA)
+
+The application is a fully functional PWA with offline support, installability, and automatic updates.
+
+### Features
+
+- **Offline Access**: Browse previously visited pages and cached content without internet
+- **Install to Home Screen**: Add the app to your device's home screen for quick access
+- **Auto Updates**: Automatic detection and installation of new versions
+- **Smart Caching**: Intelligent caching strategies for optimal performance
+
+### Quick Start
+
+1. **Visit PWA Test Page**: Navigate to `/pwa-test` to check PWA status
+2. **Install the App**:
+   - **Android/Chrome**: Click the install prompt or address bar icon
+   - **iOS Safari**: Tap share button → "Add to Home Screen"
+3. **Test Offline**: Use DevTools to go offline and verify functionality
+
+### Documentation
+
+- 📖 [PWA Feature Guide](docs/PWA_GUIDE.md) - Complete PWA functionality documentation
+- 📋 [Implementation Summary](PWA_IMPLEMENTATION.md) - Technical implementation details
+
+### PWA Components
+
+- `components/pwa/OfflineNotification.vue` - Offline status indicator
+- `components/pwa/InstallPrompt.vue` - Installation guide
+- `components/pwa/UpdateNotification.vue` - Update notifications
+- `composables/usePWA.ts` - PWA utility composable
+- `pages/offline.vue` - Offline fallback page
+
+### Testing PWA
+
+```bash
+# Generate PWA icons from a source image
+npm run pwa:generate-icons [source-image]
+
+# Test in Chrome DevTools
+# 1. Open DevTools (F12)
+# 2. Go to Application tab
+# 3. Check Service Workers, Manifest, Cache Storage
+
+# Run Lighthouse audit
+# DevTools → Lighthouse → Progressive Web App
+```
+
+### Lighthouse Requirements
+
+All PWA requirements are met:
+- ✅ Registers a service worker
+- ✅ Responds with 200 when offline
+- ✅ Provides a valid web app manifest
+- ✅ Uses HTTPS (in production)
+- ✅ Redirects HTTP to HTTPS
+- ✅ Configured for a custom splash screen
+- ✅ Sets an address bar theme color
+- ✅ Content is sized correctly for viewport
+- ✅ Has a `<meta name="viewport">` tag
+- ✅ Provides Apple Touch Icon
+
 ## 📚 Resources
 
 - [Nuxt 3 Documentation](https://nuxt.com)
@@ -486,3 +548,5 @@ The app is optimized for CDN deployment:
 - [VueUse Documentation](https://vueuse.org)
 - [Nuxt Content Documentation](https://content.nuxt.com)
 - [Source Han Sans Fonts](https://github.com/adobe-fonts/source-han-sans)
+- [Vite PWA for Nuxt](https://vite-pwa-org.netlify.app/frameworks/nuxt.html)
+- [PWA Documentation](https://web.dev/progressive-web-apps/)
