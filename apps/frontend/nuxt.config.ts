@@ -172,6 +172,8 @@ export default defineNuxtConfig({
       cssCodeSplit: true,
       // Optimize chunk size
       chunkSizeWarningLimit: 500,
+      // Enable sourcemaps for error tracking
+      sourcemap: process.env.NODE_ENV === 'production' ? 'hidden' : true,
       // Rollup options for better code splitting
       rollupOptions: {
         output: {
