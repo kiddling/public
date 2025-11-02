@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_lesson_prompts",
+  "info": {
+    "displayName": "Prompt",
+    "icon": "question",
+    "description": "Extended thinking prompt for lesson difficulty blocks"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "description": {
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    }
+  }
+}
