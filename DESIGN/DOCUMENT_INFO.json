@@ -1,0 +1,24 @@
+{
+  "title": "数字设计构成教材与课程设计方案",
+  "title_en": "Digital Design Composition Textbook and Course Design Plan",
+  "platform": "Manus",
+  "document_id": "UetQxz5vvtnDcp4Cre3kb6",
+  "share_url": "https://manus.im/share/UetQxz5vvtnDcp4Cre3kb6?replay=1",
+  "type": "design_document",
+  "format": "web_based",
+  "access": "public_share_link",
+  "created_date": "2024-11-02",
+  "description": "A comprehensive design document covering digital design composition curriculum and course design methodology.",
+  "description_zh": "关于数字设计构成的教材与课程设计的综合性方案文档。",
+  "files": {
+    "html_reference": "manus_design_document.html",
+    "readme": "README.md",
+    "metadata": "DOCUMENT_INFO.json"
+  },
+  "notes": [
+    "This is a shared Manus document accessible via web browser",
+    "The HTML file contains the application shell; content loads dynamically",
+    "For full access to the document, use the share_url link",
+    "Content may be updated online; check the share_url for latest version"
+  ]
+}
