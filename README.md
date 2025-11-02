@@ -122,11 +122,14 @@ Cross-application search that spans all content types:
 Comprehensive performance tracking and optimization:
 
 - **Web Vitals**: Real-time metrics (LCP, FID, CLS, FCP, TTFB, INP)
-- **Lighthouse CI**: Automated performance audits in CI/CD
+- **Lighthouse CI**: Automated performance audits in CI/CD with strict budgets (Performance ≥90, SEO ≥95)
 - **Health Checks**: Built-in endpoints for monitoring
 - **Docker Health**: Container health checks and auto-restart
 
-👉 [View Monitoring Documentation](./docs/MONITORING.md)
+Run `pnpm lighthouse` to audit performance locally. Reports are automatically generated in CI.
+
+👉 [View Monitoring Documentation](./docs/MONITORING.md)  
+👉 [View Performance Documentation](./apps/frontend/docs/PERFORMANCE.md)
 
 ### 🐳 Docker & CI/CD
 

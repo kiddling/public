@@ -303,17 +303,16 @@
 - [ ] Lighthouse 性能得分 ≥ 90
 - [ ] Lighthouse 可访问性得分 ≥ 95
 - [ ] Lighthouse 最佳实践得分 ≥ 90
-- [ ] Lighthouse SEO 得分 ≥ 90
+- [ ] Lighthouse SEO 得分 ≥ 95
 
 **测试脚本**:
 ```bash
-pnpm build:frontend
 pnpm lighthouse
-# 或
-lhci autorun
 ```
 
-**配置文件**: [lighthouserc.js](../lighthouserc.js)
+**配置文件**: [.lighthouserc.json](../.lighthouserc.json)
+
+**参考文档**: [LIGHTHOUSE_CI.md](./LIGHTHOUSE_CI.md)
 
 **责任人**: 前端团队、QA 团队
 

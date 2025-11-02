@@ -45,7 +45,7 @@
 ## 📦 新增文件清单
 
 ### 配置文件 (7 个)
-1. `lighthouserc.js` - Lighthouse CI 配置
+1. `.lighthouserc.json` - Lighthouse CI 配置
 2. `docker-compose.yml` - 生产环境 Docker 编排
 3. `docker-compose.dev.yml` - 开发环境 Docker 编排
 4. `.env.docker.example` - Docker 环境变量模板

@@ -242,7 +242,7 @@ experimental: {
 
 ### Lighthouse 配置
 ```javascript
-// lighthouserc.js
+// .lighthouserc.json
 'first-contentful-paint': 1500ms
 'largest-contentful-paint': 2500ms
 'cumulative-layout-shift': 0.1

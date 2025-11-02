@@ -357,12 +357,53 @@ nitro: {
 ## 监控和测试 (Monitoring & Testing)
 
 ### Lighthouse CI
+
+Lighthouse CI 自动审计应用性能、可访问性、SEO 和最佳实践。
+
+#### 本地运行
 ```bash
 # 运行 Lighthouse 测试
 pnpm lighthouse
 ```
 
-配置文件：`lighthouserc.js`
+#### 配置
+配置文件：`.lighthouserc.json`（项目根目录）
+
+测试的关键路由：
+- 首页 (`/`)
+- 学生作品 (`/students`)
+- 设计日志 (`/design-log`)
+- 下载中心 (`/downloads`)
+
+#### 性能预算
+- **Performance**: ≥ 90
+- **SEO**: ≥ 95
+- **Accessibility**: ≥ 95
+- **Best Practices**: ≥ 90
+
+#### 资源预算
+- JavaScript: ≤ 200KB
+- CSS: ≤ 100KB
+- 总资源: ≤ 1MB
+
+#### CI/CD 集成
+Lighthouse CI 在每次 PR 和 push 到 main/develop 分支时自动运行。报告以以下格式上传为 artifacts：
+
+```
+lighthouse-results-{branch}-{run_number}-{commit_sha}
+```
+
+#### 查看报告
+1. 在 GitHub Actions 中导航到 Lighthouse CI 作业
+2. 下载 `lighthouse-results-*` artifact
+3. 解压并在浏览器中打开 `.html` 报告文件
+
+#### 解读结果
+- **Green (90-100)**: 良好，符合预期
+- **Orange (50-89)**: 需要改进
+- **Red (0-49)**: 需要立即修复
+
+如果任何核心指标（Performance、SEO）低于预算，构建将失败。
 
 ### 性能报告
 ```bash
