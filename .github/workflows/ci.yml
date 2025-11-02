@@ -196,9 +196,7 @@ jobs:
           path: apps/frontend/.output
 
       - name: Run Lighthouse CI
-        run: |
-          npm install -g @lhci/cli@0.13.x
-          lhci autorun
+        run: pnpm lighthouse
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
 
@@ -206,7 +204,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: lighthouse-results
+          name: lighthouse-results-${{ github.ref_name }}-${{ github.run_number }}-${{ github.sha }}
           path: .lighthouseci
           retention-days: 7
 

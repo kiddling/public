@@ -17,7 +17,7 @@
    - 开发模式下控制台输出
 
 2. **Lighthouse CI 配置**
-   - 文件: `lighthouserc.js`
+   - 文件: `.lighthouserc.json`
    - 性能基准: ≥ 90% 得分
    - 自动化性能审计
    - CI/CD 集成
@@ -396,7 +396,7 @@ SNYK_TOKEN
 
 ### 配置文件
 
-- `lighthouserc.js` - Lighthouse CI 配置
+- `.lighthouserc.json` - Lighthouse CI 配置
 - `docker-compose.yml` - 生产环境编排
 - `docker-compose.dev.yml` - 开发环境编排
 - `.env.docker.example` - Docker 环境变量模板

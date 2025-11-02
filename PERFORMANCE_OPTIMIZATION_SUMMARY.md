@@ -181,7 +181,7 @@ totalAssets: 1MB              // 所有资源
 
 #### Lighthouse 配置更新
 ```javascript
-// lighthouserc.js
+// .lighthouserc.json
 'first-contentful-paint': 1500ms
 'largest-contentful-paint': 2500ms
 'cumulative-layout-shift': 0.1
@@ -260,7 +260,7 @@ window.__webVitals
 ### 配置文件
 - ✅ `apps/frontend/nuxt.config.ts` - 添加性能优化配置
 - ✅ `apps/frontend/package.json` - 添加新脚本和依赖
-- ✅ `lighthouserc.js` - 更新性能预算
+- ✅ `.lighthouserc.json` - 更新性能预算
 
 ### 新增文件
 - ✅ `apps/frontend/composables/usePerformance.ts`

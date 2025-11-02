@@ -38,7 +38,7 @@
     "strapi": "pnpm --filter cms strapi",
     "upgrade": "pnpm --filter cms exec npx @strapi/upgrade latest",
     "upgrade:dry": "pnpm --filter cms exec npx @strapi/upgrade latest --dry",
-    "lighthouse": "lhci autorun",
+    "lighthouse": "pnpm dlx @lhci/cli autorun --config=.lighthouserc.json",
     "test:smoke": "playwright test tests/smoke/",
     "deploy:preflight": "bash scripts/deploy/preflight.sh",
     "deploy:blue-green": "bash scripts/deploy/blue-green-deploy.sh",

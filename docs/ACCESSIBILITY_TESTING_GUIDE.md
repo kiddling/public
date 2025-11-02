@@ -79,7 +79,7 @@ open .lighthouseci/
 
 #### Lighthouse 配置
 
-位于 `lighthouserc.js`：
+位于 `.lighthouserc.json`：
 
 ```javascript
 assertions: {

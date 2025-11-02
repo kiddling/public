@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed - Lighthouse CI Configuration Improvements 🚀
+
+#### Lighthouse CI Enhancements
+- ✅ Migrated from `lighthouserc.js` to `.lighthouserc.json` for JSON-based configuration
+- ✅ Updated performance budgets: Performance ≥90, SEO ≥95 (increased from 90)
+- ✅ Added multiple critical route testing:
+  - Home page (`/`)
+  - Students page (`/students`)
+  - Design Log (`/design-log`)
+  - Downloads center (`/downloads`)
+- ✅ Updated CI command to use `pnpm dlx @lhci/cli` to avoid global npm installs
+- ✅ Improved CI artifact naming with branch, run number, and commit SHA
+- ✅ Created comprehensive Lighthouse CI documentation (`docs/LIGHTHOUSE_CI.md`)
+- ✅ Updated all documentation references from `lighthouserc.js` to `.lighthouserc.json`
+
 ### Added - Batch Optimization Release 🚀
 
 #### Performance Monitoring & Testing

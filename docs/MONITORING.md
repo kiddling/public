@@ -55,26 +55,24 @@ Web Vitals 已集成到 `apps/frontend/plugins/web-vitals.client.ts`。
 
 #### 配置文件
 
-`lighthouserc.js` 配置了 Lighthouse CI:
+`.lighthouserc.json` 配置了 Lighthouse CI:
 
 - 性能得分 ≥ 90%
-- 可访问性得分 ≥ 90%
+- 可访问性得分 ≥ 95%
 - 最佳实践得分 ≥ 90%
-- SEO 得分 ≥ 90%
+- SEO 得分 ≥ 95%
 
 #### 运行 Lighthouse
 
 ```bash
-# 构建应用
-pnpm build:frontend
-
-# 运行 Lighthouse CI
-npm install -g @lhci/cli
-lhci autorun
+# 运行 Lighthouse CI (包含自动构建)
+pnpm lighthouse
 
 # 查看报告
 open .lighthouseci/lhr-*.html
 ```
+
+详细文档请参阅: [Lighthouse CI 配置指南](./LIGHTHOUSE_CI.md)
 
 #### CI 集成
 
