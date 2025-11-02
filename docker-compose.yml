@@ -1,305 +1,78 @@
-version: '3.8'
-
 services:
-  # PostgreSQL Database
-  postgres:
-    image: postgres:16-alpine
-    container_name: nuxt-strapi-db
+  frontend:
+    container_name: nuxt-frontend
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile
+    image: nuxt-frontend:latest
     restart: unless-stopped
-    env_file:
-      - .env.docker
-    environment:
-      POSTGRES_DB: ${DATABASE_NAME:-strapi}
-      POSTGRES_USER: ${DATABASE_USERNAME:-strapi}
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-strapi}
-      TZ: ${TZ:-Asia/Shanghai}
-      PGTZ: ${TZ:-Asia/Shanghai}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - '3000:3000'
+    environment:
+      - NUXT_PUBLIC_API_BASE_URL=${NUXT_PUBLIC_API_BASE_URL:-http://cms:1337}
+      - NUXT_PUBLIC_STRAPI_URL=${NUXT_PUBLIC_STRAPI_URL:-http://cms:1337}
+      - NUXT_STRAPI_API_TOKEN=${NUXT_STRAPI_API_TOKEN}
+      - NUXT_STRAPI_URL=${NUXT_STRAPI_URL:-http://cms:1337}
+      - NODE_ENV=production
     networks:
       - app-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USERNAME:-strapi}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
-    deploy:
-      resources:
-        limits:
-          cpus: '1.0'
-          memory: 1G
-        reservations:
-          cpus: '0.5'
-          memory: 512M
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
-        labels: "service=postgres"
+    depends_on:
+      - cms
 
-  # Strapi CMS
   cms:
+    container_name: strapi-cms
     build:
       context: ./apps/cms
       dockerfile: Dockerfile
-      # Uncomment for China network optimization
-      # args:
-      #   - NPM_REGISTRY=https://registry.npmmirror.com
-      #   - ALPINE_MIRROR=mirrors.ustc.edu.cn
-    image: ${CMS_IMAGE:-nuxt-strapi-cms:latest}
-    container_name: nuxt-strapi-cms
+    image: strapi-cms:latest
     restart: unless-stopped
+    environment:
+      - DATABASE_CLIENT=${DATABASE_CLIENT:-sqlite}
+      - DATABASE_HOST=${DATABASE_HOST:-postgres}
+      - DATABASE_PORT=${DATABASE_PORT:-5432}
+      - DATABASE_NAME=${DATABASE_NAME:-strapi}
+      - DATABASE_USERNAME=${DATABASE_USERNAME:-strapi}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD:-strapi}
+      - JWT_SECRET=${JWT_SECRET}
+      - ADMIN_JWT_SECRET=${ADMIN_JWT_SECRET}
+      - APP_KEYS=${APP_KEYS}
+      - NODE_ENV=${NODE_ENV:-production}
+    volumes:
+      - strapi-uploads:/opt/app/public/uploads
+      - strapi-data:/opt/app/.tmp
+    ports:
+      - '1337:1337'
+    networks:
+      - app-network
     depends_on:
-      postgres:
-        condition: service_healthy
-    env_file:
-      - .env.docker
-    environment:
-      NODE_ENV: production
-      HOST: 0.0.0.0
-      PORT: 1337
-      TZ: ${TZ:-Asia/Shanghai}
-      # Strapi Keys
-      APP_KEYS: ${APP_KEYS}
-      API_TOKEN_SALT: ${API_TOKEN_SALT}
-      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET}
-      TRANSFER_TOKEN_SALT: ${TRANSFER_TOKEN_SALT}
-      JWT_SECRET: ${JWT_SECRET}
-      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
-      # Database
-      DATABASE_CLIENT: postgres
-      DATABASE_HOST: postgres
-      DATABASE_PORT: 5432
-      DATABASE_NAME: ${DATABASE_NAME:-strapi}
-      DATABASE_USERNAME: ${DATABASE_USERNAME:-strapi}
-      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-strapi}
-      DATABASE_SSL: false
-      # URLs
-      CLIENT_URL: ${CLIENT_URL:-http://localhost:3000}
-      # Security
-      SECURITY_RATE_LIMIT_ENABLED: ${SECURITY_RATE_LIMIT_ENABLED:-true}
-      SECURITY_RATE_LIMIT_MAX_REQUESTS: ${SECURITY_RATE_LIMIT_MAX_REQUESTS:-100}
-      SECURITY_RATE_LIMIT_WINDOW_MS: ${SECURITY_RATE_LIMIT_WINDOW_MS:-60000}
-      # Compliance
-      ICP_FILING_NUMBER: ${ICP_FILING_NUMBER:-}
-      DATA_RESIDENCY: ${DATA_RESIDENCY:-CN}
-    volumes:
-      - cms_uploads:/opt/app/public/uploads
-      - cms_logs:/opt/app/logs
-    ports:
-      - "1337:1337"
-    networks:
-      - app-network
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:1337/_health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
-    deploy:
-      resources:
-        limits:
-          cpus: '2.0'
-          memory: 2G
-        reservations:
-          cpus: '0.5'
-          memory: 512M
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "5"
-        labels: "service=cms"
+      - postgres
 
-  # Nuxt Frontend
-  frontend:
-    build:
-      context: .
-      dockerfile: ./apps/frontend/Dockerfile
-      args:
-        - NPM_REGISTRY=${NPM_REGISTRY:-https://registry.npmjs.org/}
-        - PNPM_REGISTRY=${PNPM_REGISTRY:-https://registry.npmjs.org/}
-        - ALPINE_MIRROR=${ALPINE_MIRROR:-}
-    image: ${FRONTEND_IMAGE:-nuxt-strapi-frontend:latest}
-    container_name: nuxt-strapi-frontend
+  postgres:
+    container_name: strapi-postgres
+    platform: linux/amd64
     restart: unless-stopped
-    depends_on:
-      cms:
-        condition: service_healthy
-    env_file:
-      - .env.docker
+    image: postgres:16-alpine
     environment:
-      NODE_ENV: production
-      TZ: ${TZ:-Asia/Shanghai}
-      # Nuxt Configuration
-      NUXT_PUBLIC_API_BASE_URL: ${NUXT_PUBLIC_API_BASE_URL:-http://cms:1337}
-      NUXT_PUBLIC_STRAPI_URL: ${NUXT_PUBLIC_STRAPI_URL:-http://cms:1337}
-      NUXT_STRAPI_API_TOKEN: ${NUXT_STRAPI_API_TOKEN}
-      NUXT_STRAPI_URL: ${NUXT_STRAPI_URL:-http://cms:1337}
-      # Security
-      SECURITY_HSTS_ENABLED: ${SECURITY_HSTS_ENABLED:-true}
-      SECURITY_HSTS_MAX_AGE: ${SECURITY_HSTS_MAX_AGE:-31536000}
-      SECURITY_CSP_ENABLED: ${SECURITY_CSP_ENABLED:-true}
-      SECURITY_CORS_ALLOWED_ORIGINS: ${SECURITY_CORS_ALLOWED_ORIGINS:-}
-      # Compliance
-      ICP_FILING_NUMBER: ${ICP_FILING_NUMBER:-}
-      PUBLIC_SECURITY_FILING_NUMBER: ${PUBLIC_SECURITY_FILING_NUMBER:-}
-      DATA_RESIDENCY: ${DATA_RESIDENCY:-CN}
-      COOKIE_CONSENT_ENABLED: ${COOKIE_CONSENT_ENABLED:-true}
+      - POSTGRES_USER=${DATABASE_USERNAME:-strapi}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD:-strapi}
+      - POSTGRES_DB=${DATABASE_NAME:-strapi}
     volumes:
-      - frontend_logs:/app/logs
+      - postgres-data:/var/lib/postgresql/data
     ports:
-      - "3000:3000"
+      - '5432:5432'
     networks:
       - app-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-    deploy:
-      resources:
-        limits:
-          cpus: '2.0'
-          memory: 1G
-        reservations:
-          cpus: '0.5'
-          memory: 256M
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "5"
-        labels: "service=frontend"
-
-  # Redis Cache (Optional, for future optimization)
-  redis:
-    image: redis:7-alpine
-    container_name: nuxt-strapi-redis
-    restart: unless-stopped
-    env_file:
-      - .env.docker
-    environment:
-      TZ: ${TZ:-Asia/Shanghai}
-    command: >
-      redis-server
-      --maxmemory ${REDIS_MAX_MEMORY:-256mb}
-      --maxmemory-policy ${REDIS_MAX_MEMORY_POLICY:-allkeys-lru}
-      --appendonly yes
-      --appendfsync everysec
-    ports:
-      - "6379:6379"
-    networks:
-      - app-network
-    volumes:
-      - redis_data:/data
-      - redis_logs:/var/log/redis
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ['CMD-SHELL', 'pg_isready -U ${DATABASE_USERNAME:-strapi}']
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 5s
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 512M
-        reservations:
-          cpus: '0.25'
-          memory: 256M
-    logging:
-      driver: json-file
-      options:
-        max-size: "5m"
-        max-file: "3"
-        labels: "service=redis"
-
-  # Nginx Reverse Proxy (Optional)
-  nginx:
-    image: nginx:alpine
-    container_name: nuxt-strapi-nginx
-    restart: unless-stopped
-    depends_on:
-      frontend:
-        condition: service_healthy
-      cms:
-        condition: service_healthy
-    env_file:
-      - .env.docker
-    environment:
-      TZ: ${TZ:-Asia/Shanghai}
-      # Rate limiting configuration
-      NGINX_RATE_LIMIT_API: ${NGINX_RATE_LIMIT_API:-10r/s}
-      NGINX_RATE_LIMIT_GENERAL: ${NGINX_RATE_LIMIT_GENERAL:-100r/s}
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./config/nginx/ssl:/etc/nginx/ssl:ro
-      - nginx_logs:/var/log/nginx
-    networks:
-      - app-network
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-    deploy:
-      resources:
-        limits:
-          cpus: '1.0'
-          memory: 512M
-        reservations:
-          cpus: '0.25'
-          memory: 128M
-    logging:
-      driver: json-file
-      options:
-        max-size: "20m"
-        max-file: "5"
-        labels: "service=nginx"
-    # Uncomment for China network: add extra hosts for better connectivity
-    # extra_hosts:
-    #   - "api.example.com:192.168.1.100"
 
 volumes:
-  postgres_data:
-    driver: local
-    name: ${COMPOSE_PROJECT_NAME:-nuxt-strapi}_postgres_data
-  cms_uploads:
-    driver: local
-    name: ${COMPOSE_PROJECT_NAME:-nuxt-strapi}_cms_uploads
-  cms_logs:
-    driver: local
-    name: ${COMPOSE_PROJECT_NAME:-nuxt-strapi}_cms_logs
-  redis_data:
-    driver: local
-    name: ${COMPOSE_PROJECT_NAME:-nuxt-strapi}_redis_data
-  redis_logs:
-    driver: local
-    name: ${COMPOSE_PROJECT_NAME:-nuxt-strapi}_redis_logs
-  frontend_logs:
-    driver: local
-    name: ${COMPOSE_PROJECT_NAME:-nuxt-strapi}_frontend_logs
-  nginx_logs:
-    driver: local
-    name: ${COMPOSE_PROJECT_NAME:-nuxt-strapi}_nginx_logs
+  postgres-data:
+  strapi-uploads:
+  strapi-data:
 
 networks:
   app-network:
     driver: bridge
-    driver_opts:
-      com.docker.network.bridge.name: br-nuxt-strapi
-    ipam:
-      driver: default
-      config:
-        - subnet: ${DOCKER_SUBNET:-172.28.0.0/16}
-          gateway: ${DOCKER_GATEWAY:-172.28.0.1}
