@@ -47,6 +47,8 @@
     "docker:build": "docker-compose build",
     "docker:build:cms": "docker build -t nuxt-strapi-cms:latest apps/cms",
     "docker:build:cms:china": "docker build --build-arg USE_CHINA_MIRROR=true --build-arg NODE_MIRROR=https://registry.npmmirror.com --build-arg ALPINE_MIRROR=mirrors.aliyun.com -t nuxt-strapi-cms:latest apps/cms",
+    "docker:build:frontend": "docker build -f apps/frontend/Dockerfile -t nuxt-strapi-frontend:latest .",
+    "docker:build:frontend:china": "docker build --build-arg NPM_REGISTRY=https://registry.npmmirror.com --build-arg PNPM_REGISTRY=https://registry.npmmirror.com --build-arg ALPINE_MIRROR=mirrors.ustc.edu.cn -f apps/frontend/Dockerfile -t nuxt-strapi-frontend:latest .",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
     "docker:logs": "docker-compose logs -f",
